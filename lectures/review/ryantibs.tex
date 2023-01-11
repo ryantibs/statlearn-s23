@@ -1,0 +1,127 @@
+% Packages
+\usepackage{amssymb,amsmath,amsthm,bbm}
+\usepackage{verbatim,float,url,dsfont}
+\usepackage{graphicx,subfigure,psfrag}
+\usepackage{algorithm,algorithmic}
+\usepackage{mathtools,enumitem}
+\usepackage{multirow}
+\usepackage{ragged2e}
+\usepackage{xr-hyper}
+
+\usepackage[colorlinks=true,citecolor=blue,urlcolor=blue,linkcolor=blue]{hyperref}
+\usepackage[margin=1in]{geometry}
+\usepackage[round]{natbib}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{nicefrac}         % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+
+\ifdefined\TimesFont 
+\usepackage{times} % use times font
+\fi
+
+\ifdefined\ParSkip 
+\usepackage{parskip} % use par skip
+\fi
+
+% Theorems and such
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+
+% Assumption
+\newtheorem*{assumption*}{\assumptionnumber}
+\providecommand{\assumptionnumber}{}
+\makeatletter
+\newenvironment{assumption}[2]{
+  \renewcommand{\assumptionnumber}{Assumption #1#2}
+  \begin{assumption*}
+  \protected@edef\@currentlabel{#1#2}}
+{\end{assumption*}}
+\makeatother
+
+% Widebar
+\makeatletter
+\newcommand*\rel@kern[1]{\kern#1\dimexpr\macc@kerna}
+\newcommand*\widebar[1]{%
+  \begingroup
+  \def\mathaccent##1##2{%
+    \rel@kern{0.8}%
+    \overline{\rel@kern{-0.8}\macc@nucleus\rel@kern{0.2}}%
+    \rel@kern{-0.2}%
+  }%
+  \macc@depth\@ne
+  \let\math@bgroup\@empty \let\math@egroup\macc@set@skewchar
+  \mathsurround\z@ \frozen@everymath{\mathgroup\macc@group\relax}%
+  \macc@set@skewchar\relax
+  \let\mathaccentV\macc@nested@a
+  \macc@nested@a\relax111{#1}%
+  \endgroup
+}
+\makeatother
+
+% Min and max
+\newcommand{\argmin}{\mathop{\mathrm{argmin}}}
+\newcommand{\argmax}{\mathop{\mathrm{argmax}}}
+\newcommand{\minimize}{\mathop{\mathrm{minimize}}}
+\newcommand{\maximize}{\mathop{\mathrm{maximize}}}
+\newcommand{\st}{\mathop{\mathrm{subject\,\,to}}}
+
+% Shortcuts
+\def\R{\mathbb{R}}
+\def\C{\mathbb{C}}
+\def\Z{\mathbb{Z}}
+\def\N{\mathbb{N}}
+\def\E{\mathbb{E}}
+\def\P{\mathbb{P}}
+\def\T{\mathsf{T}}
+\def\Cov{\mathrm{Cov}}
+\def\Var{\mathrm{Var}}
+\def\indep{\perp\!\!\!\perp}
+\def\th{^{\text{th}}}
+\def\tr{\mathrm{tr}}
+\def\df{\mathrm{df}}
+\def\dim{\mathrm{dim}}
+\def\col{\mathrm{col}}
+\def\row{\mathrm{row}}
+\def\nul{\mathrm{null}}
+\def\rank{\mathrm{rank}}
+\def\nuli{\mathrm{nullity}}
+\def\spa{\mathrm{span}}
+\def\sign{\mathrm{sign}}
+\def\supp{\mathrm{supp}}
+\def\diag{\mathrm{diag}}
+\def\aff{\mathrm{aff}}
+\def\conv{\mathrm{conv}}
+\def\dom{\mathrm{dom}}
+\def\hy{\hat{y}}
+\def\hf{\hat{f}}
+\def\hmu{\hat{\mu}}
+\def\halpha{\hat{\alpha}}
+\def\hbeta{\hat{\beta}}
+\def\htheta{\hat{\theta}}
+\def\cA{\mathcal{A}}
+\def\cB{\mathcal{B}}
+\def\cD{\mathcal{D}}
+\def\cE{\mathcal{E}}
+\def\cF{\mathcal{F}}
+\def\cG{\mathcal{G}}
+\def\cK{\mathcal{K}}
+\def\cH{\mathcal{H}}
+\def\cI{\mathcal{I}}
+\def\cL{\mathcal{L}}
+\def\cM{\mathcal{M}}
+\def\cN{\mathcal{N}}
+\def\cP{\mathcal{P}}
+\def\cS{\mathcal{S}}
+\def\cT{\mathcal{T}}
+\def\cW{\mathcal{W}}
+\def\cX{\mathcal{X}}
+\def\cY{\mathcal{Y}}
+\def\cZ{\mathcal{Z}}

@@ -1,0 +1,953 @@
+\documentclass{article}
+
+\def\ParSkip{} 
+\input{ryantibs}
+
+\title{Review: Stat/ML in a Nutshell \\ \smallskip
+\large Advanced Topics in Statistical Learning, Spring 2023}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\RaggedRight
+\vspace{-50pt}
+
+We will take a brief tour of core concepts in statistics and machine learning. 
+Most of this will/should be familiar to you already. Refer to, e.g.,
+\citet{wasserman2004all, hastie2009elements} for (much) more details.
+
+\section{Probability: modes of convergence and limit laws}
+
+\def\asto{\overset{\mathrm{as}}{\to}}
+\def\pto{\overset{p}{\to}}
+\def\dto{\overset{d}{\to}}
+
+Let $X_n$, $n=1,2,3,\dots$ be a sequence of real-valued random variables. 
+
+\begin{itemize}
+\item Almost sure convergence: $X_n \asto X$ means that 
+  $\P(\lim_{n\to \infty} X_n = X ) = 1$.   
+
+\item Convergence in probability: $X_n \pto X$ means that, for each
+  $\epsilon>0$, $\P(|X_n - X| > \epsilon) \to 0$ as $n \to \infty$.  
+
+\item Convergence in distribution: $X_n \dto X$ means that $\P(X_n \leq x) \to 
+  \P(X \leq x)$ at all continuity points $x$ of the law of $X$. 
+
+\item Almost sure convergence implies convergence in probability. 
+
+\item Convergence in probability implies convergence in distribution.
+
+\item Convergence in distribution does \emph{not} imply convergence in
+  probability (except in the special case that the limiting distribution is a
+  constant).   
+
+\item Convergence in distribution is equivalent to $\E[ f(X_n) ] \to \E[ f(X) ]$
+  for all bounded, continuous $f$ (this, together with a collection of other
+  equivalences, is often called the portmanteau lemma).  
+
+\item Asymptotic probability notation: $X_n = O_p(a_n)$ means that $X_n/a_n$ is
+  bounded in probability, i.e., for each $\epsilon>0$, there exists an $M>0$
+  such that for sufficiently large $n$,
+  \[
+  \P\bigg( \bigg|\frac{X_n}{a_n}\bigg| > M \bigg) \leq \epsilon.
+  \]
+  Meanwhile, $X_n = o_p(a_n)$ means that $X_n/a_n \pto 0$. 
+
+\item Law of large numbers (LLN): if $X_1,X_2,\dots$ are i.i.d.\ with $\mu =
+  \E[X_1]$, then for the sample mean 
+  \[
+  \bar{X}_n = \frac{1}{n} \sum_{i=1}^n X_n,
+  \]
+  it holds that \smash{$\bar{X}_n \asto \mu$}.
+
+  Note: this implies \smash{$\bar{X}_n \pto \mu$}, but there are some cases
+  where latter holds (convergence in probability) but the former does not
+  (almost sure convergence), i.e., when the mean is not defined (infinite). 
+
+\item Central limit theorem (CLT): under the same conditions, if additionally a
+  second moment exists and we let $\sigma^2 = \Var[X_1]$, then
+  \[
+  \frac{\sqrt{n}(\bar{X}_n - \mu)}{\sigma} \dto Z,
+  \]
+  where $Z$ is standard normal, $Z \sim N(0,1)$. 
+
+\item Gilvenko-Cantelli theorem: if $X_1,X_2,\dots$ are i.i.d.\ then for the
+  empirical distribution function $F_n$ defined as 
+  \[
+  F_n(x) = \frac{1}{n} \sum_{i=1}^n 1\{X_n \leq x\},
+  \]
+  it holds that
+  \[
+  \sup_x \, |F_n(x) - F(x)| \to 0.
+  \]
+
+\item Kolmogorov-Smirnov theorem: under the same conditions, 
+  \[
+  \sqrt{n} \sup_x \, |F_n(x) - F(x)| \to \sup_{t \in [0,1]} \, |B(t)|,
+  \]
+  where $B$ is a Brownian bridge (standard Brownian motion subject to $B(0) =
+  0$ and $B(1) = 0$).   
+\end{itemize}
+
+\section{Probability: basic concentration inequalities} 
+
+\begin{itemize}
+\item Markov's inequality: if $X \geq 0$ and $\mu = \E[X]$, then for any
+  $a > 0$, 
+  \[
+  \P(X \geq a) \leq \frac{\mu}{a}.
+  \]
+  
+\item Chebyshev's inequality: let $\mu = \E[X]$ and $\sigma^2 = \Var[X]$, then 
+  for any $t > 0$,  
+  \[
+  \P(|X - \mu| \geq t) \leq \frac{\sigma^2}{t^2}.
+  \]
+
+\item Hoeffding's inequality: if $X_1,\dots,X_n$ are independent and zero mean
+  with $a_i \leq X_i \leq b_i$ for each $i$, then for any $t > 0$,
+  \[
+  \P( \bar{X}_n \geq t) \leq \exp\bigg( \frac{-2nt^2}{
+    \frac{1}{n}\sum_{i=1}^n (b_i^2 - a_i^2)} \bigg).
+  \]
+
+\item Bernstein's inequality: if $X_1,\dots,X_n$ are independent and zero mean
+  with $\sigma_i^2 = \Var[X_i]$, and $|X_i| \leq M$ for each $i$, then for any
+  $t > 0$,  
+  \[
+  \P( \bar{X}_n \geq t) \leq \exp\bigg( \frac{-nt^2/2}{
+    \frac{1}{n}\sum_{i=1}^n \sigma_i^2 + Mt/3} \bigg).
+  \]
+\end{itemize}
+
+\section{Statistics: maximum likelihood and GLMs}
+
+\subsection{Maximum likelihood}
+
+Let $\{P_\theta : \theta \in \Theta\}$ be a parametric family of models, and 
+write $p_\theta$ for the probability density function (or probability mass
+function, in the discrete case). We write $L(\theta; x) = p_\theta(x)$ for the
+likelihood function.
+
+Then given i.i.d.\ $X_1,\dots, X_n \sim P_\theta$, the problem
+\[ 
+\maximize_{\theta \in \Theta} \; \prod_{i=1}^n L(\theta; X_i),
+\] 
+is called \emph{maximum likelihood estimation}, and a maximizer
+\smash{$\htheta$} of the above is called a \emph{maximum likelihood estimator}
+(MLE). (We are often imprecise and call this \emph{the} MLE, ignorning
+nonuniqueness of the solution.) Note that we can equivalently write this via the 
+negative log-likelihood function $\ell(\theta; x) = - \log L(\theta; x)$, i.e., 
+the above is equivalent
+to  
+\[
+\minimize_{\theta \in \Theta} \; \sum_{i=1}^n \ell(\theta; X_i).
+\]
+The \emph{Fisher information} is given by the expectation of the Hessian,
+\[
+I(\theta) = \E[\nabla^2 \ell(\theta; X) ],
+\]
+where the expectation is taken over $X \sim P_\theta$. In the univariate case, 
+$\Theta \subseteq \R$, this is simply 
+\[
+I(\theta) = \E\bigg[ \frac{d^2 \ell(\theta; X)}{d\theta^2} \bigg].
+\]
+Under appropriate regularity conditions, when $X_1,\dots,X_n \sim P_\theta$, 
+\[
+\frac{\sqrt{n}(\htheta - \theta)}{s_n} \dto Z, 
+\]
+where \smash{$s_n = 1/\sqrt{I(\htheta)}$}, and $Z$ is standard normal. In the 
+multivariate case, $\Theta \subseteq \R^d$, under regularity conditions, 
+\[
+\sqrt{n} S_n^{-1} (\htheta - \theta) \dto Z,
+\]
+where $S_n = I(\htheta)^{-1/2}$, which is the symmetric square root of the
+inverse Fisher information matrix at the MLE, and $Z \sim N(0, I_d)$, a
+$d$-dimensional standard normal vector.    
+
+The following result is also true (under regularity conditions):
+\[
+\sqrt{n} (\htheta - \theta) \dto N(0, I(\theta) ^{-1}).
+\]
+From this we can discern
+\[
+\|\htheta - \theta\|_2^2 = O_p \bigg( \frac{1}{n} \tr[I(\theta) ^{-1}] \bigg),   
+\] 
+and under standard conditions this will be $O_p(d/n)$. This should give you a
+rough sense for the squared error of the MLE, in standard (idealized)
+settings.\footnote{ Note carefully, however, that for the asymptotic normal
+  approximation to be accurate we require $d \ll n$; when $d$ scales
+  proportionally to $n$, $d/n \to \gamma > 0$, we get very different asymptotic
+  behavior.} 
+We will do a related but even simpler and more direct calculation later for
+least squares regression. 
+
+\subsection{Generalized linear models}
+
+An \emph{exponential family distribution} is of the form
+\[
+p_\eta(x) = \exp\big(T(x)^\T \eta - \psi(\eta)\big) h(x),
+\]
+Here $\eta \in \R^d$ is called the \emph{natural parameter} of the exponential  
+family (often we use $\eta$, rather than $\theta$, here). We call the function
+$\psi$ the \emph{log-partition function}, we call $T$ the \emph{sufficient
+  statistic}, and we call $h$ the \emph{base measure}. 
+
+A remarkable fact: in any exponential family distribution, the log-partition
+function $\psi$ is always convex, by virtue of the fact that $p_\eta$ must be a
+bona fide density and therefore must integrate to one (sum to one, in the
+discrete case). This means that the map $\eta \mapsto p_\eta(x)$ is always
+log-concave (for fixed $x$), and the resulting maximum likelihood problem       
+\[
+\minimize_\eta \; -\frac{1}{n} \bigg( \sum_{i=1}^n T(X_i) \bigg)^{\hspace{-2pt}
+  \T} \eta + \psi(\eta)    
+\]
+is always a convex optimization problem. (Convexity and optimization will be
+discussed shortly.) 
+
+A \emph{generalized linear model} (GLM) builds off the exponential family
+distribution. We observe independent draws of a response variable $y_i$,
+$i=1,\dots,n$, with each one sampled from an exponential family
+distribution. The form here is common (the functions $T, \psi, h$ are common),
+but we have sample-specific natural parameters: to each $y_i$, we assign a
+natural parameter $\eta_i$, and model it as  
+\[
+\eta_i = x_i^\T \beta
+\] 
+for a feature vector $x_i \in \R^d$ and parameter $\beta \in \R^d$. Maximum
+likelihood becomes:   
+\[
+\minimize_\beta \; \sum_{i=1}^n \Big( -T(y_i) x_i^\T \beta + \psi(x_i^\T \beta)
+\Big).  
+\]
+Maximum likelihood in a GLM has many special properties. For example, the
+Hessian of the criterion is the same as the Fisher information
+matrix,\footnote{Here we are referring to the total Fisher information matrix,
+  which has been summed over the observations.} 
+since the second-order term has no dependence on $y_i$. 
+
+The three most important special cases are the Gaussian: \smash{$\psi(u) =
+  \frac{u^2}{2}$}, Bernoulli: $\psi(u) = \log(1+e^u)$, and Poisson: $\psi(u) =
+e^u$ families. This gives rise to the following maximum likelihood problems,
+\begin{alignat*}{5}
+&\text{Gaussian}: \quad 
+&&\minimize_\beta \; \sum_{i=1}^n \bigg(-y_i x_i^\T \beta + 
+\frac{(x_i^\T \beta)^2}{2} \bigg) \qquad 
+&&\text{(where each $y_i \in \R$)} \\
+&\text{Bernoulli}: \quad 
+&&\minimize_\beta \; \sum_{i=1}^n \Big( -y_i x_i^\T \beta + 
+\log(1 + \exp(x_i^\T \beta)) \Big) \qquad
+&&\text{(where each $y_i \in \{0,1\}$)} \\
+&\text{Poisson}: \quad
+&&\minimize_\beta \; \sum_{i=1}^n \Big( -y_i x_i^\T \beta + 
+\exp(x_i^\T \beta) \Big) \qquad
+&&\text{(where each $y_i \in \N$)}. 
+\end{alignat*}
+These are known as \emph{least squares regression}, \emph{logistic regression},
+and \emph{Poisson regression}, respectively. The Hessians in these problems are:  
+\begin{alignat*}{5}
+&\text{Gaussian}: \quad
+&&H(\beta) = \sum_{i=1}^n x_i x_i^\T \qquad
+&& \text{(no dependence on $\beta$)} \\
+&\text{Bernoulli}: \quad 
+&&H(\beta) = \sum_{i=1}^n x_i p(x_i^\T \beta) (1 - p(x_i^\T \beta)) x_i^\T 
+\qquad    
+&&\text{where $p(u) = 1/(1+e^{-u})$} \\
+&\text{Poisson}: \quad
+&&H(\beta) = \sum_{i=1}^n x_i \lambda(x_i^\T \beta) x_i^\T \qquad
+&&\text{where $\lambda(u) = e^u$}.
+\end{alignat*}
+This can be written more succintly in terms of $X \in \R^{n \times d}$, the
+predictor matrix (whose $i\th$ row is $x_i$): 
+\begin{alignat*}{5}
+&\text{Gaussian}: \quad
+&&H(\beta) =X^\T X \qquad
+&& \text{(no dependence on $\beta$)} \\
+&\text{Bernoulli}: \quad 
+&&H(\beta) = X^\T W(\beta) X \qquad    
+&&\text{where $W(\beta)$ is diagonal with $[W(\beta)]_{ii} = p(x_i^\T \beta)
+  (1 - p(x_i^\T \beta))$} \\
+&\text{Poisson}: \quad
+&&H(\beta) = X^\T W(\beta) X \qquad
+&&\text{where $W(\beta)$ is diagonal with $[W(\beta)]_{ii} = \lambda(x_i^\T
+  \beta)$}. 
+\end{alignat*}
+
+\section{Convexity and optimization}
+
+A \emph{convex set} $C \subseteq \R^d$ is one that satisfies 
+\[
+x, y \in C \implies t x + (1-t) y \in C, \quad \text{for all $t \in [0,1]$}. 
+\]
+A \emph{convex function} $f : \R^d \to (-\infty, \infty]$ is one such that its
+effective domain $\dom(f)$ (the set of $x$ for which $f$ is defined and finite)
+is a convex set, and 
+\[
+f \big(t x + (1-t) y\big) \leq t f(x) + (1-t) f(y),  \quad \text{for all $x,y
+  \in \dom(f)$ and $t \in [0,1]$}. 
+\]
+It is called \emph{strictly convex} if the above inequality is satisfied
+strictly whenever $x \not= y$ and $t \in (0,1)$. Concavity of $f$ means that
+$-f$ is convex, and same with strict concavity. 
+
+A differentiable function $f$ is convex if and only if $\dom(f)$ is convex and  
+\[
+f(y) \geq f(x) + \nabla f(x)^\T (y-x), \quad \text{for all $x,y \in \dom(f)$}, 
+\]
+where $\nabla f$ denotes the gradient of $f$. This is called the
+\emph{first-order characterization} of convexity. A twice differentiable
+function $f$ is convex if and only if $\dom(f)$ is convex and
+\[
+\nabla^2 f(x) \succeq 0, \quad \text{for all $x \in \dom(f)$}.
+\]
+where $\nabla^2 f$ denotes the Hessian of $f$, and we write $A \succeq 0$ to
+mean that a matrix $A$ is positive semidefinite (symmetric and its smallest
+eigenvalue is nonnegative). This is called the \emph{second-order
+  characterization} of convexity. 
+
+From the expressions for the Hessians given above, you can check directly that
+the criterions in the least squares, logistic regression, and Poisson regression
+problems are convex.  
+
+\subsection{Optimization basics}
+
+An \emph{optimization problem} is of the form
+\begin{alignat*}{2}
+&\minimize_x \quad && f(x) \\
+&\st \quad && g_i(x) \leq 0, \; i=1,\dots,m \\ 
+& && h_j(x) = 0, \; j=1,\dots,k.
+\end{alignat*}
+Here the minimization is implicitly restricted to \smash{$D = \dom(f) \cap 
+  \bigcap_{i=1}^m \dom(g_i) \cap \bigcap_{j=1}^k \dom(h_j)$}, the intersection
+of relevant effective domains.
+
+A \emph{convex optimization problem} is one of the above form such that $f$ and
+$g_i$, $i=1,\dots,m$ are all convex functions, and $h_j$, $j=1,\dots,k$ are
+all affine functions. In other words, the problem 
+\begin{alignat*}{2}
+&\minimize_x \quad && f(x) \\
+&\st \quad && g_i(x) \leq 0, \; i=1,\dots,m \\ 
+& && Ax = b,
+\end{alignat*}
+is convex whenever $f$ and $g_i$, $i=1,\dots,m$ are convex (and $A$ and $b$ are
+arbitrary). 
+
+The function $f$ in such problems is called the \emph{objective} or
+\emph{criterion}. A \emph{feasible point} is a point in $D$ such that all
+constraints (inequality and equality constraints) are met. The infimal criterion
+value among all feasible points is often denoted $f^\star$, and called the
+\emph{optimal value}. 
+
+A feasible point that achieves the optimal value is denoted $x^\star$ (note that
+$f^\star = f(x^\star)$), and is called a  \emph{solution} or
+\emph{minimizer}. However, in statistics, we often use ``hat  notation'', as in
+\smash{$\htheta$} for the MLE. An important fact: if the criterion $f$ is
+strictly convex, and a solution exists, then it must be unique.
+
+A point \smash{$\bar{x}$} is called a \emph{local solution} if it is feasible
+and there is some $\delta>0$ such that 
+\[
+f(\bar{x}) \leq f(x), \quad \text{for all feasible $x$ such that
+$\|x - \bar{x}\|_2 \leq \delta$}.
+\]
+For a convex optimization problem, the following holds: any local solution
+\smash{$\bar{x}$} must also be a global solution: \smash{$f(\bar{x}) \leq f(x)$}
+for all feasible points $x$. This result is so important that it may as well be
+called the \emph{fundamental theorem of convex optimization}.   
+
+A huge number of estimators in statistics and machine learning are defined by
+optimization problems, and many of these are convex problems. There has been a
+surge in interest in (smooth) nonconvex optimization recently due to the rise of
+deep neural networks.  
+
+\subsection{Subgradients}
+
+For a function $f$ on $\R^d$, we say that $s \in \R^d$ is a \emph{subgradient} 
+of $f$ at $x \in \dom(f)$ provided that
+\[
+f(y) \geq f(x) + s^\T (y-x), \quad \text{for all $y \in \dom(f)$}.
+\]
+This is analogous to the first-order characterization for convexity, where $s$
+playes the role of $\nabla f(x)$. We write $\partial f(x)$ for the set of all
+subgradients of $f$ at $x$, which is called the \emph{subdifferential}.
+
+For convex $f$, if $f$ is differentiable at $x$, then $\partial f(x) =
+\{x\}$. The converse is true as well (if the subdifferential is a singleton,
+then $f$ must be differentiable at $x$, with its gradient given by the single
+subgradient). 
+
+Subgradients play a big role in nonsmooth optimization, but are also key for 
+statistical analysis for certain problems/estimators, such as the lasso.
+
+\subsection{Algorithms}
+
+The two most basic methods for unconstrained minimization of a function $f$ are
+\emph{gradient descent}:  
+\[
+x_{k+1} = x_k - t_k \nabla f(x_k), \quad k=1,2,3,\dots,
+\]
+for differentiable $f$, where each $t_k \geq 0$ is a step size, and
+\emph{Newton's method}: 
+\[
+x_{k+1} = x_k - t_k [\nabla^2 f(x_k)]^{-1} \nabla f(x_k), \quad k=1,2,3,\dots, 
+\]
+for twice differentiable $f$, where again each $t_k \geq 0$ is a step size. For
+nonsmooth and/or constrained optimization, variants exist (as do many, many
+other optimization algorithms). 
+
+These two algorithms (or close cousins of them) appear frequently in statistics
+and machine learning. For example, for optimization in a GLM, Newton's method 
+reduces to what is known as \emph{iteratively reweighted least squares} (IRLS), 
+which is important both computationally and inferentially. 
+
+\section{Regression}
+
+Suppose that we observe $(X,Y)$ from some unknown joint distribution, where $Y
+\in \R$, and we are interested in predicting $Y$ from $X$. Over all functions
+$f$, the prediction error as measured in terms of squared loss        
+\[
+\E\big[ (Y - f(X))^2\big]
+\]
+is minimized at
+\[
+f(x) = \E[Y | X=x], 
+\]  
+called the \emph{regression function} of $Y$ on $X$. If we observe i.i.d.\ pairs 
+$(x_i,y_i)$, $i=1,\dots,n$ from the same joint distribution as $(X,Y)$, then we
+can use this to estimate $f$. This is the most generic problem formulation 
+available for regression, and we'll call it the XY-Pairs model.  
+
+\subsection{Signal-plus-noise models}
+
+You'll often see authors writing down a model of the form:   
+\begin{gather*}
+y_i = f(x_i) + \epsilon_i, \; \text{where $\E[\epsilon_i] = 0$}, \\
+\text{and $\epsilon_i$, $i=1,\dots,n$ are i.i.d.}  
+\end{gather*}
+This is often referred to as a ``signal-plus-noise'' model. You might initially
+think that this is different from an XY-Pairs model, but it's actually the same,
+provided we treat the predictors $x_i$, $i=1,\dots,n$ as random. Let's ammend 
+the above to emphasize this:  
+\begin{equation}
+\begin{gathered}
+\label{eq:random_x}
+y_i = f(x_i) + \epsilon_i, \; \text{where $\E[\epsilon_i] = 0$}, \\
+\text{$\epsilon_i$, $i=1,\dots,n$ are i.i.d.}, \\
+\text{and $x_i$, $i=1,\dots,n$ are i.i.d.}  
+\end{gathered}
+\end{equation}
+which we'll call the Random-X signal-plus-noise model. To see that
+\[
+\text{XY-Pairs} \iff \text{Random-X signal-plus-noise},
+\]
+the key is that we can always define $\epsilon_i = y_i - f(x_i)$. This has zero
+mean as $\E[f(x_i)] = \E[\E[y_i|x_i]] = \E[y_i]$.   
+
+But what if we assume that each $x_i$ is fixed? To contrast, we'll call this the
+Fixed-X signal-plus-noise model: 
+\begin{equation}
+\begin{gathered}
+\label{eq:fixed_x}
+y_i = f(x_i) + \delta_i, \; \text{where $\E[\delta_i] = 0$}, \\
+\text{$\delta_i$, $i=1,\dots,n$ are i.i.d.}, \\  
+\text{and $x_i$, $i=1,\dots,n$ are fixed.}   
+\end{gathered}
+\end{equation}
+The interpretation you'll often hear: this is just given by the Random-X 
+signal-plus-noise model \eqref{eq:random_x} (which is itself equivalent to the
+XY-Pairs model) after we condition on each $x_i$.          
+
+However, there is an important subtlety here! The precise connection is this: 
+\begin{gather*}
+\text{Fixed-X signal-plus-noise} \iff \text{Conditioning in Random-X
+  signal-plus-noise}, \\  
+\hspace{130pt} \text{\emph{provided that each $x_i \indep \epsilon$}}.  
+\end{gather*}
+The reason for the extra condition is this: if didn't have independence of each
+$x_i$ and $\epsilon_i$, then after conditioning on $x_i$, $i=1,\dots,n$ in
+\eqref{eq:random_x}, the distributions of $\delta_i = \epsilon_i | x_i$,
+$i=1,\dots,n$ need not be identical. 
+
+\subsection{Independence of $x_i$ and $\epsilon_i$}
+
+To be frank, assuming independence of $x_i$ and $\epsilon_i$ is fairly common.
+But to be clear, it is an \emph{extra assumption} and does not fall out of the
+generic XY-Pairs model. It's also not totally harmless. To see this, suppose
+that we were in a situation where the true model is:  
+\begin{gather*}
+y_i = f(x_i) + g_0(z_i) + \xi_i, \; \text{where $\E[\xi_i] = 0$}, \\  
+\text{$\xi_i$, $i=1,\dots,n$ are i.i.d.}, \\
+\text{and $(x_i,z_i)$, $i=1,\dots,n$ are i.i.d.}
+\end{gather*}
+Let's even assume that each $x_i \indep \xi_i$, and $\E[g_0(z_i) | x_i] =
+0$. Then the regression function (of $y_i$ on $x_i$) is indeed $f$. But in the  
+signal-plus-noise model for $y_i$ on $x_i$, the noise variable is 
+\[
+\epsilon_i = g_0(z_i) + \xi_i,
+\]
+and if $z_i$ is dependent on $x_i$, then $\epsilon_i$ will be too.
+
+Therefore, assuming that $\epsilon_i$ is independent of $x_i$, in general, is
+like assuming that \emph{any omitted variables are independent of the current
+  ones}. Which could certainly be seen as a strong assumption.   
+
+\subsection{Prediction error metrics}
+
+\def\Err{\mathrm{Err}}
+\def\Risk{\mathrm{Risk}}
+
+The Random-X and Fixed-X settings call to mind similar but distinct notions of 
+prediction error. In the former, it is natural to ask: how would well would we
+predict at a new test point $(x_0,y_0)$? That is, given an estimator
+\smash{$\hf$} that we fit to training data $(x_i,y_i)$, $i=1,\dots,n$, we 
+consider       
+\[
+\Err(\hf) = \E\big[ (y_0 - \hf(x_0))^2 \big],
+\]
+where the expectation is taken over the training data $(x_i,y_i)$, $i=1,\dots,n$
+and the test point $(x_0,y_0)$, all i.i.d. We'll call \smash{$\Err(\hf)$} the
+\emph{out-of-sample prediction error}, often (here in and other terms) dropping
+the term ``prediction'' for simplicity.  
+
+Assuming independence of $\epsilon_0 = y_0 - f(x_0)$ and $x_0$, we have (by
+adding and subtracting $f(x_0)$, and expanding): 
+\[
+\underbrace{\E\big[ (y_0 - \hf(x_0))^2 \big]}_{\Err(\hf)} =
+\underbrace{\E\big[ (f(x_0) - \hf(x_0))^2 \big]}_{\Risk(\hf)} +\, \sigma^2,
+\]
+where $\sigma^2 = \Var[\epsilon_0]$ is the noise variance (also known as the 
+\emph{Bayes error} or \emph{irreducible error} in the current context). We'll 
+call the first term on the right-hand side the \emph{out-of-sample risk}, and
+denote it by \smash{$\Risk(\hf)$}. Admittedly, this is somewhat nonstandard
+terminology as many authors use ``risk'' and ``error''
+interchangeably, and do not use it to distinguish whether the target is $f(x_0)$
+or $y_0$.% \footnote{Yet another convention is to call $\E[ (f(x_0) -
+  % \hf(x_0))^2]$ the \emph{excess risk}, since it equals \smash{$\E[ (y_0 -
+  %   \hf(x_0))^2] - \inf_g \E[ (y_0 - g(x_0))^2]$}, where the infimum is
+  %   achieved at $g=f$, the regression function.}     
+
+So to recap, in the Random-X setting, we have as a natural metric  
+\begin{equation}
+\label{eq:random_x_risk}
+\Risk(\hf) = \E\big[ (f(x_0) - \hf(x_0))^2 \big],
+\end{equation}
+called the out-of-sample risk, which only differs from the out-of-sample error
+by a constant (the noise variance $\sigma^2$). Meanwhile, in the Fixed-X
+setting, it would instead be more natural to consider     
+\begin{equation}
+\label{eq:fixed_x_risk}
+\Risk(\hf; x_{1:n}) = \E\bigg[ \frac{1}{n}\sum_{i=1}^n (f(x_i) - \hf(x_i))^2
+\bigg], 
+\end{equation}
+which we call the \emph{in-sample risk}. The expectation above is only taken
+over the responses $y_1,\dots,y_n$ used to fit \smash{$\hf$}. The notation 
+\smash{$\Risk(\hf; x_{1:n})$} emphasizes the dependence of this metric on
+$x_{1:n} = \{x_1,\dots,x_n\}$.   
+
+Like the relationship between \eqref{eq:random_x_risk} and error, we can also
+write down a similar relationship for \eqref{eq:fixed_x_risk},  
+\[
+\underbrace{\E\bigg[ \frac{1}{n}\sum_{i=1}^n (y_i^* - \hf(x_i))^2 
+  \bigg]}_{\Err(\hf; x_{1:n})} =   
+\underbrace{\E\bigg[ \frac{1}{n}\sum_{i=1}^n (f(x_i) - \hf(x_i))^2
+  \bigg]}_{\Risk(\hf;  x_{1:n})} +\, \sigma^2, 
+\]
+where each $y_i^*$ is an independent copy of $y_i$. In other words,
+\smash{$\Err(\hf; x_{1:n})$}, the \emph{in-sample error},\footnote{Don't confuse
+  this with training error! This may be tempting as the name ``in-sample'' may
+  remind you of training error. But they're not the same thing! (Even worse,
+  some other authors use ``in-sample error'' and ``training error''
+  synonomously).}   
+can be interpreted as the prediction error \emph{had we encountered new
+  responses at the exact same feature values}. 
+
+If you think this sounds strange, then---well, you're right, it actually is a
+bit strange! (More discussion soon.)
+
+\subsubsection{Interlude: same roses, other names}
+
+Note that we can also view \smash{$\Risk(\hf)$} and \smash{$\Risk(\hf;
+  x_{1:n})$} in terms of the $L^2(P)$ and $L^2(P_n)$ error metrics:
+\begin{align*}
+\Risk(\hf) &= \big\|f - \hf\big\|_{L^2(P)}^2 
+= \int (f(x) - \hf(x))^2 \, dP(x), \\
+\Risk(\hf; x_{1:n}) &= \big\|f - \hf\big\|_{L^2(P_n)}^2 
+= \int (f(x) - \hf(x))^2 \, dP_n(x),
+\end{align*}
+where $P$ is the feature distribution and $P_n$ the empirical distribution of
+$x_{1:n}$. Thus out-of-sample and in-sample error could also be called 
+\emph{$L^2(P)$ error} and \emph{$L^2(P_n)$ error}, respectively. Other names
+you'll hear are the \emph{population $L^2$ error} and \emph{empirical $L^2$
+  error}, respectively.    
+
+Empirical process theory gives us bounds on the $L^2(P_n)$ and $L^2(P)$ norms
+(typically, these bounds hold for all functions in some particular function
+class, with high probability over draws of $x_1,\dots,x_n$). We'll cover this
+later in the course.    
+
+\subsubsection{Discussion: how different are they?}
+
+Classically, statisticians really love in-sample risk \eqref{eq:fixed_x_risk}. A
+big part of this is probably that it gives a very clean framework in which we
+can develop various powerful tools for analysis (e.g., the covariance formula,
+Stein's unbiased risk estimator, etc.). We might cover some of these later in
+the course, depending on interest. To be more charitable, there may have also
+been more genuine motivations for in-sample risk from experimental design: if
+the values $x_1,\dots,x_n$ were chosen (i.e., designed), and we ran an
+experiment in which we measured $y_1,\dots,y_n$, then looking at
+\smash{$\Err(\hf; x_{1:n})$} would not seem so crazy.  
+
+In machine learning and in most modern application of statistical prediction,
+however, out-of-sample risk \eqref{eq:random_x_risk} seems to be much more 
+fitting. So this begs the question: how different can \eqref{eq:random_x_risk}  
+and \eqref{eq:fixed_x_risk} be? This turns out to be a rich question, and there
+is a lot to say about it. The short answer is:
+\begin{itemize}
+\item \emph{usually not very different} in classical regimes (low-dimensional,
+  smooth \smash{$\hf,f$}); but  
+\item \emph{can be very different} in modern regimes (high-dimensional, and/or
+  nonsmooth \smash{$\hf,f$}).     
+\end{itemize}
+For example, in the interpolation regime (of great interest recently, along with
+overparametrized machine learning methods more generally), they can be extremely
+different. Again, we may study this later in the course if there is time and 
+interest. For now, we'll just look at least squares regression which already
+provides some insights into the matter. Before that, we'll quickly review the 
+bias-variance decomposition. 
+
+\subsection{Bias and variance} 
+
+\def\Bias{\mathrm{Bias}}
+
+In general, for an estimator \smash{$\htheta$} of $\theta$, it holds (just add
+and subtract \smash{$\E[\htheta]$}, and expand) that
+\[
+\E[(\theta - \htheta)^2] = 
+\underbrace{(\theta - \E[\htheta])^2}_{\Bias^2(\htheta)} \,+\,
+\underbrace{\E[(\htheta - \E[\htheta])^2]}_{\Var(\htheta)}. 
+\]
+This is commonly known as the \emph{bias-variance decomposition}. In a Fixed-X
+regression context, where the feature values $x_{1:n} = \{x_1,\dots,x_n\}$ are
+treated as fixed, we just apply this to each \smash{$\htheta = \hf(x_i)$} and
+average over $i=1,\dots,n$ to obtain 
+\[
+\Risk(\hf; x_{1:n}) = \frac{1}{n} \sum_{i=1}^n \Bias^2(\hf(x_i)) + \frac{1}{n}
+\sum_{i=1}^n \Var(\hf(x_i)). 
+\] 
+Meanwhile, in a Random-X setting, we can condition on the test point $x_0$,
+apply this to \smash{$\htheta = \hf(x_0)$}, and then integrate over $x_0$ to
+obtain   
+\[
+\Risk(\hf) = \E\big[\Bias^2(\hf(x_0) | x_0)\big] + \E\big[ \Var(\hf(x_0) | x_0)
+\big],
+\] 
+where the expectation is over $x_0$. 
+
+The bias-variance decomposition is useful for a variety of reasons, from
+analytical to conceptual. The typical trend is that underfitting means high bias
+and low variance, whereas overfitting means low bias but high variance. And the
+conventional wisdom is that we want to balance these in order to make accurate
+predictions.
+
+Interestingly, the bias-variance decomposition has been called into question in
+recent years, with regards to the study of overparameterized estimators in
+machine learning. But I don't really think that the fundamental idea of
+``balancing bias and variance being a good thing'' is actually contradicted 
+here. It's more that bias and variance can manifest themselves in strange ways
+in these settings. We'll cover this later in the course. 
+
+\subsection{Least squares regression}
+
+Let $X \in \R^{n \times d}$ denote the predictor matrix (whose $i\th$ row is
+$x_i$). Analogously, let $Y \in \R^n$ denote the vector of response
+variables. \emph{Least squares regression} of $Y$ on $X$ is given by 
+\[
+\hf(x) = x^\T \hbeta,
+\]
+where 
+\[
+\hbeta = \argmin_\beta \big\{ \|Y - X\beta\|_2^2 \big\} = (X^\T X)^{-1} X^\T Y.  
+\]
+Critically, here we are assuming that $\rank(X) = d$, which necessarily requires
+that $d \leq n$, which makes the least squares criterion admit a unique
+solution. Note that the fitted values (i.e., in-sample predictions) are 
+\[
+X\hbeta = X (X^\T X)^{-1} X^\T Y = P_X Y,
+\]
+where $P_X = X (X^\T X)^{-1} X^\T $ denotes the projection onto the column space
+of $X$. 
+
+\subsubsection{In-sample risk}
+
+To investigate its risk properties with as simple math as possible, let's assume
+an underlying linear model  
+\begin{equation}
+\label{eq:linear_model}
+Y = X\beta_0 + \epsilon,
+\end{equation}
+with $X$ fixed, and $\epsilon \in \R^n$ having i.i.d.\ entires with zero mean
+and variance $\sigma^2$. First, observe that  
+\[
+\E[X \hbeta] = P_X \E[Y] = P_X X \beta_0 = X \beta_0,
+\]
+so least squares regression has zero bias, in the in-sample sense. Thus its
+in-sample error is pure variance, and we compute 
+\begin{equation}
+\label{eq:least_squares_in}
+\Risk(\hf; x_{1:n}) = \frac{1}{n} \tr[\Var(P_X Y)] = \sigma^2 \frac{d}{n}.
+\end{equation}
+
+\subsubsection{Out-of-sample risk}
+
+Meanwhile, for the out-of-sample risk we'll take $X$ to be random, and assume
+that each $x_i$ is independent of $\epsilon_i$ in \eqref{eq:linear_model}, with 
+$(x_0,y_0)$ being another i.i.d.\ draw from the same linear model. Then,
+conditioning on both $X,x_0$, we can see that
+\[
+\E [x_0^\T \hbeta \,|\, X,x_0] = x_0^\T (X^\T X)^{-1} X^\T \E[Y|X] = x_0^\T \beta_0.   
+\]
+Hence the out-of-sample bias will still be zero, after integrating over
+$X,x_0$. (Note that unbiasedness here doesn't actually require the strong
+assumption of $x_i,\epsilon_i$ being independent.) To compute the out-of-sample 
+variance, we again first condition on $X,x_0$:
+\[
+\Var(x_0^\T \hbeta \,|\, X, x_0) = \sigma^2 x_0^\T (X^\T X)^{-1} X^\T \Var(Y|X)
+X (X^\T X)^{-1} x_0 = \sigma^2 x_0^\T (X^\T X)^{-1} x_0.
+\]
+Then integrating over $X,x_0$ gives the out-of-sample risk:
+\begin{equation}
+\label{eq:least_squares_out}
+\Risk(\hf) = \sigma^2 \tr\Big(\E [x_0 x_0^\T] \, \E [(X^\T X)^{-1}] \Big), 
+\end{equation}
+where we have used the independence of $X,x_0$. An exact formula will not be
+possible in full generality here, since as we can see the out-of-sample risk
+depends on the distribution of the predictors.  Contrast this with the in-sample
+risk, which did not.
+
+However, we can still go further than \eqref{eq:least_squares_out} from several
+perspectives.   
+
+\begin{itemize}
+\item In the special case when each $x_i \sim N(0,\Sigma)$, with $\Sigma$
+  invertible, we can compute the out-of-sample risk exactly. In this case, it
+  holds that $X^\T X \sim W(\Sigma, n)$, a Wishart distribution, and $(X^\T
+  X)^{-1} \sim W^{-1}(\Sigma^{-1}, n)$, an inverse Wishart distribution. Thus   
+  \[
+  \Risk(\hf) = \sigma^2 \tr\bigg(\Sigma \frac{\Sigma^{-1}}{n-d-1}\bigg)
+  = \sigma^2 \frac{d}{n-d-1}.
+  \]
+
+\item If we assume conditions that are standard in random matrix theory (which
+  permit Gaussian features but also many other types of feature distributions),
+  and let $d/n = \gamma \in (0,1)$, then as $d,n$ grow, 
+  \[
+  \Risk(\hf) \approx \sigma^2 \frac{\gamma}{1-\gamma}.
+  \]
+  This agrees with the normal calculation from the last bullet point. Comparing
+  the above display to \eqref{eq:least_squares_in}, which we can simply write as 
+  \smash{$\Risk(\hf; x_{1:n}) = \sigma^2 \gamma$}, we see that the in-sample and
+  out-of-sample risks can be very different---with the latter being much
+  larger---when $\gamma$ is close to 1 ($d$ is close to $n$). We'll revisit this 
+  and related calculations later in the course.      
+
+\item In general, we can always rewrite \eqref{eq:least_squares_out} as  
+  \[
+  \Risk(\hf) = \sigma^2 \tr\Big(\E [X^\T X] \, \E [(X^\T X)^{-1}] \Big), 
+  \]
+  just by using the fact that $x_0$ and the rows of $X$ have the same
+  distribution. It can be shown \citep{groves1969note} that 
+  \[
+  \E[(X^\T X)^{-1}] - (\E[X^\T X])^{-1} \; \text{is positive semidefinite},
+  \]
+  for any feature distribution such that $X^\T X$ is almost surely
+  invertible. Then from the above display,
+  \[
+  \Risk(\hf) \geq \sigma^2 \tr\Big(\E [X^\T X] \, (\E[X^\T X])^{-1} \Big) =
+  \sigma^2 \frac{d}{n}.
+  \]
+  That is, the out-of-sample risk is always larger than the in-sample risk for
+  least squares.
+\end{itemize}
+
+\subsection{Regularization}
+
+As we just saw, the risk of least squares regression degrades as $p$ grows close
+to $n$---in the case of Gaussian features or ``RMT features'' (which we use to
+mean feature models compatible with the standard assumptions in random matrix
+theory), the out-of-sample risk actually diverges at $p = n$.
+
+Meanwhile, the least squares estimator is not even well-defined when $p > n$, in
+that optimization problem 
+\[
+\minimize_\beta \; \|Y - X\beta\|_2^2 
+\] 
+does not have a unique solution.  
+
+How do we deal with such issues? The short answer is \emph{regularization}. In
+our present setting, we would modify the least squares estimator in one of two
+forms: 
+\begin{alignat*}{3}
+&\text{Constrained form}: \quad 
+&&\minimize_\beta \; \|Y - X\beta\|_2^2 \;\; \st \;\; \beta \in C \\
+&\text{Penalized form}: \quad 
+&&\minimize_\beta \; \|Y - X\beta\|_2^2 + h(\beta),
+\end{alignat*}
+where $C$ is some (typically convex) set, and $h$ is some (typically convex)
+penalty function.
+
+At its core, regularization provides us with a way to navigate the
+bias-variance tradeoff: we (ideally greatly) reduce the variance at the expense
+of introducing some bias. 
+
+We typically choose the constraint set to be a sublevel set of a norm, $C =
+\{\beta : \|\beta\| \leq t\}$, and the penalty function $h$ to be a nonnegative
+multiple of a norm, $h(\beta) = \lambda \|\beta\|$. Here, the constrained and
+penalized forms can be seen to equivalent, via convex duality.\footnote{By this,
+  we mean that for any $t \geq 0$ and solution \smash{$\hbeta$} in the
+  constrained problem, there is a value of $\lambda \geq 0$ such that
+  \smash{$\hbeta$} also solves the penalized problem, and vice versa.} 
+We'll focus on the penalized form since it is generally more commonly studied.  
+
+In regression, arguably the three canonical choices are the $\ell_0$, $\ell_1$,
+and $\ell_2$ norms: 
+\[
+\|\beta\|_0 = \sum_{j=1}^p 1\{\beta_j \not= 0\}, \;\;\;
+\|\beta\|_1 = \sum_{j=1}^p |\beta_j|, \;\;\;
+\|\beta\|_2 = \bigg(\sum_{j=1}^p \beta_j^2 \bigg)^{1/2}.
+\]
+This gives rise to the problems: 
+\begin{alignat}{3}
+\label{eq:subset}
+&\text{Best subset selection}: \quad
+&&\minimize_\beta \; \|Y - X\beta\|_2^2 + \lambda \|\beta\|_0 \\ 
+\label{eq:lasso}
+&\text{Lasso regression}: \quad
+&&\minimize_\beta \; \|Y - X\beta\|_2^2 + \lambda \|\beta\|_1 \\ 
+\label{eq:ridge} 
+&\text{Ridge regression}: \quad
+&&\minimize_\beta \; \|Y - X\beta\|_2^2 + \lambda \|\beta\|_2^2,
+\end{alignat}
+where $\lambda \geq 0$ is called the tuning parameter (typically chosen by
+cross-validation or similar techniques.)  
+
+\subsubsection{One of these is not like the other: convexity}
+
+Calling $\|\cdot\|_0$ the ``$\ell_0$ norm'' is a misnomer, since it is not a
+norm: it does not satisfy positive homogeneity, i.e., $\|a\beta\|_0 =
+a\|\beta\|_0$ for all $a > 0$. (As such, it would be more accurate to call it
+the ``$\ell_0$ pseudonorm'', but in keeping with common convention, we'll simply
+use ``norm''.)   
+
+Critically, $\|\cdot\|_0$ is \emph{not convex}, while $\|\cdot\|_1$ and
+$\|\cdot\|_2$ are (indeed, any norm is a convex function). This makes
+\eqref{eq:subset} a nonconvex problem, and one that is generally very hard to
+solve in practice except for very small $d$ (e.g., its constrained form is known
+to be NP-hard). On the other hand, problems \eqref{eq:lasso} and
+\eqref{eq:ridge} are convex optimization problems, and many efficient
+algorithms exist for them.   
+
+\subsubsection{One of these is not like the other: sparsity}
+
+The best subset selection and the lasso estimators have a special and useful 
+property: their solutions are \emph{sparse}: at a solution \smash{$\hbeta$}, we
+will have 
+\[
+\hbeta_j = 0, \; \text{for many $j$}.
+\]
+Larger $\lambda$ typically means sparser solutions. This is not true of the
+ridge regression estimator, which will be generically dense (all nonzero
+components), for any $\lambda \geq0$. Note that sparsity may be desirable, for
+two reasons: (i) it corresponds to performing variable selection in the fitted
+linear model, and (ii) it provides a level of interpretability (beyond sheer
+accuracy).   
+
+\section{Classification}
+
+\def\hC{\hat{C}}
+\def\hh{\hat{h}}
+
+We conclude with a quick recap of classification. Many of the same ideas from
+regression carry over. For $(X,Y) \sim P$, with $Y \in \{0,1\}$, the regression
+function is 
+\[
+f(x) = \E[Y | X=x] = \P(Y=1 | X=x),
+\]
+which now becomes the conditional probability of observing class 1, given
+$X=x$. Over all classifiers $C$, the one that minimizes misclassification risk 
+\[
+\Risk(C) = \P(Y \not= C(X))
+\]
+is called the \emph{Bayes classifier}, defined by 
+\[
+C(x) = 
+\begin{cases}
+0 & f(x) \leq 1/2 \\
+1 & f(x) > 1/2
+\end{cases}.
+\]
+To see this, consider any classifier $C'$ and any fixed $x$,
+\begin{align*}
+\P(Y \not= C'(X) \,|\, X=x) 
+&= 1 - \P(Y=1, C'(X)=1 \,|\, X=x) - \P(Y=0, C'(X)=0 \,|\, X=x) \\ 
+&= 1 - C'(x) f(x) + (1 - C'(x))(1 - f(x)) \\
+&= f(x) + (1 - 2f(x))C'(x).
+\end{align*}
+Thus, we can compute the conditional risk difference between $C'$ and $C$ as
+\[
+\P(Y \not= C'(X) \,|\, X=x) - \P(Y \not= C(X) \,|\, X=x) 
+= (2f(x)-1)(C(x)-C'(x)).
+\]
+When $f(x)>1/2$, we have $C(x)=1$ by construction, and so the right-hand side
+above is nonnegative. When $f(x) \leq 1/2$, we have $C(x)=0$ by construction,
+and so again the right-hand side is nonnegative. Therefore we have shown
+$\P(Y \not= C'(X) | X=x) - \P((Y \not= C(X) | X=x) \geq 0$ for every $x$;
+integrating over $x$ gives the result 
+\[
+\P(Y \not= C(X)) \leq \P(Y \not= C'(X)),
+\]
+for any classifier $C'$. 
+
+Many classifiers are \emph{plug-in classifiers}, of the form 
+\[
+\hC(x) = 
+\begin{cases}
+0 & \hf(x) \leq 1/2 \\
+1 & \hf(x) > 1/2
+\end{cases},
+\]
+for an estimator \smash{$\hf$} of the regression function. It is often useful to 
+recode so that $Y \in \{-1,1\}$, because then plug-in classifiers take the form  
+\[
+\hC(x) = \sign(\hh(x)),
+\]
+for some \smash{$\hh$}. 
+
+Note that in this coding, we can write misclassification risk as 
+\[
+\Risk(\hC) = \P(Y \not= \hC(X)) = \P( Y \hh(X) < 0).
+\]
+This is of the form 
+\[
+\E[L(Y \hh(X))], \quad \text{where $L(u) = 1\{u < 0\}$},
+\]
+where $L$ is clearly a nonconvex function. Often, we replace this with a convex
+surrogate loss, such as 
+\begin{alignat*}{3}
+&\text{Logistic}: \quad 
+&& L(u) = \log(1 + \exp(-u)) \\
+&\text{Exponential}: \quad 
+&&L(u) = \exp(-u) \\
+&\text{Hinge}: \quad 
+&&L(u) = (1 - u)_+,
+\end{alignat*}
+as used in logistic regression, AdaBoost, and support vector machines,
+respectively. 
+
+\bibliographystyle{plainnat}
+\bibliography{ryantibs}
+
+\end{document}
+
+
