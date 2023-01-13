@@ -658,6 +658,13 @@ machine learning. But I don't really think that the fundamental idea of
 here. It's more that bias and variance can manifest themselves in strange ways
 in these settings. We'll cover this later in the course. 
 
+Finally, it should be noted that the decompositions presented above aren't the
+only bias-variance decompositions available, and certainly not the only ones
+that are useful. We can obtain other ones by conditioning on---and later
+integrating out over---other parts of data. For example, in the next subsection,
+to analyze the risk of least squares, we will see that it is useful to also
+condition on the training features.
+
 \subsection{Least squares regression}
 
 Let $X \in \R^{n \times d}$ denote the predictor matrix (whose $i\th$ row is
