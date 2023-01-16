@@ -776,6 +776,10 @@ perspectives.
   \]
   That is, the out-of-sample risk is always larger than the in-sample risk for
   least squares.
+
+  On the homework, you will generalize this last result by showing that it still 
+  holds without assuming a true linear model (i.e., allowing the regression
+  function to be possibly nonlinear). 
 \end{itemize}
 
 \subsection{Regularization}
@@ -783,10 +787,9 @@ perspectives.
 As we just saw, the risk of least squares regression degrades as $p$ grows close
 to $n$---in the case of Gaussian features or ``RMT features'' (which we use to
 mean feature models compatible with the standard assumptions in random matrix
-theory), the out-of-sample risk actually diverges at $p = n$.
-
-Meanwhile, the least squares estimator is not even well-defined when $p > n$, in
-that optimization problem 
+theory), the out-of-sample risk actually diverges when $p = n$. Meanwhile, the 
+least squares estimator is not even well-defined when $p > n$, in that the
+optimization problem  
 \[
 \minimize_\beta \; \|Y - X\beta\|_2^2 
 \] 
