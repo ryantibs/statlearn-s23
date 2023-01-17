@@ -1,0 +1,436 @@
+\documentclass{article}
+
+\def\ParSkip{} 
+\input{../../common/ryantibs}
+
+\title{Homework 1 \\ \smallskip
+\large Advanced Topics in Statistical Learning, Spring 2023 \\ \smallskip
+Due Friday February 10 at 5pm}
+\date{}
+
+\begin{document}
+\maketitle
+\RaggedRight
+\vspace{-50pt}
+
+\section{Mathematical statistics warm-up [15 points]}
+
+\def\pto{\overset{p}{\to}}
+\def\dto{\overset{d}{\to}}
+
+\begin{enumerate}[label=(\alph*)]
+\item Suppose that $X_n \geq 0$ and $\E[X_n]=O(r_n)$. Prove that $X_n=O_p(r_n)$.
+  \marginpar{\small [1 pt]} 
+
+\item Suppose that $X_n \geq 0$ and $X_n=O_p(r_n)$.  Give an example to show
+  that in general, this does not  imply that $\E[X_n]=O(r_n)$.   
+  \marginpar{\small [1 pt]} 
+
+\item Prove that for $X \geq 0$, it holds that 
+  \[
+  \E[X] = \int_0^\infty \P(X>t) \, dt.
+  \]  
+  You may assume that $X$ is continuously distributed and hence has a probability
+  density function. 
+  \marginpar{\small [2 pts]} 
+
+\item Suppose that $X_n \geq 0$ and $X_n=O_p(r_n)$, the latter bound holding
+  ``exponentially fast'', meaning that there are constants $\gamma_0,n_0>0$ such 
+  that for all $\gamma \geq \gamma_0$ and $n \geq n_0$, we have    
+  \[
+  X_n \leq \gamma r_n, \quad \text{with probability at least $1-\exp(-\gamma)$}.    
+  \]
+  Prove that $\E[X_n]=O(r_n)$. Hint: use the formulation for $\E[X_n]$ from the
+  last question. 
+  \marginpar{\small [3 pts]} 
+
+\item Let $X_1,\ldots, X_n \sim P$, i.i.d., with $\mu = \E[X_i]$ and $\sigma^2 = 
+  \Var[X_i]$. Define   
+  \[
+  \bar{X}_n = \frac{1}{n}\sum_{i=1}^n X_i, \quad
+  s_n^2 = \frac{1}{n}\sum_{i=1}^n (X_i - \bar{X}_n)^2.
+  \]
+
+(i) Prove that $s_n^2 \pto \sigma^2$.
+\marginpar{\small [1 pt]} 
+
+(ii) Prove that \smash{$\sqrt{n}(\bar{X}_n-\mu)/s_n \dto N(0,1)$}.
+\marginpar{\small [1 pt]} 
+
+\item Let $X  \in \R^d$ and $Y \in \R$.
+
+(i) Prove that $\E[(Y - f(X))^2]$ is minimized at $f(x) = \E[Y|X=x]$.
+\marginpar{\small [1 pt]} 
+
+(ii) Prove that $\E[(Y - X^T \beta)^2]$ is minimized at $\beta = \Sigma^{-1} 
+\alpha$, where $\Sigma = \E[X X^T]$ and $\alpha = \E[Y X]$.
+\marginpar{\small [1 pt]} 
+
+\item This part will involve a small bit of coding. Attach your code in an
+  appendix. 
+
+(i) Simulate Brownian motion on $[0,1]$, and a Brownian bridge on $[0,1]$, and
+plot them. 
+\marginpar{\small [1 pt]} 
+
+(ii) Simulate the 95th percentile of the supremum of the Brownian bridge, i.e.,
+the value $q$ such that   
+\[
+\P\Big( \sup_{t \in [0,1]} B(t)\geq q \Big) = 0.05.
+\]
+where $B(t)$, $t \in[0,1]$ is the Brownian bridge. 
+\marginpar{\small [1 pt]} 
+
+(iii) Draw $X_1,\dots,X_n \sim F$ from any distribution $F$ of your liking
+(uniform, normal, etc.), calculate the Kolmogorov-Smirnov (KS) test statistic    
+  \[
+  T = \sqrt{n} \sup_x \, |F_n(x) - F(x)|,
+  \]
+  where $F_n$ is the empirical distribution of $X_1,\dots,X_n$, and calculate
+  the proportion of times out of (say) 1000 repetitions that $T$ exceeds the 
+  threshold $q$ computed in part (ii).  
+\marginpar{\small [2 pts]} 
+\end{enumerate}
+
+\section{Risk analysis for least squares [15 points]}
+
+\def\Bias{\mathrm{Bias}}
+\def\Risk{\mathrm{Risk}}
+
+In this exercise, we will work on risk calculations for least squares regression.
+
+\begin{enumerate}[label=(\alph*)]
+\item First, we start with an algebraic fact. Suppose that $A,B \succeq 0$, 
+  which we write to mean that are positive semidefinite matrices (symmetric with
+  nonnegative eigenvalues). Prove that $\tr(AB) \geq 0$. 
+  \marginpar{\small [2 pts]} 
+
+  Hint: there are many ways to prove this, but for one, take an
+  eigendecomposition of $B$, and expand the trace as a sum of products involving
+  its eigenvectors. 
+
+\item For this part and the next, suppose that we observe i.i.d.\ $(x_i,y_i) \in
+  \R^d \times \R$. We write $f(x) = \E[y_i|x_i = x]$, $\epsilon_i = y_i -
+  f(x_i)$, and assume that each $x_i \indep \epsilon_i$. We denote $\sigma^2 = 
+  \Var[\epsilon_i]$. 
+
+  Let $Y \in \R^n$ be the response vector and $X \in \R^{n \times d}$ the
+  predictor matrix (whose $i\th$ row is $x_i$). Let \smash{$\hbeta = (X^\T
+    X)^{-1} X^\T Y$} be the least squares solution of $Y$ on $X$ (where we 
+  assume $X^T X$ is invertible, which requires $d \leq n$), and let
+  \smash{$\hf(x) = x^\T \hbeta$}.  
+
+  Follow/reproduce the calculations in the review lecture to show that
+  \marginpar{\small [3 pts]} 
+  \[
+  \frac{1}{n} \sum_{i=1}^n \Var(\hf(x_i)) = \sigma^2 \frac{d}{n},
+  \]
+  and that, for an independent draw $x_0$ from the predictor distribution,
+  \marginpar{\small [3 pts]} 
+  \[
+  \E[\Var(\hf(x_0) \, | X, x_0)] = \frac{\sigma^2}{n} \tr\Big(\E [X^\T X] \, \E
+  [(X^\T X)^{-1}] \Big). 
+  \]
+  Therefore, using part (a), argue that
+  \marginpar{\small [1 pt]}
+  \[
+  \E[\Var(\hf(x_0) \, | X, x_0)] \geq \frac{1}{n} \sum_{i=1}^n \Var(\hf(x_i)).
+  \]
+
+  Hint: the calculations in lecture assumed the underlying model was linear and
+  hence the bias (both in- and out-of-sample) was zero. But if you look back 
+  carefully, the variance calculations are unaffected by whether the true mean
+  is linear or not.    
+
+\item Follow/reproduce the calculations leading up to Theorem 1 in
+  \citet{rosset2020from} to prove the inequality: 
+  \marginpar{\small [6 pts]} 
+  \[
+  \E[\Bias^2(\hf(x_0) \, | X, x_0)] \geq  \frac{1}{n} \sum_{\ell=1}^n 
+  \E[\Bias^2(\hf(x_i) \,|\, X)].
+  \]
+  Note that you have shown that
+  \[
+  \Risk(\hf) \geq \E[\Risk(\hf; x_{1:n})].
+  \]
+  In other words, the out-of-sample risk of least squares is always at least as 
+  large as the in-sample risk (integrated over the feature values). To
+  emphasize, this assumes nothing really at all (i.e., no underlying linear
+  model) about the data model, except for the independence of $x_i$ and
+  $\epsilon_i$.   
+
+\item As a bonus, prove or disprove: there is a predictor distribution such that
+  we get an equality in the last display, i.e., the out-of-sample and in-sample
+  risks are equal. Note that we are still talking about standard least squares
+  regression, so we are restricting attention to distributions such that $X^\T
+  X$ is almost surely invertible.  
+\end{enumerate}
+
+\section{Risk analysis for wavelet denoising [22 points]}
+
+\def\ttheta{\tilde\theta}
+\def\TV{\mathrm{TV}}
+
+In this exercise, we will analyze the risk of wavelet denoising. 
+
+\begin{enumerate}[label=(\alph*)]
+\item Assume for now that we observe data according to the normal sequence model  
+  \begin{equation}
+  \label{eq:sequence_model}
+  z_\ell = \theta_\ell + \delta_\ell, \quad \ell=1,\dots,N,  
+  \end{equation}
+  where $\delta_\ell \sim N(0,\tau^2)$, independently, for
+  $\ell=1,\dots,N$. Consider the soft-thresholding estimator,
+  \[
+  \htheta_\ell = S_\lambda(z_\ell) 
+  = \begin{cases}
+    z_\ell-\lambda & z_\ell > \lambda \\
+    0 & |z_\ell| \leq \lambda \\
+    z_\ell+\lambda & z_\ell < -\lambda
+  \end{cases}, 
+  \quad \ell=1,\dots,N.
+  \]
+  Here $\lambda \geq 0$ is a tuning parameter. For arbitrary $\lambda$, prove
+  that we have the exact risk expression:
+  \marginpar{\small [3 pts]}
+  \[
+  \E \|\theta - \htheta\|_2^2 = \sum_{\ell=1}^N r(\theta_\ell, \lambda),   
+  \]
+  where
+  \[
+    r(\mu,\lambda) = \mu^2
+    \int_{\frac{-\lambda-\mu}{\tau}}^{\frac{\lambda-\mu}{\tau}} \phi(z) \, dz +  
+    \int_{\frac{\lambda-\mu}{\tau}}^\infty (\tau z- \lambda)^2 \phi(z) \, dz + 
+    \int_{-\infty}^{\frac{-\lambda-\mu}{\tau}} (\tau z + \lambda)^2 \phi(z) \,
+    dz, 
+  \]
+    and $\phi$ denotes the standard (univariate) normal density function. 
+
+  \item Prove that for \smash{$\lambda = \tau\sqrt{2\log{N}}$}, we have the risk
+    upper bound: 
+  \marginpar{\small [5 pts]}
+  \[
+    \E \|\theta - \htheta\|_2^2 \leq \tau^2 + (2\log{N}+1) \sum_{\ell=1}^N
+    \min\{\theta_\ell^2, \tau^2\}.   
+  \]
+
+  Hint: start with $\tau^2=1$ for simplicity. Prove that, for any $\mu,\lambda
+  \geq 0$, we have $0 \leq \partial r(\mu,\lambda) / \partial \mu \leq
+  2\mu$. From this, argue that $r(\mu,\lambda)$ is monotone increasing in $\mu$,
+  and further    
+  \[
+  r(\mu,\lambda) \leq r(0,\lambda) + \min\{\mu^2, r(\infty,\lambda)\}.  
+  \]
+  Then, derive upper bounds on $r(0,\lambda)$ and $r(\infty,\lambda)$ (for the
+  former you can use Mills' ratio, for the latter you can use direct arguments)
+  to give     
+  \[
+  r(\mu,\lambda) \leq e^{-\lambda^2/2} + \min\{\mu^2,1+\lambda^2\}.  
+  \]
+  Plug in \smash{$\lambda = \sqrt{2\log{N}}$}; show that an analogous bound
+  holds for general $\tau^2>0$; and sum the bound over $\mu = \theta_\ell$,
+  $\ell=1,\ldots,N$ to give the result.    
+
+\item Now consider the nonparametric regression model 
+  \begin{equation}
+  \label{eq:nonpar_model}
+  y_i = f(x_i) + \epsilon_i, \quad i=1,\dots,n,
+  \end{equation}
+  where $\epsilon_i \sim N(0,\sigma^2)$, independently, for $i=1,\dots,n$, and
+  $x_i \in [0,1]$, $i=1,\dots,n$ are fixed (more on them later). We are going to
+  analyze the $L^2([0,1])$ risk of a wavelet smoothing estimator \smash{$\hf$},      
+  \[
+  \E \|f - \hf\|_{L^2([0,1])}^2 = \E \bigg[ \int_0^1 (f(x) -  \hf(x))^2 \, dx \bigg]. 
+  \]
+  The estimator \smash{$\hf$} will be defined by 
+  \begin{equation}
+  \label{eq:wavelet_smoothing}
+  \hf(x) = \sum_{j,k} \ttheta_{jk}(y) \psi_{jk}, 
+  \end{equation}
+  where each $\psi_{jk}$ is a Haar wavelet function, and each
+  \smash{$\ttheta_{jk}(y)$} is a noisy empirical wavelet coefficient.
+
+  We begin with a simple Haar calculation. To recall the Haar basis on $[0,1]$, 
+  first define $\psi(x) = 1\{x \in [0,1/2]\} - 1\{x \in (1/2,1]\}$. Then the
+  Haar basis is given by the collection          
+  \[
+   1, \; \psi_{jk}, \; \text{for $k = 0, \dots, 2^{j-1}$ and $j = 0,1,2,\dots$},    
+  \]
+  where $\psi_{jk}(x) = 2^{j/2} \psi(2^j x - k)$. (For notational convenience,
+  we let $\psi_{-10} = 1$, and implicitly index all basis calculations starting 
+  from $j=-1$.) Verify that this collection is orthonormal in $L^2([0,1])$: the
+  functions are pairwise orthogonal and unit norm, with respect to the
+  $L^2([0,1])$ inner product    
+  \marginpar{\small [2 pts]}
+  \[
+  \langle f, g \rangle = \int_0^1 f(x) g(x) \, dx.
+  \]
+  (Accordingly the $L^2([0,1])$ norm is given by \smash{$\|f\|_{L^2([0,1])}^2
+    = \langle f, f \rangle = \int_0^1 f(x)^2 \, dx$}.) 
+
+\item Explain why it is that we can write
+  \marginpar{\small [1 pt]}
+  \[
+  \E \|f - \hf\|_{L^2([0,1])}^2 = \sum_{j,k} (\theta_{jk}(f) - \ttheta_{jk}(y))^2,
+  \]
+  where the wavelet coefficients of $f$ are 
+  \[
+  \theta_{jk}(f) = \langle f, \psi_{jk} \rangle = \int_0^1 f(x) \psi_{jk}(x) \,
+  dx,
+  \]
+  and \smash{$\ttheta_{jk}(y)$} are the coefficients to define the estimator
+  \smash{$\hf$} in its Haar basis expansion \eqref{eq:wavelet_smoothing}.    
+
+  Hint: by orthonormality, observe that \smash{$f = \sum_{j,k} \theta_{jk}(f) 
+    \psi_{jk}$}. It suffices to just name the theorem that relates the
+  $L^2([0,1])$ of a function to the norm of its coefficients.  
+
+\item We define the last few parts needed to understand \smash{$\hf$} and 
+  analyze its risk. For each $j,k$, we define the empirical wavelet coefficient 
+  \[
+  \ttheta_{jk}(f) = \frac{1}{n} \sum_{i=1}^n f(x_i) \psi_{jk}(x_i).
+  \] 
+  We also define a noisy empirical wavelet coefficient 
+  \[
+  \ttheta_{jk}(y) = \begin{cases}
+  \displaystyle
+  S_\lambda \bigg( \frac{1}{n} \sum_{i=1}^n y_i \psi_{jk}(x_i) 
+  \bigg) & j \leq j^* \\
+  0 & j > j ^*
+  \end{cases},
+  \]
+  where $S_\lambda$ is the soft-thresholding operator, as before, and $j^*$ is a
+  truncation level, to be chosen. 
+
+  By part (d), and the inequality $(a+b)^2 \leq 2a^2 + 2b^2$ (applied twice), we
+  have 
+  \[
+  \E \|f - \hf\|_{L^2([0,1])}^2 \leq 
+  2\underbrace{\sum_{j > j^*,k} \theta_{jk}^2(f)}_{e_1} 
+  \,+\,
+  4\underbrace{\sum_{j \leq j^*,k} (\theta_{jk}(f) - \ttheta_{jk}(f))^2}_{e_2}
+  \,+\, 
+  4\underbrace{\sum_{j \leq j^*,k} (\ttheta_{jk}(f) - \ttheta_{jk}(y))^2}_{e_3}.
+  \]
+  We can interpret $e_1$ as the \emph{truncation error}, $e_2$ as the
+  \emph{discretization error} (between population and empirical wavelet
+  coefficients), and $e_3$ as the \emph{estimation error} (in estimating the
+  empirical wavelet coefficients from noisy data). 
+  
+  Denote by $\theta_{j \cdot}(f)$ the vector $(\theta_{jk}(f) : k =
+  0,\dots,2^j-1)$. Assume that $\TV(f) \leq 1$, and assume that the design
+  points $x_i = i/n$, $i=1,\dots,n$ are evenly-spaced. It can be shown that 
+  \begin{equation}
+  \label{eq:besov_condition}
+  \| \theta_{j \cdot}(f) \|_1 \leq c_1 2^{-j/2}, \quad
+  \| \ttheta_{j \cdot}(f) \|_1 \leq c_2 2^{-j/2}, \quad \text{and} \quad 
+  \| \theta_{j \cdot}(f) - \ttheta_{j \cdot}(f) \|_1 \leq c_3 \frac{2^{j/2}}{n}, 
+  \end{equation}
+  for constants $c_1,c_2,c_3> 0$. Use the first and third inequalities to show 
+  that there is a truncation level $j^*$ such that sum of truncation and
+  discretization errors satisfy $e_1 + e_2 \leq C/n$, for another constant
+  $C>0$.       
+  \marginpar{\small [2 pts]}
+
+\item It remains to study the estimation error. Assume that $n$ is a power of
+  2. Show that, starting from the nonparametric regression model
+  \eqref{eq:nonpar_model}, we may transform this to a model of the form   
+  \marginpar{\small [3 pts]}
+  \[
+  z_\ell = \ttheta_\ell(f) + \delta_\ell, \quad \ell=1,\dots,n,
+  \]
+  where $\delta_\ell \sim N(0,\sigma^2/n)$, independently, for
+  $\ell=1,\dots,n$. Note that here, in indexing wavelet coefficients, we
+  collapse the pair $j,k$ into a single index $\ell$. 
+
+  Hint: use the appropriate truncation level $j^*$, from part (e), and only
+  consider $j \leq j^*$. Then define a matrix $\Psi$ with elements $[\Psi]_{i
+    \ell} = \psi_\ell(x_i)/n$, where in indexing the Haar wavelets, we again
+  collapse the pair $j,k$ into a single index $\ell$. Using the fact we have an
+  evenly-spaced design $x_i = i/n$, $i=1,\dots,n$, show that \smash{$\Psi
+    \Psi^\T = \frac{1}{n} I$}, where $I$ is the $n \times n$ identity matrix.        
+
+\item Finally, note that from the transformation in part (f) you have brought
+  yourself back to the problem studied in parts (a), (b): soft-thresholding
+  under the sequence model \eqref{eq:sequence_model}, with noise level $\tau^2 =
+  \sigma^2/n$. 
+
+  From the risk bound from part (b), note that we have
+  \[
+  \sum_{j \leq j^*,k} (\ttheta_{jk}(f) - \ttheta_{jk}(y))^2 \leq 
+  \frac{\sigma^2}{n} + (2 \log{n} + 1) \sum_{j \leq j^*,k} \min 
+  \bigg \{ \ttheta_{jk}^2(f), \frac{\sigma^2}{n} \bigg\}.
+  \]
+  Use the second inequality in \eqref{eq:besov_condition}, on the empirical
+  wavelet coefficients, to establish that for each $j$, 
+  \marginpar{\small [4 pts]}
+  \[
+  \sum_k \min \bigg\{ \ttheta_{jk}^2(f), \frac{\sigma^2}{n} \bigg\} \leq
+  C \frac{\sigma^2}{n} 2^j \min\bigg\{ 1, 2^{-3j/2} \frac{\sqrt{n}}{\sigma}
+  \bigg\},  
+  \]
+  for a constant $C>0$. Show that gives the estimation error bound, 
+  \marginpar{\small [2 pts]}
+  \[
+  e_3 \leq C \log{n} \bigg( \frac{\sigma^2}{n} \bigg)^{2/3}.
+  \]
+  for a constant $C>0$, redefined as needed.
+
+  Hint: the first bound (second-to-last display) is a bit tricky, whereas the
+  second (last display) is more of a straight algebraic calculation, summing the
+  first bound over $j$. To prove the first, argue that 
+  \[
+  \sup_{\|\ttheta_{j \cdot}\|_1 \leq c_j} \; \sum_k \min \bigg\{
+  \ttheta_{jk}^2, \frac{\sigma^2}{n} \bigg\}   
+  \]
+  will be achieved at a vector \smash{$\ttheta_{j \cdot}$} for which each entry
+  is equal to $0$ or \smash{$\sigma/\sqrt{n}$}, except for (possibly) one
+  entry, which is defined so that we hit the constraint \smash{$\|\ttheta_{j
+      \cdot}\|_1 =  c_j$}. For the current problem, note that we have $c_j = c_2
+  2^{-j/2}$.   
+
+  Concluding note: the risk bound you have shown, redefining the constant $C>0$
+  as needed, is  
+  \[
+  \E \|f - \hf\|_{L^2([0,1])}^2\leq C\bigg[ \frac{1}{n} + \log{n} \bigg(
+  \frac{\sigma^2}{n} \bigg)^{2/3} \bigg],   
+  \]
+  for estimating a function with $\TV(f) \leq 1$ using Haar wavelet
+  denoising. This is minimax rate optimal for the class of functions with
+  bounded TV, ignoring log factors (which could be removed from the upper bound
+  with a slightly finer analysis).
+\end{enumerate}
+
+\section{Minimax lower bounds for H{\"o}lder classes [8 points]} 
+
+Generalize the univariate calculation given in the minimax lecture to the
+multivariate case, to show that for the $d$-dimensional H{\"o}lder ball 
+\[
+C^k(L; [0,1]^d) = \Big\{ f : [0,1]^d \to \R \,:\, | D^\alpha f (x) - D^\alpha
+f(y) | \leq L \|x-y\|_2 \; \text{for all $\|\alpha\|_1 < k$, and $x,y \in
+  [0,1]^d$} \Big\},
+\]
+where $L>0$ is a constant (not growing with $n$), the following holds. Given
+data 
+\[
+y_i = f(x_i) + \epsilon_i, \quad i=1,\dots,n,
+\]
+where $\epsilon_i \sim N(0,1)$, independently, for $i=1,\dots,n$, and $x_i \in
+[0,1]^d$, $i=1,\dots,n$ are fixed, there exists constants $C,N>0$ such that
+for all $n \geq N$,   
+\[
+\inf_{\hf} \, \sup_{f \in C^k_d(L; [0,1]^d)} \, \E \big \|f - \hf
+\big\|_{L^2([0,1]^d)}^2 \geq C n^{-\frac{2k}{2k+d}}. 
+\]
+Make sure to write the full calculation from start to finish (even detailing the 
+steps that may be analogous to those in lecture). 
+\marginpar{\small [7 pts]}
+
+Explain why this certifies that the upper bound given in the last question for
+estimation over a univariate TV ball is rate optimal (ignoring log factors). 
+\marginpar{\small [1 pt]}
+
+\bibliographystyle{plainnat}
+\bibliography{../../common/ryantibs}
+
+\end{document}
