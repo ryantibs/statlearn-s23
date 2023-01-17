@@ -761,7 +761,8 @@ perspectives.
 
 \item In general, we can always rewrite \eqref{eq:least_squares_out} as  
   \[
-  \Risk(\hf) = \sigma^2 \tr\Big(\E [X^\T X] \, \E [(X^\T X)^{-1}] \Big), 
+  \Risk(\hf) = \frac{\sigma^2}{n} \tr\Big(\E [X^\T X] \, \E [(X^\T X)^{-1}]
+  \Big),  
   \]
   just by using the fact that $x_0$ and the rows of $X$ have the same
   distribution. It can be shown \citep{groves1969note} that 
@@ -771,8 +772,8 @@ perspectives.
   for any feature distribution such that $X^\T X$ is almost surely
   invertible. Then from the above display,
   \[
-  \Risk(\hf) \geq \sigma^2 \tr\Big(\E [X^\T X] \, (\E[X^\T X])^{-1} \Big) =
-  \sigma^2 \frac{d}{n}.
+  \Risk(\hf) \geq \frac{\sigma^2}{n} \tr\Big(\E [X^\T X] \, (\E[X^\T X])^{-1}
+  \Big) = \sigma^2 \frac{d}{n}.
   \]
   That is, the out-of-sample risk is always larger than the in-sample risk for
   least squares.
