@@ -379,7 +379,17 @@ then $f$ must be differentiable at $x$, with its gradient given by the single
 subgradient). 
 
 Subgradients play a big role in nonsmooth optimization, but are also key for 
-statistical analysis for certain problems/estimators, such as the lasso.
+statistical analysis for certain problems/estimators, such as the lasso. For
+example, the  \emph{subgradient optimality condition} gives us the following 
+characterization:
+\[
+\text{$x$ minimizes $f$} \iff 0 \in \partial f(x).
+\]
+We note that this is true without any assumptions on $f$ (no need to assume
+convexity of $f$). The proof is so simple it's nearly vacuous: $x$ minimizes $f$
+if and only if $f(y) \geq f(x)$ for all $y$, which is the definition of 0 being
+a subgradient of $f$ at $x$. And for differentiable convex $f$, we get the
+familiar condition $0 = \nabla f(x)$.
 
 \subsection{Algorithms}
 
