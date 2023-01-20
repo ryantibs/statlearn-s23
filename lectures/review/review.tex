@@ -571,16 +571,16 @@ bit strange! (More discussion soon.)
 Note that we can also view \smash{$\Risk(\hf)$} and \smash{$\Risk(\hf;
   x_{1:n})$} in terms of the $L^2(P)$ and $L^2(P_n)$ error metrics:
 \begin{align*}
-\Risk(\hf) &= \big\|f - \hf\big\|_{L^2(P)}^2 
-= \int (f(x) - \hf(x))^2 \, dP(x), \\
-\Risk(\hf; x_{1:n}) &= \big\|f - \hf\big\|_{L^2(P_n)}^2 
-= \int (f(x) - \hf(x))^2 \, dP_n(x),
+\Risk(\hf) &= \E \big\|f - \hf\big\|_{L^2(P)}^2 
+= \E\bigg[ \int (f(x) - \hf(x))^2 \, dP(x) \bigg], \\
+\Risk(\hf; x_{1:n}) &= \E \big\|f - \hf\big\|_{L^2(P_n)}^2  
+= \E\bigg[ \int (f(x) - \hf(x))^2 \, dP_n(x) \bigg],
 \end{align*}
 where $P$ is the feature distribution and $P_n$ the empirical distribution of
-$x_{1:n}$. Thus out-of-sample and in-sample error could also be called 
-\emph{$L^2(P)$ error} and \emph{$L^2(P_n)$ error}, respectively. Other names
-you'll hear are the \emph{population $L^2$ error} and \emph{empirical $L^2$
-  error}, respectively.    
+$x_{1:n}$. Thus out-of-sample and in-sample error could also be called the
+(expected) \emph{$L^2(P)$ error} and \emph{$L^2(P_n)$ error},
+respectively. Other names you'll hear are the \emph{population $L^2$ error} and
+\emph{empirical $L^2$ error}, respectively.    
 
 Empirical process theory gives us bounds on the $L^2(P_n)$ and $L^2(P)$ norms
 (typically, these bounds hold for all functions in some particular function
