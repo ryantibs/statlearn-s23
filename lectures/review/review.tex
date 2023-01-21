@@ -531,12 +531,12 @@ where $\sigma^2 = \Var[\epsilon_0]$ is the noise variance (also known as the
 \emph{Bayes error} or \emph{irreducible error} in the current context). We'll 
 call the first term on the right-hand side the \emph{out-of-sample risk}, and
 denote it by \smash{$\Risk(\hf)$}. Admittedly, this is somewhat nonstandard
-terminology as many authors use ``risk'' and ``error''
-interchangeably, and do not use it to distinguish whether the target is $f(x_0)$
-or $y_0$.% \footnote{Yet another convention is to call $\E[ (f(x_0) -
-  % \hf(x_0))^2]$ the \emph{excess risk}, since it equals \smash{$\E[ (y_0 -
-  %   \hf(x_0))^2] - \inf_g \E[ (y_0 - g(x_0))^2]$}, where the infimum is
-  %   achieved at $g=f$, the regression function.}     
+terminology as many authors use ``risk'' and ``error'' interchangeably, and do
+not use it to distinguish whether the target is $f(x_0)$ or $y_0$.
+% \footnote{Yet another convention is to call $\E[ (f(x_0) - \hf(x_0))^2]$ the
+% \emph{excess risk}, since it equals \smash{$\E[ (y_0 - \hf(x_0))^2] - \inf_g
+% \E[ (y_0 - g(x_0))^2]$}, where the infimum is achieved at $g=f$, the
+% regression function.}      
 
 So to recap, in the Random-X setting, we have as a natural metric  
 \begin{equation}
