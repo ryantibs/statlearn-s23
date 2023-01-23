@@ -423,7 +423,7 @@ Figure \ref{fig:bias} for an illustration.
 We can alleviate this boundary bias issue by moving from a local constant fit to
 a local linear fit. To build intuition, another way to view the kernel smoothing
 estimator in \eqref{eq:kernel} is as follows: at each input point $x$, it
-employs the estimate \smash{$\hf(x) = \htheta_x$}, which solves    
+employs the estimate \smash{$\hf(x) = \htheta_x$}, which solves 
 \[
 \minimize_\theta \; \sum_{i=1}^n K\bigg( \frac{\|x-x_i\|_2}{h} \bigg)
 (y_i - \theta)^2, 
@@ -651,7 +651,8 @@ local polynomials, or use higher-order kernels.
 Local polynomials build on the idea behind local linear regression (as an
 extension of kernel smoothing). Consider $d=1$, for concreteness. Define
 \smash{$\hf(x) = \halpha_x + \sum_{j=1}^k \hbeta_{x,j} x^j$}, where the
-parameters \smash{$\halpha_x,\hbeta_{x,1},\dots,\hbeta_{x,k}$} solve
+parameters \smash{$\halpha_x,\hbeta_{x,1},\dots,\hbeta_{x,k}$} now solve 
+(cf.\ problem \eqref{eq:llr}):
 \begin{equation}
 \label{eq:local_poly}
 \minimize_{\alpha, \beta_1,\dots,\beta_k} \; \sum_{i=1}^n K\bigg(
@@ -659,14 +660,14 @@ parameters \smash{$\halpha_x,\hbeta_{x,1},\dots,\hbeta_{x,k}$} solve
 \bigg)^2. 
 \end{equation}
 This is called ($k\th$ order) \emph{local polynomial regression}. As before, we 
-can express this as
+can express the prediction at $x$ as
 \[
 \hf(x) = b(x)(B^\T \Omega B)^{-1} B^\T \Omega Y = w(x)^\T Y,
 \]
 where now $b(x) = (1,x,\dots,x^k)$, $B$ is an $n \times (k+1)$, $B \in \R^{n 
-  \times (d+1)}$ is the matrix whose $i\th$ row is $b(x_i)$, and $\Omega \in
-\R^{n \times n}$ is the same diagonal matrix as before. Hence again, local
-polynomial regression is a linear smoother. 
+  \times (k+1)}$ is the matrix whose $i\th$ row is $b(x_i)$, and $\Omega \in
+\R^{n \times n}$ is the same diagonal matrix with kernel weights as
+before. Hence again, local polynomial regression is a linear smoother. 
 
 In multiple dimensions, $d>1$, local polynomials become kind of tricky to fit,
 because of the explosion in terms of the number of parameters we need to
@@ -679,7 +680,7 @@ alternative is to return back kernel smoothing but use a \emph{higher-order
 0 < \int t^k K(t) \, dt < \infty.
 \]
 This means that the kernels we were looking at so far were of order 2. An
-example of a 4th-order kernel is 
+example of a 4th order kernel is 
 \[
 K(t) = \frac{3}{8}(3-5t^2) 1\{|t|\leq 1\}, 
 \]
