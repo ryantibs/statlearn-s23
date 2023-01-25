@@ -133,9 +133,9 @@ $f_0$. The gap between our representation and $f_0$ is known as the
 \emph{approximation error}. Sometimes this will be an explicit part of the
 analysis (e.g., with splines) and sometimes it won't (e.g., with kernels). Here
 is a concrete example: for any $f_0 : [0,1] \to \R$ whose second derivative is
-integrable, and any points $t_1,\dots,t_N \in [0,1]$, there exists a cubic
-spline \smash{$\bar{f}$} with knots at $t_1,\dots,t_N$ (to be defined precisely
-in the splines lecture) such that
+integrable, and evenly-spaced points $t_1,\dots,t_N \in [0,1]$, there exists a
+cubic spline \smash{$\bar{f}$} with knots at $t_1,\dots,t_N$ (to be defined
+precisely in the splines lecture) such that
 \[
 \|\bar{f} - f_0\|_\infty \leq \frac{c}{N} \bigg[ \int_0^1 [f_0''(x)]^2 \, dx
 \bigg]^{1/2},  
