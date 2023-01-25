@@ -32,16 +32,16 @@ the \emph{output}, \emph{outcome}, \emph{response}, etc. Remember that we called
 this the XY-Pairs model, which is equivalent to the Random-X signal plus noise
 model:  
 \begin{gather*}
+\label{eq:random_x}
 y_i = f_0(x_i) + \epsilon_i, \; \text{where $\E[\epsilon_i] = 0$}, \\
-\text{$\epsilon_i$, $i=1,\dots,n$ are i.i.d.}, \\
-\text{and $x_i$, $i=1,\dots,n$ are i.i.d.}  
+\text{and $(x_i, \epsilon_i)$, $i=1,\dots,n$ are i.i.d.}
 \end{gather*} 
 If we \emph{additionally assume that each $x_i \indep \epsilon$}, then recall we 
 can condition on $x_i$, $i=1,\dots,n$, and we get the Fixed-X signal plus noise
 model:  
 \begin{gather*}
 y_i = f_0(x_i) + \delta_i, \; \text{where $\E[\delta_i] = 0$}, \\
-\text{$\delta_i$, $i=1,\dots,n$ are i.i.d.}, \\  
+\text{and $\delta_i$, $i=1,\dots,n$ are i.i.d.}, \\  
 \text{and $x_i$, $i=1,\dots,n$ are fixed.}   
 \end{gather*}
 

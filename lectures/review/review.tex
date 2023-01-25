@@ -432,20 +432,19 @@ available for regression, and we'll call it the XY-Pairs model.
 \subsection{Signal-plus-noise models}
 
 You'll often see authors writing down a model of the form:   
-\begin{gather*}
-y_i = f(x_i) + \epsilon_i, \; \text{where $\E[\epsilon_i] = 0$}, \\
-\text{and $\epsilon_i$, $i=1,\dots,n$ are i.i.d.}  
-\end{gather*}
+\[
+y_i = f(x_i) + \epsilon_i, \quad i=1,\dots,n.
+\]
 This is often referred to as a ``signal-plus-noise'' model. You might initially
-think that this is different from an XY-Pairs model, but it's actually the same,
-provided we treat the predictors $x_i$, $i=1,\dots,n$ as random. Let's ammend 
-the above to emphasize this:  
+think that this is a different model from an XY-Pairs model, but it's actually
+the same, for i.i.d.\ mean zero stochastic errors $\epsilon_i$, $i=1,\dots,n$,
+provided we treat the predictors $x_i$, $i=1,\dots,n$ as suitably random as
+well. Let's ammend the above to emphasize this:   
 \begin{equation}
 \begin{gathered}
 \label{eq:random_x}
 y_i = f(x_i) + \epsilon_i, \; \text{where $\E[\epsilon_i] = 0$}, \\
-\text{$\epsilon_i$, $i=1,\dots,n$ are i.i.d.}, \\
-\text{and $x_i$, $i=1,\dots,n$ are i.i.d.}  
+\text{and $(x_i, \epsilon_i)$, $i=1,\dots,n$ are i.i.d.},
 \end{gathered}
 \end{equation}
 which we'll call the Random-X signal-plus-noise model. To see that
@@ -461,7 +460,7 @@ Fixed-X signal-plus-noise model:
 \begin{gathered}
 \label{eq:fixed_x}
 y_i = f(x_i) + \delta_i, \; \text{where $\E[\delta_i] = 0$}, \\
-\text{$\delta_i$, $i=1,\dots,n$ are i.i.d.}, \\  
+\text{and $\delta_i$, $i=1,\dots,n$ are i.i.d.}, \\  
 \text{and $x_i$, $i=1,\dots,n$ are fixed.}   
 \end{gathered}
 \end{equation}
@@ -488,8 +487,7 @@ generic XY-Pairs model. It's also not totally harmless. To see this, suppose
 that we were in a situation where the true model is:  
 \begin{gather*}
 y_i = f(x_i) + g_0(z_i) + \xi_i, \; \text{where $\E[\xi_i] = 0$}, \\  
-\text{$\xi_i$, $i=1,\dots,n$ are i.i.d.}, \\
-\text{and $(x_i,z_i)$, $i=1,\dots,n$ are i.i.d.}
+\text{and $(x_i,z_i,\xi_i)$, $i=1,\dots,n$ are i.i.d.}
 \end{gather*}
 Let's even assume that each $x_i \indep \xi_i$, and $\E[g_0(z_i) | x_i] =
 0$. Then the regression function (of $y_i$ on $x_i$) is indeed $f$. But in the  
@@ -719,15 +717,15 @@ in-sample error is pure variance, and we compute
 \subsubsection{Out-of-sample risk}
 
 Meanwhile, for the out-of-sample risk we'll take $X$ to be random, and assume
-that each $x_i$ is independent of $\epsilon_i$ in \eqref{eq:linear_model}, with 
-$(x_0,y_0)$ being another i.i.d.\ draw from the same linear model. Then,
-conditioning on both $X,x_0$, we can see that
+$X$ is independent of $\epsilon$ in \eqref{eq:linear_model}, with $(x_0,y_0)$
+being another i.i.d.\ draw from the same linear model. Then, conditioning on
+both $X,x_0$, we can see that 
 \[
 \E [x_0^\T \hbeta \,|\, X,x_0] = x_0^\T (X^\T X)^{-1} X^\T \E[Y|X] = x_0^\T \beta_0.   
 \]
 Hence the out-of-sample bias will still be zero, after integrating over
 $X,x_0$. (Note that unbiasedness here doesn't actually require the strong
-assumption of $x_i,\epsilon_i$ being independent.) To compute the out-of-sample 
+assumption of $X,\epsilon$ being independent.) To compute the out-of-sample 
 variance, we again first condition on $X,x_0$:
 \[
 \Var(x_0^\T \hbeta \,|\, X, x_0) = \sigma^2 x_0^\T (X^\T X)^{-1} X^\T \Var(Y|X)
