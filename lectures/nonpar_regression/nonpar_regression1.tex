@@ -20,7 +20,7 @@ Given a random pair $(X,Y) \in \R^d \times \R$, recall that the function
 \[
  f_0(x) = \E(Y|X=x) 
 \]
-is called the regression function (of $Y$ on $X$).  The basic goal in
+is called the regression function (of $Y$ on $X$). The basic goal in
 nonparametric regression is to construct an estimate \smash{$\hf$} of $f_0$ 
 without assuming a specific parametric form for $f_0$, and instead only assuming 
 that $f_0$ is smooth in some way.
@@ -152,7 +152,7 @@ negligible relative to the overall estimation error that we will encounter.
 
 The goal is to expose you to a variety of methods over the next several lectures
 on nonparametric regression, and give you a flavor of some interesting results,
-under different assumptions.  A few topics we will cover into more depth than
+under different assumptions. A few topics we will cover into more depth than
 others, but overall, this will be far from a complete treatement of
 nonparametric regression (that would take a whole course, or more).  
 
@@ -166,7 +166,7 @@ Throughout, our discussion will bounce back and forth between the univariate
 case ($d=1$) and multivariate case ($d>1$). Some methods have obvious (natural) 
 multivariate extensions; some don't. Nevertheless, we can always use
 low-dimensional (even just univariate) nonparametric regression methods as
-building blocks for a high-dimensional nonparametric estimator.  We'll study
+building blocks for a high-dimensional nonparametric estimator. We'll study
 this later, when we talk about additive models.
 
 Lastly, a lot of what we cover for nonparametric regression also carries over to
@@ -195,7 +195,7 @@ flexible fit, and large $k$ less flexible. For $k=n$, the estimator
 
 But it does have its limitations, one apparent one being that the fitted
 function \smash{$\hf$} essentially always looks jagged, especially for small or
-moderate $k$.  Why is this?  It helps to write 
+moderate $k$. Why is this?  It helps to write 
 \begin{equation}
 \label{eq:linear_smoother}
 \hf(x) = \sum_{i=1}^n w_i(x) y_i,
@@ -232,9 +232,8 @@ linear smoother we have
 for a matrix $S \in \R^{n \times n}$. Again, the matrix $S$ can depend on the
 inputs $x_1,\dots,x_n$, but not on $y_1,\dots,w_n$. 
 
-The class of linear
-smoothers is quite large, in the sense that it contains many popular estimators,
-as we'll see in the coming sections.  
+The class of linear smoothers is quite large, in the sense that it contains many
+popular estimators, as we'll see in the coming sections.
 
 \subsection{Universal consistency}
 
@@ -292,7 +291,7 @@ the error rate of \smash{$n^{-2/(2+d)}$}, as claimed.
 \subsection{Curse of dimensionality}
 
 The above error rate \smash{$n^{-2/(2+d)}$} exhibits a very poor dependence on
-the dimension $d$.  To see it differently: given a small $\epsilon>0$, think
+the dimension $d$. To see it differently: given a small $\epsilon>0$, think
 about how large we need to make $n$ to ensure that \smash{$n^{-2/(2+d)} \leq
 \epsilon$}. Rearranged, this says 
 \[
