@@ -1,0 +1,652 @@
+\documentclass{article}
+
+\def\ParSkip{} 
+\input{../../common/ryantibs}
+
+\title{Nonparametric Regression: Splines and RKHS Methods \\ \smallskip
+\large Advanced Topics in Statistical Learning, Spring 2023 \\ \smallskip
+Ryan Tibshirani}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\RaggedRight
+\vspace{-50pt}
+
+Note: we're following the context, problem setup, notation, etc. from the last
+lecture on nonparametric regression.
+
+\section{Regression splines}
+
+Regression splines and smoothing splines are motivated from a different
+perspective than kernels and local polynomials; in the latter case, we started
+off with a special kind of local averaging, and moved our way up to a
+higher-order local models. With regression splines and smoothing splines, we
+build up our estimate globally, from a set of select basis functions. 
+
+(We note that, at a broader level, the latter is often called the
+\emph{synthesis} framework for modeling, where we build up our estimate from a
+set of atoms---here being basis functions.) 
+
+\subsection{Splines}
+
+These basis functions, as you might guess, are \emph{splines}. Let's assume that
+$d=1$. We'll stick to the univariate case for a little while, because splines
+are complex and interesting enough in dimension $d=1$. A spline $f$ of degree
+$k$ with knots at $t_1 < \dots < t_r$ is a piecewise polynomial of degree $k$  
+that is continuous and has continuous derivatives of orders $1,\dots,k-1$ at its
+knots. To be clear: 
+\begin{itemize}
+\item $f$ is a polynomial of degree $k$ on each of $(-\infty,t_1], [t_1,t_2],
+  \dots, [t_r,\infty)$; and
+\item $D^\ell f$ is continuous at each of $t_1,\dots,t_r$, for all
+  $\ell=0,\dots,k-1$. 
+\end{itemize}
+
+Splines have some special (some might say amazing) properties, and we will only
+really scratch the surface here. They have been a topic of interest among
+mathematicians and statisticians for a long time. Informally, a spline is a lot
+smoother than a piecewise polynomial, and so modeling with splines can serve as
+a way of reducing the variance of an estimator. See Figure \ref{fig:splines} for
+an illustration.  
+
+\begin{figure}[tb]
+\centering
+\includegraphics[width=0.8\textwidth]{splines.pdf}
+\caption{\it Illustration of the effects of enforcing continuity at the knots
+  for a cubic piecewise polynomial, and for various orders of the derivative,
+  Credit: Chapter 5 of \citet{hastie2009elements}.}    
+\label{fig:splines}
+\end{figure}
+
+A bit of statistical folklore: it is said that a cubic spline is so smooth, that
+one cannot detect the locations of its knots by eye! 
+
+\subsection{Spline bases}
+
+How can we parametrize the space of $k\th$ degree splines with knots at 
+$t_1,\dots,t_r$?  The most natural way is to use the \emph{truncated power
+  basis}, $g_1, \dots, g_{r+k+1}$, defined as   
+\begin{equation}
+\begin{gathered}
+\label{eq:tpb}
+g_j(x) = \frac{1}{(j-1)!} x^j, \quad j=1,\dots,k+1, \\
+g_{j+k+1}(x) = \frac{1}{k!} (x-t_j)^k_+, \quad j=1,\dots,r,
+\end{gathered}
+\end{equation}
+Here $x_+=\max\{x,0\}$ denotes the positive part of $x$. From this we can see
+that the linear space of $k\th$ degree splines with knots at $t_1,\dots,t_r$ has 
+dimension $r+k+1$.
+
+While \eqref{eq:tpb} gives us a simple and natural basis, calculations involving
+truncated power bases functions can be troublesome because the ensuing basis 
+matrix, $G \in \R^{n \times (r+k+1)}$ with entries
+\[
+G_{ij} = g_j(x_i)
+\]
+is generally very poorly conditioned.
+
+A much better computational choice, both for speed and numerical stability, is 
+called the \emph{B-spline basis}. This was a major development in spline theory 
+and is now much the standard in software. The key idea is that B-splines have
+local support: each B-spline basis function for a $k\th$ degree spline space is
+supported on $k+2$ knots. Therefore the corresponding basis matrix is banded. It
+also tends to be much better conditioned.  
+
+Defining B-splines is certainly requires more nuance than the truncated power
+basis, and the precise form of a B-spline is unimportant for the rest of this
+lecture. For completeness, you can find the details behind their construction in
+Appendix \ref{app:bs}. (You can also jump to Figure \ref{fig:bs} for a visual.) 
+
+\subsection{Regress away!}
+
+A first idea: let's just perform regression on a spline basis. In other words,
+we use as our working model a $k\th$ degree spline with knots at some pre-fixed 
+locations $t_1,\dots,t_r$. This means expressing $f$ as  
+\[
+f = \sum_{j=1}^{r+k+1} \beta_j g_j
+\]
+where $\beta_1,\dots,\beta_{r+k+1} \in \R$ are coefficients and
+$g_1,\dots,g_{r+k+1}$ is a basis for the space of $k\th$ degree splines over the
+knots $t_1,\dots,t_r$; for example, the truncated power basis or B-spline basis.    
+
+Letting $Y=(y_1,\dots,y_n) \in \R^n$ denote the response vector, and defining
+the basis matrix $G \in \R^{n \times (r+k+1)}$ as before, to have entries
+\[
+G_{ij} = g_j(x_i),
+\]
+we then just use least squares regression to determine estimate the
+coefficients, defining \smash{$\hbeta = (\hbeta_1,\dots,\hbeta_{r+k+1})$} to
+solve 
+\[
+\minimize_\beta \; \|Y - G\beta\|_2^2.
+\]
+This yields the \emph{regression spline} estimator, which makes predictions
+according to   
+\[
+\hf(x) = \sum_{j=1}^{r+k+1} \hbeta_j g_j(x).
+\]
+Of course we know that \smash{$\hbeta = (G^\T G)^{-1} G^\T Y$}, so we can write
+this as 
+\[
+\hf(x) = (g_1(x),\dots,g_{r+k+1}(x))^\T (G^\T G)^{-1} G^\T Y = w(x)^\T Y,  
+\]
+which reveals that regression splines are linear smoothers.
+
+This is a classic method, and can work well provided that we choose ``good''
+knots $t_1,\dots,t_r$; but in general choosing knots is a tricky business. There
+is a large literature on knot selection for regression splines via greedy
+methods like recursive partitioning. In practice, smoothing splines seem to be
+more popular, which we cover next.
+
+\section{Smoothing splines}
+
+Before delving into smoothing splines, we need to introduce a variant on the
+usual spline definition given above. To motivate it: a problem with spline
+estimates is that they can have somewhat erractive behavior---translating into
+high variance---at the boundaries of the input domain. (Recall that this is the
+opposite problem to that with kernel smoothing, which had poor bias at the
+boundaries.) This only gets worse as the polynomial order $k$ gets larger.   
+
+\subsection{Natural splines}
+
+One way to remedy this problem is to force the piecewise polynomial function to
+have a lower degree to the left of the leftmost knot, and to the right of the
+rightmost knot---this is exactly what \emph{natural splines} do. A natural
+spline $f$ of degree $k$ with knots at $t_1 < \dots < t_r$ is a piecewise
+polynomial of degree $k$ such that:
+\begin{itemize}
+\item $f$ is a polynomial of degree $k$ on each of $[t_1,t_2], \dots,
+  [t_{r-1},t_r]$; 
+\item $f$ is a polynomial of degree $(k-1)/2$ on $(-\infty,t_1]$ and
+  $[t_r,\infty)$; and 
+\item $D^\ell f$ is continuous at each of $t_1,\dots,t_r$, for all
+  $\ell=0,\dots,k-1$. 
+\end{itemize}
+It is implicit here that natural splines are only defined for an odd degree $k$
+(linear, cubic, etc.) The choice $k=3$ yields a natural cubic spline, by far the
+most common case: this is just a cubic spline that reduces to linear beyond the 
+leftmost and rightmost knots.     
+
+What is the dimension of the span of $k\th$ degree natural splines with knots at
+$t_1,\dots,t_r$? Recall for splines, this was $r+k+1$ (just count the number of
+truncated power basis functions). For natural splines, we can compute this
+dimension by counting as follows:  
+\[
+\underbrace{\vphantom{\Big(\Big)} (k+1)\cdot(r-1)}_{a} \;+\; 
+\underbrace{\Big(\frac{(k-1)}{2}+1\Big) \cdot 2}_{b} \;-\;
+\underbrace{\vphantom{\Big(\Big)} k \cdot r}_{c} \;=\; r. 
+\]
+In the above: 
+\begin{itemize}
+\item $a$ is the number of free parameters in the interior intervals $[t_1,t_2], 
+  \dots, [t_{r-1},t_r]$;
+\item $b$ is the number of free parameters in the exterior intervals $(-\infty,t_1],
+  [t_r,\infty)$; and 
+\item $c$ is the number of constraints at the knots $t_1,\dots,t_r$.  
+\end{itemize}
+The fact that the total dimension is $r$ is amazing; this is independent of $k$!  
+
+We note that there are simple modifications the truncated power basis that gives
+rise to a basis for natural splines, and similarly a modification of the
+B-spline basis for natural splines. And again, B-splines are the preferred
+parametrization for computational speed and stability. 
+
+\subsection{Smooth away!}
+
+Smoothing splines, at the end of the day, are given by an $\ell_2$-regularized
+regression over a natural spline basis that places knots at all input points 
+$x_1,\dots,x_n$. They circumvent the problem of knot selection because they
+just use all inputs as knots, and they make this possible---starting with a 
+saturated model and producing meaningful function estimates---by using
+regularization to shrink the coefficients in the basis expansion.
+
+Interestingly, we can motivate and define a smoothing spline directly from a
+functional minimization perspective. With input points $x_1,\dots,x_n$ lying in 
+an interval $[a,b]$, the \emph{smoothing spline} estimator \smash{$\hf$}, of a
+given odd integer order $k \geq 1$, is defined to solve   
+\begin{equation}
+\label{eq:ss}
+\minimize_f \; \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \int_a^b [D^m f(x)]^2 \,
+dx, \quad \text{where $m=(k+1)/2$}.
+\end{equation}
+This is an infinite-dimensional optimization problem over all functions $f$ for
+the which the criterion is well-defined and finite (this is called the $L^2$
+Sobolev space of order $m$ on $[a,b]$, which we denote by $W^{m,2}([a,b])$, and
+will study a bit later). The criterion in \eqref{eq:ss} trades off the squared
+error of $f$ over $(x_i,y_i)$, $i=1,\dots,n$, with a penalty term that is large
+when the $m\th$ derivative of $f$ is wiggly. The tuning parameter $\lambda \geq 
+0$ governs the tradeoff between these two terms. 
+
+By far the most commonly considered case is $k=3$, called the cubic smoothing
+spline, and defined via
+\begin{equation}
+\label{eq:ss3}
+\minimize_f \; \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \int_a^b [f''(x)]^2 \, dx.
+\end{equation}
+
+\subsection{Representer theorem}
+
+\def\tf{\tilde{f}}
+
+Remarkably, it so happens that the minimizer in the general smoothing spline
+problem \eqref{eq:ss} is unique, and it is a natural $k\th$ degree spline with 
+knots at the input points $x_1,\dots,x_n$! This is known as a \emph{representer
+  theorem} for \eqref{eq:ss} (we will see more such results later). 
+
+Proof: we'll stick to the cubic case, $k=3$, and follow Chapter 2.2 of
+\citet{green1993nonparametric} for a nice direct proof. The result for general
+$k$ will follow from RKHS theory.  
+
+The key result can be stated as follows: if \smash{$\tf$} is any function on 
+$[a,b]$ such that the penalty is well-defined (it has two derivatives, its
+second derivative is square integrable), and $x_1,\dots,x_n \in [a,b]$ are
+arbitrary, then there exists a natural cubic spline $f$ with knots at
+$x_1,\dots,x_n$ such that:
+\begin{itemize}
+\item $f(x_i)=\tf(x_i)$, $i=1,\dots,n$; and 
+\item $\int_a^b [f''(x)]^2 \, dx \leq \int_a^b [\tf''(x)]^2 \, dx$.
+\end{itemize}
+Note that this would in fact prove that we can restrict our attention in problem 
+\eqref{eq:ss3} to natural splines with knots at $x_1,\dots,x_n$.
+
+To prove the key result, we start with the fact that the cubic natural spline
+space with knots at $x_1,\dots,x_n$ is $n$-dimensional, so given any $n$ points  
+\smash{$z_i = \tf(x_i)$}, $i=1,\dots,n$, we can always find a natural spline $f$ 
+with knots at $x_1,\dots,x_n$ that satisfies $f(x_i) = z_i$, $i=1,\dots,n$. Now 
+define \smash{$h = \tf - f$}. Consider
+\begin{align*}
+\int_a^b f''(x) h''(x) \, dx 
+&= f''(x) h'(x) \Big|_a^b - \int_a^b f'''(x) h'(x) \, dx \\
+&= -\int_{x_1}^{x_n} f'''(x) h'(x) \, dx \\ 
+&= -\sum_{i=1}^{n-1} f'''(x) h(x) \Big|_{x_i}^{x_{i+1}} +  
+\int_{x_1}^{x_n} D^4 f(x) h'(x) \, dx \\
+&= -\sum_{i=1}^{n-1} f'''(x_i^+) (h(x_{i+1}) - h(x_i)).
+\end{align*}
+In the first line we used integration by parts; in the second line we used the
+fact that $f''(a) = f''(b) = 0$ and $f'''(x)=0$ for $x \leq x_1$ and $x \geq
+x_n$, since $f$ is a natural spline; in the third line we used integration by
+parts again; in the fourth we used the fact that $f'''$ is constant on each open
+interval $(x_i,x_{i+1})$, and that $D^4 f=0$, again because $f$ is a natural
+spline. Since each $h(x_i)=0$, we conclude from the last display that
+\[
+\int_a^b f''(x) h''(x) \, dx = 0.
+\]
+From this, it follows that
+\[
+\int_a^b [\tf''(x)]^2 \, dx 
+= \int_a^b \big[ f''(x) + h''(x) \big]^2 \, dx 
+= \int_a^b [f''(x)]^2 \, dx + \int_a^b [h''(x)]^2 \, dx
+\]
+since the cross term is zero, and therefore 
+\[
+\int_a^b [f''(x)]^2 \, dx \leq \int_a^b [\tf''(x)]^2 \, dx,
+\]
+with equality if and only if $h''(x)=0$ for all $x \in [a,b]$. Note that $h''=0$
+implies that $h$ must be linear, and since we already know that $h(x_i)=0$ for
+all $i=1,\dots,n$, this is equivalent to $h=0$. In other words, the last display
+holds strictly except when \smash{$\tf=f$}, so the solution in \eqref{eq:ss3} is
+uniquely a natural spline with knots at the inputs.
+
+\subsection{Finite-dimensional form}
+
+From the representer result, we can choose a basis $\eta_1,\dots,\eta_n$ for the
+set of $k\th$ degree natural splines with knots at $x_1,\dots,x_n$, and
+reparametrize the problem \eqref{eq:ss} as  
+\begin{equation}
+\label{eq:ss_finite_dim}
+\minimize_\beta \; \sum_{i=1}^n \bigg( y_i - \sum_{j=1}^n \beta_j \eta_j(x_i)
+\bigg)^2 + \lambda \int_a^b \bigg( \sum_{j=1}^n \beta_j D^m \eta_j(x) \bigg)^2
+\, dx.  
+\end{equation}
+This is a finite-dimensional problem, and after we solve for the coefficients
+\smash{$\hbeta \in \R^n$}, the smoothing spline estimator is simply given by  
+\[
+\hf(x)=\sum_{j=1}^n \hbeta_j \eta_j(x).
+\]
+Defining the basis matrix $N \in \R^{n \times n}$ and penalty matrix $\Omega \in
+\R^{n \times n}$ to have entries
+\[
+N_{ij} = \eta_j(x_i), \quad 
+\Omega_{ij} = \int_a^b D^m \eta_i(x) D^m \eta_j(x) \, dx,
+\]
+the problem in \eqref{eq:ss_finite_dim} can be written more succintly as
+\[
+\minimize_\beta \; \|Y - N\beta\|_2^2 + \lambda \beta \Omega \beta,  
+\]
+showing the smoothing spline problem to be a type of generalized ridge
+regression problem. Its solution has the explicit form \smash{$\hbeta = (N^\T N
+  + \lambda \Omega)^{-1} N^T Y$}, and thus, we can write the smoothing spline as   
+\[
+\hf(x) = (\eta_1(x),\dots,\eta_n(x))^\T (N^\T N + \lambda \Omega)^{-1} N^\T Y =
+w(x)^\T Y,   
+\]
+which means, once again, smoothing splines are linear smoothers.
+
+A note on computation: the coefficients \smash{$\hbeta = (N^\T N + \lambda
+  \Omega)^{-1} N^\T Y$} can be computed in $O(n)$ operations. For this we form 
+$N$ using the B-spline basis (for natural splines), as then the matrix $N^\T N +
+\Omega I$ will be banded. In fact, more specialized computations are possible by
+taking advantage of the more precise structure (beyond bandedness) afforded by
+splines. Altogether, in practice, smoothing spline computations are extremely
+fast. 
+
+\subsection{Reinsch form}
+
+The vector of fitted values \smash{$\hat{Y} = (\hf(x_1),\dots,\hf(x_n)) \in
+  \R^n$}  from the smoothing spline can be written as
+\[
+\hat{Y} = N(N^\T N + \lambda \Omega)^{-1} N^\T Y.
+\]
+It is informative to rewrite this in what is called Reinsch form,
+\begin{align*}
+\hat{Y} 
+&= N\Big(N^\T (I + \lambda N^{-\T} \Omega N^{-1}) N \Big)^{-1} N^\T Y \\
+&= (I+\lambda Q)^{-1} Y,
+\end{align*}
+where $Q = N^{-\T} \Omega N^{-1}$. Note that $Q$ does not depend on $\lambda$.
+Thus if we compute an eigendecomposition $Q = U \Sigma U^\T$, then the
+eigendecomposition of the smoother matrix \smash{$S = (I+\lambda Q)^{-1}$} is   
+\[
+S = \sum_{j=1}^n \frac{1}{1+\lambda \sigma_j} u_ju_j^\T,
+\]
+where $\Sigma=\mathrm{diag}(\sigma_1,\dots,\sigma_n)$. Therefore, once more, the
+smoothing spline fitted values can be expressed as  
+\[
+\hat{Y} = \sum_{j=1}^n \frac{u_j^\T Y}{1+\lambda \sigma_j} u_j.
+\]
+The interpretation we may gather is as follows: smoothing splines perform a 
+regression on the orthonormal set $u_1,\dots,u_n \in \R^n$, but they shrink
+the coefficients, with more shrinkage applied to an eigenvector $u_j$ that
+corresponds to a large eigenvalue $\sigma_j$.  
+
+What exactly are these vectors $u_1,\dots,u_n$? These are referred to as the 
+\emph{Demmler-Reinsch basis}, and some nice properties of theirs can be 
+worked out analytically \citep{demmler1975oscillation}. In a nutshell: the
+eigenvectors $u_j$ that correspond to smaller eigenvalues $\sigma_j$ are
+smoother, and so with smoothing splines, we shrink less in their direction. Or
+to put it differently, by increasing $\lambda$ in the smoothing spline
+estimator, we are tuning out the more wiggly components. See Figure
+\ref{fig:reinsch}. 
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=0.495\textwidth]{reinsch_basis.pdf}
+\includegraphics[width=0.495\textwidth]{reinsch_weight.pdf}
+\caption{\it Insights from the Reinsch form of the cubic smoothing spline, for
+  an example with $n=50$. The left plot shows the bottom 7 eigenvectors of $Q$,
+  drawn using a color gradient: purple means smallest eigenvalue and light blue
+  means largest eigenvalue. We can see that smoother eigenvectors correspond to
+  lower eigenvalues. The right plot shows the shrinkage weights
+  $w_j=1/(1+\lambda \sigma_j)$, $j=1,\dots,n$ for 8 values of $\lambda$, again
+  drawn using a color gradient: purple means largest $\lambda$ and light blue
+  means smallest $\lambda$. For $\lambda$ larger, the weights decay faster, so
+  the smoothing spline estimator more strongly filters out wiggly components.}       
+\label{fig:reinsch}
+\end{figure}
+
+\subsection{Equivalent kernel}
+
+Something very interesting happens when we plot the rows of the smoothing spline
+matrix $S = N(N^\T N + \lambda \Omega)^{-1} N^\T$. For evenly-spaced inputs,
+they look like the translations of a kernel! See Figure \ref{fig:ss_kernel}, left
+panel. Even more interestingly, for unevenly-spaced inputs, the rows still have
+a kernel shape; but now, the bandwidth appears to adapt to the density of the
+input points: lower density, larger bandwidth. See Figure \ref{fig:ss_kernel},
+right panel.
+
+\begin{figure}[tb]
+\centering
+\includegraphics[width=0.495\textwidth]{ss_kernel1.pdf}
+\includegraphics[width=0.495\textwidth]{ss_kernel2.pdf}
+\caption{\it Three sample rows of the cubic smoothing spline operator $S$
+  defined over $n=100$. The left plot uses evenly-spaced inputs on a grid. These
+  look precisely like translations of a kernel. The right plot uses input points
+  drawn i.i.d.\ from $N(0.5, 0.01)$. These still look like kernels, but the
+  bandwidth is larger in low-density regions of the input domain.}  
+\label{fig:ss_kernel}
+\end{figure}
+
+What we are seeing is an empirical validation of a beautiful asymptotic result
+by \citet{silverman1984spline}. It turns out that the cubic smoothing spline
+estimator is asymptotically equivalent to a kernel regression estimator, with an
+unusual choice of kernel. Recall that both are linear smoothers; this
+equivalence is achieved by showing that under some conditions the smoothing
+spline weights converge to kernel weights, under the ``Silverman kernel'': 
+\[
+K(t) = \frac{1}{2} \exp(-|t|/\sqrt{2}) \sin(|t|/\sqrt{2} + \pi/4), 
+\]
+and a local choice of bandwidth 
+\[
+h(x) = \bigg[ \frac{\lambda}{p(x)} \bigg]^{1/4},
+\]
+where $p(x)$ is the density of the input distribution at $x$. That is, the
+bandwidth adapts to the local distribution of inputs. 
+
+The Silverman kernel is ``kind of'' a higher-order kernel. It satisfies 
+\[
+\int K(t) \, dt = 1, \quad
+\int t^j K(t) \, dt = 0, \; j=1,\dots,3, 
+\quad \text{but} \quad 
+\int t^4 K(t) \, dt = -24.
+\]
+So it lies outside the scope of usual kernel analysis. There is a lot more work
+building off of Silverman's initial work that connects smoothing splines to
+equivalent kernels. 
+
+[[ More to come ... sections below to be filled out ... ]]
+
+\section{Smoothing spline analysis}
+
+\section{Multivariate splines}
+
+\section{RKHS methods}
+
+\section{Linear smoothers}
+
+\bibliographystyle{plainnat}
+\bibliography{../../common/ryantibs.bib}
+
+\clearpage
+\appendix
+
+\section{B-splines}
+\label{app:bs}
+
+Note: this appendix is pretty much taken shamelessly from Appendix C of 
+\citet{tibshirani2022divided}.
+
+Though the truncated power basis \eqref{eq:tpb} is the simplest basis for
+splines, the B-spline basis is just as fundamental, and it was ``there at the 
+very beginning'', appearing in Schoenberg's original paper on splines
+\citep{schoenberg1946contributions1}. Here we are quoting
+\citet{deboor1976splines}, who gives a masterful survey of the history and
+properties of B-splines (and points out that the name ``B-spline'' is derived
+from Schoenberg's use of the term ``basic spline'', to further advocate for the
+idea that B-splines can be seen as \emph{the} basis for splines).
+
+\paragraph{Peano representation.}
+
+\def\st{^{\text{st}}}
+
+There are different ways to construct B-splines; here we cover a construction
+based on what is called the \emph{Peano representation} for B-splines. If $f$ is
+a $k+1$ times differentiable function $f$ on an interval $[a,b]$ (and its
+$(k+1)\st$ derivative is integrable), then by Taylor expansion
+\[
+f(z) = \sum_{i=0}^k \frac{1}{i!} (D^i f)(a) (z-a)^i + 
+\int_a^z \frac{1}{k!} (D^{k+1} f)(x) (z-x)^k \, dx.
+\]
+Note that we can rewrite this as
+\begin{equation}
+\label{eq:taylor}
+f(z) = \sum_{i=0}^k \frac{1}{i!} (D^i f)(a) (z-a)^i + 
+\int_a^b \frac{1}{k!} (D^{k+1} f)(x) (z-x)^k_+ \, dx. 
+\end{equation}
+
+Next we will take a particular divided difference on both sides of the above
+display. First we recall the definition of a divided difference: with respect to
+two centers $z_1,z_2$, it is defined by       
+\[
+f[z_1,z_2] =  \frac{f(z_2)-f(z_1)}{z_2-z_1},
+\]
+and more generally, with respect to $k+1$ centers $z_1,\dots,z_{k+1}$, for an
+integer $k \geq 1$, it is defined by  
+\[
+f[z_1,\dots,z_{k+1}] = \frac{f[z_2,\dots,z_{k+1}] -
+f[z_1,\dots,z_k]}{z_{k+1}-z_1}.
+\]
+(For this to reduce to the definition with two centers, when $k=1$, we take by 
+convention $f[z]=f(z)$.)   
+
+Returning back to our main thread, we take a divided difference in the Taylor
+expansion \eqref{eq:taylor} with respect to arbitrary centers $z_1,\dots,z_{k+2}
+\in [a,b]$, where we assume without a loss of generality that $z_1 < \cdots <
+z_{k+2}$, and then we use linearity to exchange divided differencing with
+integration, yielding   
+\begin{equation}
+\label{eq:peano}
+k! \cdot f[z_1,\dots,z_{k+2}] = \int_a^b (D^{k+1} f)(x)
+\underbrace{(\cdot-x)^k_+[z_1,\dots,z_{k+2}]}_{P^k(x; z_{1:(k+2)})} \, dx, 
+\end{equation}
+where we have also used the fact that a $(k+1)\st$ order divided difference (with
+respect to any $k+2$ centers) of a $k\th$ degree polynomial is zero, and we
+multiplied both sides by $k!$. To be clear, the notation \smash{$(\cdot -
+  x)^k_+[z_1,\dots,z_{k+2}]$} means that we are taking the divided difference of
+the function \smash{$z \mapsto (z - x)^k_+$} with respect to centers
+$z_1,\dots,z_{k+2}$.    
+
+\paragraph{B-spline definition.}  
+
+The result in \eqref{eq:peano} shows that the $(k+1)\st$ divided difference 
+of any (smooth enough) function $f$ can be written as a weighted average of 
+its $(k+1)\st$ derivative, in a local neighborhood around the corresponding
+centers, where the weighting is given by a universal kernel \smash{$P^k(\cdot;
+  z_{1:(k+2)})$} (that does not depend on $f$), which is called the \emph{Peano 
+  kernel} formulation for the B-spline; to be explicit, this is
+\[
+P^k(x; z_{1:(k+2)}) = (\cdot - x)^k_+[z_1,\dots,z_{k+2}].
+\]
+Since 
+\[
+(z-x)^k_+ - (-1)^{k+1} (x-z)^k_+ =  (z-x)^k,
+\]
+and any $(k+1)\st$ order divided difference of the $k\th$ degree polynomial $z
+\mapsto (z-x)^k$ is zero, we can rewrite the second-to-last display as
+\[
+P^k(x; z_{1:(k+2)}) = (-1)^{k+1} (x - \cdot)^k_+[z_1,\dots,z_{k+2}].
+\]
+The function \smash{$P^k(\cdot; z_{1:(k+2)})$} is called a $k\th$ degree
+\emph{B-spline} with knots $z_{1:(k+2)}$. It is a linear combination of $k\th$ 
+degree truncated power functions and is hence indeed a $k\th$ degree spline.  
+
+It is often more convenient to deal with the \emph{normalized B-spline}:
+\[
+M^k(x; z_{1:(k+2)}) = (-1)^{k+1} (z_{k+2}-z_1) 
+(x - \cdot)^k_+[z_1,\dots,z_{k+2}]. 
+\]
+It is easy to show that 
+\[
+\text{$M^k(\cdot; z_{1:(k+2)})$ is supported on $[z_1,z_{k+2}]$, and  
+$M^k(x; z_{1:(k+2)})>0$ for $x \in (z_1,z_{k+2})$}.  
+\]
+To see the support result, note that for $x > z_{k+2}$, we are taking a divided
+difference of all zeros, which of course zero, and for $x < z_1$, we are taking 
+a $(k+1)\st$ order divided difference of a polynomial of degree $k$, which is
+again zero. To see the positivity result, we can, for example, appeal to 
+induction on $k$ and the recursion to come later.
+
+\paragraph{B-spline basis.}  
+
+To build a local basis the space of $k\th$ degree splines with knots
+$t_1,\dots,t_r$, which we assume lie in the interior of $[a,b]$, we first define
+boundary knots   
+\[
+t_{-k} < \cdots < t_{-1} < t_0 = a, \quad \text{and} \quad 
+b = t_{r+1} < t_{r+2} < \cdots < t_{r+k+1}. 
+\]
+(Any such values for $t_{-k},\dots,t_0$ and $t_{r+1},\dots,t_{r+k+1}$ will
+suffice to produce a basis; in fact, setting $t_{-k}=\cdots=t_0$ and
+$t_{r+1}=\cdots=t_{r+k+1}$ would suffice, though this would require us to 
+understand how to properly interpret divided differences with repeated centers;
+as in Definition 2.49 of \citet{schumaker2007spline}.)  We then define the
+normalized B-spline basis \smash{$M^k_j$}, $j=1,\dots,r+k+1$ 
+\[
+M^k_j = M^k(\cdot ; t_{(j-k-1):j}) \Big|_{[a,b]}, 
+\quad j=1,\dots,r+k+1. 
+\]
+It is clear that each \smash{$M^k_j$}, $j=1,\dots,r+k+1$ is a $k\th$ degree    
+spline with knots in $t_1,\dots,t_r$; hence to verify that they are a basis for
+this space we only need to show their linear independence, which is
+straightforward using the structure of their supports. 
+
+For concreteness, we note that the $0\th$ degree normalized B-splines basis are
+simply indicator functions,
+\[
+M^0_j = 1_{I_j}, \quad j=1,\dots,r+1.
+\]
+Here $I_0=[t_0,t_1]$ and $I_i=(t_i,t_{i+1}]$, $i=1,\dots,r$, and we use
+$t_{r+1}=b$ for notational convenience. We note that this particular choice for
+the half-open intervals (left- versus right-side open) is arbitrary, but
+consistent with our definition of the truncated power basis \eqref{eq:tpb}
+when $k=0$. 
+
+Figure \ref{fig:bs} shows example normalized B-splines of degrees 0 through 3.    
+
+\begin{figure}[tb]
+\centering
+\includegraphics[width=0.475\textwidth]{bs0.pdf} 
+\includegraphics[width=0.475\textwidth]{bs1.pdf} 
+\includegraphics[width=0.475\textwidth]{bs2.pdf} 
+\includegraphics[width=0.475\textwidth]{bs3.pdf} 
+\caption{\it B-splines of degrees 0 through 3. The knot points are marked by
+  dashed blue vertical lines.}
+\label{fig:bs}
+\end{figure}
+
+\paragraph{Recursive formulation.} 
+
+B-splines satisfy a recursion relation that can be seen directly from the
+recursive nature of divided differences: for any $k \geq 1$ and centers $z_1 <
+\cdots < z_{k+2}$,  
+\begin{align*}
+(x - \cdot)^k_+ [z_1,\dots,z_{k+2}]
+&= \frac{(x - \cdot)^k_+[z_2,\dots,z_{k+2}] - 
+(x -\cdot)^k_+[z_1,\dots,z_{k+1}]}{z_{k+2} - z_1} \\
+&= \frac{(x-z_{k+2})(x - \cdot)^{k-1}_+[z_2,\dots,z_{k+2}] 
+- (x-z_1) (x - \cdot)^{k-1}_+[z_1,\dots,z_{k+1}] }{z_{k+2} - z_1},  
+\end{align*} 
+where in the second line we applied the Leibniz rule for divided differences 
+\[
+fg [z_1,\dots,z_{k+1}] = \sum_{i=1}^{k+1} f[z_1,\dots,z_i] g[z_i,\dots,z_{k+1}] 
+\]
+to conclude that
+\begin{align*}
+(x - \cdot)^k_+ [z_1,\dots,z_{k+1}] &= (x-z_1) \cdot 
+(x - \cdot)^{k-1}_+ [z_1,\dots,z_{k+1}] \\
+(x - \cdot)^k_+ [z_2,\dots,z_{k+2}] &= (x - \cdot)^{k-1}_+ 
+  [z_2,\dots,z_{k+2}] \cdot (x-z_{k+2}). 
+\end{align*}
+Translating the above recursion over to normalized B-splines, we get 
+\[
+M^k(x; z_{1:(k+2)}) = \frac{x-z_1}{z_{k+1}-z_1} \cdot 
+M^{k-1}(x; z_{1:(k+1)}) + \frac{z_{k+2}-x}{z_{k+2}-z_2} \cdot 
+M^{k-1}(x; z_{2:(k+2)}),  
+\]
+which means that for the normalized basis, 
+\[
+M^k_j(x) = \frac{x-t_{j-k-1}}{t_{j-1}-t_{j-k-1}} \cdot
+M^{k-1}_{j-1}(x) + \frac{t_j-x}{t_j-t_{j-k}} \cdot M^{k-1}_j(x), 
+\quad j=1,\dots,r+k+1.  
+\]
+Above, we naturally interpret \smash{$M^{k-1}_0 = M^{k-1}(\cdot; 
+  t_{-k:0})|_{[a,b]}$} and \smash{$M^{k-1}_{r+k+1} = M^{k-1}(\cdot;   
+  t_{(r+1):(r+k+1)})|_{[a,b]}$}. 
+
+The above recursions are very important, both for verifying numerous properties
+of B-splines and for computational purposes. In fact, many authors prefer to
+use recursion to define a B-spline basis in the first place.
+
+\end{document}
+
