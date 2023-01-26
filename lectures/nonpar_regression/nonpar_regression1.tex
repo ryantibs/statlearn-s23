@@ -396,12 +396,20 @@ adaptive neighborhoods---whose radius at $x$ is defined by the distance to the
 $k\th$-nearest neighbor.
 
 In fact, under suitable conditions, it can be shown that kNN regression acts
-like spherical kernel smoothing with a \emph{density-dependent local bandwidth}       
+like spherical kernel smoothing with a \emph{density-dependent local bandwidth}; 
+that is, if $w(x) = (w_1(x), \dots, w_n(x)) \in \R^n$ denotes the kNN weight
+function, and we write $w_i(x) = w(x, x_i)$ to emphasize that this weight gets
+attributed to $(x_i, y_i)$ in the weighted sum \smash{$w(x)^\T Y = \sum_{i=1}^n
+  w(x, x_i) y_i$} which gives us the kNN prediction at $x$, then for large $n$, 
+\[
+w(x, z) \approx \frac{1}{k} \cdot 1\{ \|x - z\|_2 \leq h(x) \} 
+\]
+where 
 \[
 h(x) = \bigg[ \frac{k}{n p(x)} \bigg]^{1/d},
 \]
-where $p(x)$ is the density of the input distribution at $x$. This is referred
-to as the effective kernel for kNN regression. 
+where $p(x)$ is the density of the input distribution at $x$. This is often
+referred to as the equivalent kernel for kNN regression.  
 
 \subsection{Local linear regression}
 
@@ -690,8 +698,8 @@ splines, which we'll learn a bit later on.)
 \begin{figure}[tb]
 \centering
 \includegraphics[width=0.6\textwidth]{order4.pdf}
-\caption{\it A higher-order kernel function---specifically, a kernel of  order 
-  4.}   
+\caption{\it A higher-order kernel function---specifically, a kernel of order
+  4.}    
 \label{fig:order4}
 \end{figure}
 

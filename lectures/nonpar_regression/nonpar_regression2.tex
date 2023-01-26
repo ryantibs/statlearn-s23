@@ -245,7 +245,7 @@ second derivative is square integrable), and $x_1,\dots,x_n \in [a,b]$ are
 arbitrary, then there exists a natural cubic spline $f$ with knots at
 $x_1,\dots,x_n$ such that:
 \begin{itemize}
-\item $f(x_i)=\tf(x_i)$, $i=1,\dots,n$; and 
+\item $f(x_i) = \tf(x_i)$, $i=1,\dots,n$; and 
 \item $\int_a^b [f''(x)]^2 \, dx \leq \int_a^b [\tf''(x)]^2 \, dx$.
 \end{itemize}
 Note that this would in fact prove that we can restrict our attention in problem 
@@ -324,13 +324,13 @@ w(x)^\T Y,
 \]
 which means, once again, smoothing splines are linear smoothers.
 
-A note on computation: the coefficients \smash{$\hbeta = (N^\T N + \lambda
-  \Omega)^{-1} N^\T Y$} can be computed in $O(n)$ operations. For this we form 
-$N$ using the B-spline basis (for natural splines), as then the matrix $N^\T N +
-\Omega I$ will be banded. In fact, more specialized computations are possible by
-taking advantage of the more precise structure (beyond bandedness) afforded by
-splines. Altogether, in practice, smoothing spline computations are extremely
-fast. 
+A remark on computation: the coefficients \smash{$\hbeta = (N^\T N + \lambda 
+  \Omega)^{-1} N^\T Y$} can be computed in $O(n)$ operations. For this, we form  
+$N$ using the B-spline basis (for natural splines), since then the matrix $N^\T
+N + \Omega I$ will be banded. In fact, more specialized computations are
+possible by taking advantage of more precise structure (beyond bandedness)
+afforded by splines. Altogether, in practice, smoothing spline computations are 
+extremely fast. 
 
 \subsection{Reinsch form}
 
@@ -375,49 +375,74 @@ estimator, we are tuning out the more wiggly components. See Figure
 \includegraphics[width=0.495\textwidth]{reinsch_basis.pdf}
 \includegraphics[width=0.495\textwidth]{reinsch_weight.pdf}
 \caption{\it Insights from the Reinsch form of the cubic smoothing spline, for
-  an example with $n=50$. The left plot shows the bottom 7 eigenvectors of $Q$,
-  drawn using a color gradient: purple means smallest eigenvalue and light blue
-  means largest eigenvalue. We can see that smoother eigenvectors correspond to
-  lower eigenvalues. The right plot shows the shrinkage weights
+  an example with $n=50$ input points. Left: the bottom 8 eigenvectors of $Q$,
+  drawn using a color gradient where purple means the smallest eigenvalue, and
+  light blue the largest eigenvalue. We see that smoother eigenvectors
+  correspond to lower eigenvalues. Right: the shrinkage weights
   $w_j=1/(1+\lambda \sigma_j)$, $j=1,\dots,n$ for 8 values of $\lambda$, again
-  drawn using a color gradient: purple means largest $\lambda$ and light blue
-  means smallest $\lambda$. For $\lambda$ larger, the weights decay faster, so
-  the smoothing spline estimator more strongly filters out wiggly components.}       
+  drawn using a color gradient where purple means the largest $\lambda$, and
+  light blue the smallest $\lambda$. For larger $\lambda$, the weights decay
+  faster, so the smoothing spline estimator more strongly filters out wiggly
+  components.}         
 \label{fig:reinsch}
 \end{figure}
 
 \subsection{Equivalent kernel}
 
-Something very interesting happens when we plot the rows of the smoothing spline
-matrix $S = N(N^\T N + \lambda \Omega)^{-1} N^\T$. For evenly-spaced inputs,
-they look like the translations of a kernel! See Figure \ref{fig:ss_kernel}, left
-panel. Even more interestingly, for unevenly-spaced inputs, the rows still have
-a kernel shape; but now, the bandwidth appears to adapt to the density of the
-input points: lower density, larger bandwidth. See Figure \ref{fig:ss_kernel},
-right panel.
+Recall that we can write a smoothing spline prediction as \smash{$\hf(x) = 
+  w(x)^\T Y$}, for a weight function  $w(x) = (w_1(x), \dots, w_n(x)) \in \R^n$.
+We know the analytic form of this weight function, but how about its qualitative
+behavior? To be more precise, if we denote each component function by $w_i(x) =
+w(x, x_i)$ to emphasize that this weight gets attributed to $(x_i, y_i)$ in the
+weighted sum \smash{$w(x)^\T Y = \sum_{i=1}^n w(x, x_i) y_i$} which gives us the
+smoothing spline prediction at $x$, then we can ask the following questions:         
+\begin{itemize}
+\item What shape does $z \mapsto w(x, z)$ have? Is it kernel-like?
+\item Does this shape change as we vary the test point $x$? 
+\end{itemize}
+
+It's easy to just read off the answers to these questions from the rows of the
+smoother matrix $S = N(N^\T N + \lambda \Omega)^{-1} N^\T$, since in our
+expanded notation, its elements are
+\[
+S_{ij} = w_j(x_i) = w(x_i, x_j).
+\]
+Now, something very interesting happens when we plot a few rows of $S$. For
+evenly-spaced inputs, they look like the translations of the same kernel: see
+the left panel of Figure \ref{fig:ss_kernel}. Even more interestingly, for
+unevenly-spaced inputs, the rows still have a kernel shape but now the bandwidth
+appears to adapt to the density of the input points: lower density, larger
+bandwidth. See the right panel of Figure \ref{fig:ss_kernel}.
 
 \begin{figure}[tb]
 \centering
 \includegraphics[width=0.495\textwidth]{ss_kernel1.pdf}
 \includegraphics[width=0.495\textwidth]{ss_kernel2.pdf}
 \caption{\it Three sample rows of the cubic smoothing spline operator $S$
-  defined over $n=100$. The left plot uses evenly-spaced inputs on a grid. These
-  look precisely like translations of a kernel. The right plot uses input points
-  drawn i.i.d.\ from $N(0.5, 0.01)$. These still look like kernels, but the
-  bandwidth is larger in low-density regions of the input domain.}  
+  defined over $n=500$. Left: evenly-spaced inputs on a grid. The weights look
+  like they are given by translations of the same kernel. Right: inputs drawn
+  i.i.d.\ from $N(0.5, 0.01)$. The weights still look like kernels, but the
+  bandwidth is now larger in low-density regions of the input domain.}     
 \label{fig:ss_kernel}
 \end{figure}
 
 What we are seeing is an empirical validation of a beautiful asymptotic result
-by \citet{silverman1984spline}. It turns out that the cubic smoothing spline
-estimator is asymptotically equivalent to a kernel regression estimator, with an
-unusual choice of kernel. Recall that both are linear smoothers; this
-equivalence is achieved by showing that under some conditions the smoothing
-spline weights converge to kernel weights, under the ``Silverman kernel'': 
+by \citet{silverman1984spline}, who proved that the cubic smoothing spline
+estimator is asymptotically equivalent to a kernel regression estimator, with an 
+unusual choice of kernel. Specifically, under suitable regularity conditions, we
+have the large $n$ approximation,\footnote{Silverman actually shows that
+  \smash{$w(x, z) \approx \frac{1}{h(z)} \frac{1}{p(z)} K\left( \frac{x-z}{h(z)}
+    \right)$}, but the version we are stating has a more natural interpretation
+  with respect to Figure \ref{fig:ss_kernel}, and is a consequence of symmetry
+  of the smoother matrix $S$.} 
+\[
+w(x, z) \approx \frac{1}{h(x)} \frac{1}{p(x)} K\bigg( \frac{x-z}{h(x)} \bigg), 
+\]
+where $K$ is the ``Silverman kernel'': 
 \[
 K(t) = \frac{1}{2} \exp(-|t|/\sqrt{2}) \sin(|t|/\sqrt{2} + \pi/4), 
 \]
-and a local choice of bandwidth 
+and we have the local bandwidth: 
 \[
 h(x) = \bigg[ \frac{\lambda}{p(x)} \bigg]^{1/4},
 \]
