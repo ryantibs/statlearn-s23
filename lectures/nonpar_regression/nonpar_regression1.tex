@@ -331,14 +331,15 @@ model, covered near the end.
 \section{Kernel smoothing}
 
 One level up in sophistication is \emph{kernel smoothing} or \emph{kernel 
-  regression}. We begin with a kernel function $K : \R \to \R$, satisfying   
+  regression}. We begin with a kernel function $K : \R \to \R_+$, satisfying    
 \[
 \int K(t) \, dt = 1, \quad
 \int t K(t) \, dt = 0, \quad
 0 < \int t^2 K(t) \, dt < \infty.
 \]
-Three common examples are the spherical (also called rectangular or boxcar)
-kernel: 
+Note carefully that---for now---we are assuming the kernel can only take
+nonnegative values, $K \geq 0$. Three common examples are the spherical (also
+called rectangular or boxcar) kernel: 
 \[
 K(t) = 
 \begin{cases}
@@ -679,20 +680,21 @@ before. Hence again, local polynomial regression is a linear smoother.
 In multiple dimensions, $d>1$, local polynomials become kind of tricky to fit,
 because of the explosion in terms of the number of parameters we need to
 represent a $k\th$ order polynomial in $d$ variables. Hence, an interesting
-alternative is to return back kernel smoothing but use a \emph{higher-order 
-  kernel}. A kernel function $K$ is said to be of order $k$ provided that
+alternative is to return back kernel smoothing but to use a \emph{higher-order
+  kernel}. A function $K : \R \to \R$ is said to be a kernel of order $k$ 
+provided that 
 \[ 
 \int K(t) \, dt = 1, \quad
 \int t K(t) \, dt = 0, \; j=1,\dots,k-1, \quad
 0 < \int t^k K(t) \, dt < \infty.
 \]
 This means that the kernels we were looking at so far were of order 2. An
-example of a 4th order kernel is 
+example of a 4th order kernel is  
 \[
 K(t) = \frac{3}{8}(3-5t^2) 1\{|t|\leq 1\}, 
 \]
-plotted in Figure \ref{fig:order4}. Notice that it takes negative values! 
-(Higher-order kernels, in fact, have an interesting connection to smoothing
+plotted in Figure \ref{fig:order4}. Notice that it takes negative values!
+(Higher-order kernels, in fact, have an interesting connection to smoothing 
 splines, which we'll learn a bit later on.)
 
 \begin{figure}[tb]
