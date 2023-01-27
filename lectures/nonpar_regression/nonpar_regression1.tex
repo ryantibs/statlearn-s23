@@ -506,10 +506,10 @@ near the boundary).
 
 Like kNN regression, the kernel smoothing estimator is universally consistent,
 meaning that under essentially no assumptions we can still get
-\smash{$\E\|\hf-f_0\|_2^2 \to 0$} as $n \to \infty$, provided we use a
-nonnegative compactly supported kernel $K$ and bandwidth $h=h_n$ satisfying 
-$h_n \to 0$ and $nh_n^d \to \infty$ as $n \to \infty$. See Chapter 5.2 of
-\citet{gyorfi2002distribution}. 
+\smash{$\E\|\hf-f_0\|_2^2 \to 0$} as $n \to \infty$, provided we use a compactly
+supported kernel $K$ and a bandwidth $h=h_n$ such that $h_n \to 0$ and $nh_n^d
+\to \infty$ as $n \to \infty$. See Chapter 5.2 of
+\citet{gyorfi2002distribution}.
 
 Unfortunately, local linear regression does not share this property, and fails
 to be universally consistent. In theory, this can be rectified using a suitable
@@ -529,8 +529,8 @@ spherical kernel and bandwidth \smash{$h \asymp n^{-1/(2+d)}$} satisfies
 \label{eq:kernel_rate}
 \E\|\hf - f_0\|_2^2 \lesssim n^{-2/(2+d)} \quad \text{in probability},
 \end{equation}
-just like kNN regression. Similar results hold for more general nonnegative
-compactly supported kernels.
+with respect to draws of $x_i$, $i=1,\dots,n$, just like kNN regression. Similar
+results hold for more general compactly supported kernels. 
 
 Proof sketch: as usual, denote $\sigma^2 = \Var(\epsilon_0)$, fix the input
 points (condition on them), and condition on $x_0$. We'll compute the bias and
@@ -647,8 +647,8 @@ satisfies
 \label{eq:kernel_rate}
 \E\|\hf - f_0\|_2^2 \lesssim n^{-4/(4+d)} \quad \text{in probability},
 \end{equation}
-for general nonnegative compactly supported kernels. We can see this matches the
-rate in \eqref{eq:holder_lbd} for $s=2$.
+with respect to draws of $x_i$, $i=1,\dots,n$, for general compactly supported
+kernels. We can see this matches the rate in \eqref{eq:holder_lbd} for $s=2$.  
 
 \subsection{Local polynomials and higher-order kernels}
 
@@ -678,11 +678,10 @@ where now $b(x) = (1,x,\dots,x^k)$, $B$ is an $n \times (k+1)$, $B \in \R^{n
 before. Hence again, local polynomial regression is a linear smoother. 
 
 In multiple dimensions, $d>1$, local polynomials become kind of tricky to fit,
-because of the explosion in terms of the number of parameters we need to
-represent a $k\th$ order polynomial in $d$ variables. Hence, an interesting
-alternative is to return back kernel smoothing but to use a \emph{higher-order
-  kernel}. A function $K : \R \to \R$ is said to be a kernel of order $k$ 
-provided that 
+because of the explosion in the number of parameters we need to represent a
+$k\th$ order polynomial in $d$ variables. Hence, an interesting alternative is
+to return back kernel smoothing but to use a \emph{higher-order kernel}. A
+function $K : \R \to \R$ is said to be a kernel of order $k$ provided that
 \[ 
 \int K(t) \, dt = 1, \quad
 \int t K(t) \, dt = 0, \; j=1,\dots,k-1, \quad
