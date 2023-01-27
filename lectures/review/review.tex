@@ -902,8 +902,8 @@ is called the \emph{Bayes classifier}, defined by
 \[
 C(x) = 
 \begin{cases}
-0 & f(x) \leq 1/2 \\
-1 & f(x) > 1/2
+0 & \text{if $f(x) \leq 1/2$} \\
+1 & \text{if $f(x) > 1/2$}
 \end{cases}.
 \]
 To see this, consider any classifier $C'$ and any fixed $x$,
@@ -932,8 +932,8 @@ Many classifiers are \emph{plug-in classifiers}, of the form
 \[
 \hC(x) = 
 \begin{cases}
-0 & \hf(x) \leq 1/2 \\
-1 & \hf(x) > 1/2
+0 & \text{if $\hf(x) \leq 1/2$} \\
+1 & \text{if $\hf(x) > 1/2$}
 \end{cases},
 \]
 for an estimator \smash{$\hf$} of the regression function. It is often useful to 

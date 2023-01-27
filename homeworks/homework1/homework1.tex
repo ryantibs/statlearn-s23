@@ -184,9 +184,9 @@ In this exercise, we will analyze the risk of wavelet denoising.
   \[
   \htheta_\ell = S_\lambda(z_\ell) 
   = \begin{cases}
-    z_\ell-\lambda & z_\ell > \lambda \\
-    0 & |z_\ell| \leq \lambda \\
-    z_\ell+\lambda & z_\ell < -\lambda
+    z_\ell-\lambda & \text{if $z_\ell > \lambda$} \\
+    0 & \text{if $|z_\ell| \leq \lambda$} \\
+    z_\ell+\lambda & \text{if $z_\ell < -\lambda$}
   \end{cases}, 
   \quad \ell=1,\dots,N.
   \]
@@ -295,8 +295,8 @@ In this exercise, we will analyze the risk of wavelet denoising.
   \ttheta_{jk}(y) = \begin{cases}
   \displaystyle
   S_\lambda \bigg( \frac{1}{n} \sum_{i=1}^n y_i \psi_{jk}(x_i) 
-  \bigg) & j \leq j^* \\
-  0 & j > j ^*
+  \bigg) & \text{if $j \leq j^*$} \\
+  0 & \text{if $j > j ^*$}
   \end{cases},
   \]
   where $S_\lambda$ is the soft-thresholding operator, as before, and $j^*$ is a

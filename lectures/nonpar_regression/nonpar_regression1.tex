@@ -203,7 +203,7 @@ moderate $k$. Why is this?  It helps to write
 where the weights functions are defined as
 \[
 w_i(x) = \begin{cases}
-1/k & i \in \cN_k(x) \\ 
+1/k & \text{if $i \in \cN_k(x)$} \\ 
 0 & \text{otherwise}
 \end{cases}, \quad i=1,\dots,n.
 \]
@@ -341,11 +341,7 @@ Note carefully that---for now---we are assuming the kernel can only take
 nonnegative values, $K \geq 0$. Three common examples are the spherical (also
 called rectangular or boxcar) kernel: 
 \[
-K(t) = 
-\begin{cases}
-1 & |t| \leq 1 \\
-0 & \text{else}
-\end{cases},
+K(t) = 1\{|t| \leq 1\},
 \]
 the Gaussian kernel:
 \[
@@ -353,10 +349,7 @@ K(t) = \frac{1}{\sqrt{2\pi}} \exp(-t^2/2),
 \]
 and the Epanechnikov kernel:
 \[
-K(t) = \begin{cases}
-3/4 (1-t^2) & |t| \leq 1 \\ 
-0 & \text{else}
-\end{cases}.
+K(t) = 3/4 (1-t^2) 1\{|x| \leq 1\}.
 \]
 
 Given a choice of kernel $K$, and a choice of bandwidth $h>0$, the
@@ -392,9 +385,9 @@ regression estimator \eqref{eq:knn}, which can be thought of as a raw
 
 Of course, with a spherical kernel, there is a strong similarity between kernel
 smoothing and kNN regression. The difference is that the former performs
-averages over fixed neighborhoods, whereas the latter performs averages over
-adaptive neighborhoods---whose radius at $x$ is defined by the distance to the
-$k\th$-nearest neighbor.
+averages over fixed neighborhoods, whereas the latter uses adaptive
+neighborhoods---whose radius at $x$ is defined by the distance to the
+$k\th$-nearest neighbor.  
 
 In fact, under suitable conditions, it can be shown that kNN regression acts
 like spherical kernel smoothing with a \emph{density-dependent local bandwidth}; 
@@ -454,20 +447,15 @@ where $b(x) = (1,x) \in \R^{d+1}$, $B \in \R^{n \times (d+1)}$ is the matrix
 whose $i\th$ row is $b(x_i)$, and $\Omega \in \R^{n \times n}$ is a diagonal 
 matrix whose $i\th$ element is $K(\|x-x_i\|_2/h)$. 
 
-Thus we can write the local linear regression prediction more concisely as a
-linear smoother \eqref{eq:linear_smoother}: \smash{$\hf(x) = w(x)^\T Y$}, where
-the weight vector is
+We can write the local linear regression more concisely as a linear smoother
+\eqref{eq:linear_smoother}: \smash{$\hf(x) = w(x)^\T Y$}, where   
 \[
 w(x) = \Omega B (B^\T \Omega B)^{-1} b(x).
 \]
 The vector of fitted values \smash{$\hat{Y} = (\hf(x_1),\dots,\hf(x_n))$} can
 be expressed as  
 \[
-\hat{Y} = 
-\left(\begin{array}{c} 
-w(x_1)^\T y \\ \vdots \\ w(x_n)^\T y
-\end{array}\right)
-= B (B^\T \Omega B)^{-1} B^\T \Omega Y,
+\hat{Y} = B (B^\T \Omega B)^{-1} B^\T \Omega Y,
 \]
 which should look familiar to you from weighted least squares.
 
@@ -505,19 +493,17 @@ near the boundary).
 \subsection{Universal consistency}
 
 Like kNN regression, the kernel smoothing estimator is universally consistent,
-meaning that under essentially no assumptions we can still get
-\smash{$\E\|\hf-f_0\|_2^2 \to 0$} as $n \to \infty$, provided we use a compactly
-supported kernel $K$ and a bandwidth $h=h_n$ such that $h_n \to 0$ and $nh_n^d
-\to \infty$ as $n \to \infty$. See Chapter 5.2 of
-\citet{gyorfi2002distribution}.
+which means \smash{$\E\|\hf-f_0\|_2^2 \to 0$} as $n \to \infty$, under
+essentially no assumptions, provided that we use a compactly supported kernel
+$K$ and a bandwidth $h=h_n$ such that $h_n \to 0$ and $nh_n^d \to \infty$ as $n
+\to \infty$. See Chapter 5.2 of \citet{gyorfi2002distribution}.  
 
 Unfortunately, local linear regression does not share this property, and fails
 to be universally consistent. In theory, this can be rectified using a suitable
-truncation trick (restricting the domain in the weighted least squares problem
-\eqref{eq:llr} that defines each local linear regression estimate to be an
-$\ell_\infty$ ball whose radius diverges with $n$). See Chapter 5.3 of 
-\citet{gyorfi2002distribution}. However, we should note that this truncated
-estimator doesn't seem to be in common use in practice.  
+truncation trick (restricting the domain in \eqref{eq:llr} to an $\ell_\infty$
+ball whose radius diverges with $n$); see Chapter 5.3 of
+\citet{gyorfi2002distribution}. However,  this doesn't seem to be in common use
+in practice.    
 
 \subsection{Rate of convergence}
 
@@ -586,7 +572,7 @@ the error rate of \smash{$n^{-2/(2+d)}$}, as claimed.
 
 To define and study higher-order smoothness classes, we'll need some more
 notation: given a multi-index $\alpha=(\alpha_1,\dots,\alpha_d) \in \Z^d_+$, we
-write  $|\alpha| = \alpha_1 + \cdots \alpha_d$ and 
+write $|\alpha| = \alpha_1 + \cdots \alpha_d$ and 
 \[
 D^\alpha f = \frac{\partial^{|\alpha|} f}{\partial x_1^{\alpha_1} \partial
   x_2^{\alpha_2} \dots \partial x_d^{\alpha_d}}.
