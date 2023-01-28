@@ -578,7 +578,7 @@ D^\alpha f = \frac{\partial^{|\alpha|} f}{\partial x_1^{\alpha_1} \partial
   x_2^{\alpha_2} \dots \partial x_d^{\alpha_d}}.
 \]
 For an integer $r \geq 0$, exponent $0 < \gamma \leq 1$, radius $L>0$, and
-domain $\Omega$, we can now define the H{\"o}lder class
+domain $\Omega \subseteq \R^d$, we can now define the H{\"o}lder class  
 \[
 C^{r+\gamma}(L; \Omega) = \Big\{ f : \Omega \to \R \,:\, | D^\alpha f (x) -
 D^\alpha f(y) | \leq L \|x-y\|_2^\gamma \; \text{for all $|\alpha| = r$, and
@@ -599,6 +599,15 @@ constant $L>0$, is
 which generalizes the result we cited earlier for Lipschitz functions in
 \eqref{eq:lipschitz_lbd}. Again, we'll study this in detail in the minimax
 theory lecture. 
+
+% RJT note: I don't love this, because [0,1]^d is not open and it's easiest to
+% define a Holder space over an open domain (as otherwise what do you mean by 
+% being differentiable at the boundary?). But .... for consistency with the
+% Lipschitz statement and not to propogate a lot of changes now (since the
+% homework already has them prove the statement for [0,1]^d), we can just leave
+% it as is. And, even if we wanted to precise it's fine, as we could just define
+% the Lipschitz condition (in the Holder space definition) with respect to the
+% points in the interior.    
 
 So now let's think about rate optimal estimators. We saw from
 \eqref{eq:knn_rate} and \eqref{eq:kernel_rate} that both kNN regression and
