@@ -211,7 +211,7 @@ In this exercise, we will analyze the risk of wavelet denoising.
   \marginpar{\small [5 pts]}
   \[
     \E \|\theta - \htheta\|_2^2 \leq \tau^2 + (2\log{N}+1) \sum_{\ell=1}^N
-    \min\{\theta_\ell^2, \tau^2\}.   
+    \min\{\theta_\ell^2, \tau^2\}.    
   \]
 
   Hint: start with $\tau^2=1$ for simplicity. Prove that, for any $\mu,\lambda
@@ -238,9 +238,9 @@ In this exercise, we will analyze the risk of wavelet denoising.
   \end{equation}
   where $\epsilon_i \sim N(0,\sigma^2)$, independently, for $i=1,\dots,n$, and
   $x_i \in [0,1]$, $i=1,\dots,n$ are fixed (more on them later). We are going to
-  analyze the $L^2([0,1])$ risk of a wavelet smoothing estimator \smash{$\hf$},      
+  analyze the $L^2$ risk of a wavelet smoothing estimator \smash{$\hf$}, 
   \[
-  \E \|f - \hf\|_{L^2([0,1])}^2 = \E \bigg[ \int_0^1 (f(x) -  \hf(x))^2 \, dx \bigg]. 
+  \E \|f - \hf\|_2^2 = \E \bigg[ \int_0^1 (f(x) -  \hf(x))^2 \, dx \bigg].  
   \]
   The estimator \smash{$\hf$} will be defined by 
   \begin{equation}
@@ -258,20 +258,20 @@ In this exercise, we will analyze the risk of wavelet denoising.
   \]
   where $\psi_{jk}(x) = 2^{j/2} \psi(2^j x - k)$. (For notational convenience,
   we let $\psi_{-10} = 1$, and implicitly index all basis calculations starting 
-  from $j=-1$.) Verify that this collection is orthonormal in $L^2([0,1])$: the
-  functions are pairwise orthogonal and unit norm, with respect to the
-  $L^2([0,1])$ inner product    
+  from $j=-1$.) Verify that this collection is orthonormal in $L^2$: show that
+  the functions are pairwise orthogonal and unit norm, with respect to the $L^2$
+  inner product on $[0,1]$,   
   \marginpar{\small [2 pts]}
   \[
-  \langle f, g \rangle = \int_0^1 f(x) g(x) \, dx.
+  \langle g, h \rangle = \int_0^1 g(x) h(x) \, dx.
   \]
-  (Accordingly the $L^2([0,1])$ norm is given by \smash{$\|f\|_{L^2([0,1])}^2
-    = \langle f, f \rangle = \int_0^1 f(x)^2 \, dx$}.) 
+  (Accordingly the $L^2$ norm is simply given by \smash{$\|g\|_2^2= \langle g, g 
+    \rangle = \int_0^1 g(x)^2 \, dx$}.)   
 
 \item Explain why it is that we can write
   \marginpar{\small [1 pt]}
   \[
-  \E \|f - \hf\|_{L^2([0,1])}^2 = \sum_{j,k} (\theta_{jk}(f) - \ttheta_{jk}(y))^2,
+  \E \|f - \hf\|_2^2 = \sum_{j,k} (\theta_{jk}(f) - \ttheta_{jk}(y))^2,
   \]
   where the wavelet coefficients of $f$ are 
   \[
@@ -282,8 +282,8 @@ In this exercise, we will analyze the risk of wavelet denoising.
   \smash{$\hf$} in its Haar basis expansion \eqref{eq:wavelet_smoothing}.    
 
   Hint: by orthonormality, observe that \smash{$f = \sum_{j,k} \theta_{jk}(f) 
-    \psi_{jk}$}. It suffices to just name the theorem that relates the
-  $L^2([0,1])$ of a function to the norm of its coefficients.  
+    \psi_{jk}$}. It suffices to just name the theorem that relates the $L^2$
+  norm of a function to the norm of its coefficients.   
 
 \item We define the last few parts needed to understand \smash{$\hf$} and 
   analyze its risk. For each $j,k$, we define the empirical wavelet coefficient 
@@ -305,8 +305,7 @@ In this exercise, we will analyze the risk of wavelet denoising.
   By part (d), and the inequality $(a+b)^2 \leq 2a^2 + 2b^2$ (applied twice), we
   have 
   \[
-  \E \|f - \hf\|_{L^2([0,1])}^2 \leq 
-  2\underbrace{\sum_{j > j^*,k} \theta_{jk}^2(f)}_{e_1} 
+  \E \|f - \hf\|_2^2 \leq 2\underbrace{\sum_{j > j^*,k} \theta_{jk}^2(f)}_{e_1}  
   \,+\,
   4\underbrace{\sum_{j \leq j^*,k} (\theta_{jk}(f) - \ttheta_{jk}(f))^2}_{e_2}
   \,+\, 
@@ -392,7 +391,7 @@ In this exercise, we will analyze the risk of wavelet denoising.
   Concluding note: the risk bound you have shown, redefining the constant $C>0$
   as needed, is  
   \[
-  \E \|f - \hf\|_{L^2([0,1])}^2\leq C\bigg[ \frac{1}{n} + \log{n} \bigg(
+  \E \|f - \hf\|_2^2\leq C\bigg[ \frac{1}{n} + \log{n} \bigg(
   \frac{\sigma^2}{n} \bigg)^{2/3} \bigg],   
   \]
   for estimating a function with $\TV(f) \leq 1$ using Haar wavelet
@@ -419,11 +418,12 @@ where $\epsilon_i \sim N(0,1)$, independently, for $i=1,\dots,n$, and $x_i \in
 [0,1]^d$, $i=1,\dots,n$ are fixed and are laid out on a regular lattice, there
 exists constants $C,N>0$ such that for all $n \geq N$, 
 \[
-\inf_{\hf} \, \sup_{f \in C^k_d(L; [0,1]^d)} \, \E \big \|f - \hf
-\big\|_{L^2([0,1]^d)}^2 \geq C n^{-2k/(2k+d)}. 
+\inf_{\hf} \, \sup_{f \in C^k_d(L; [0,1]^d)} \, \E \|f - \hf \|_2^2 \geq
+C n^{-2k/(2k+d)}. 
 \]
-Make sure to write the full calculation from start to finish (even detailing the 
-steps that may be analogous to those in lecture). 
+To be clear, here \smash{$\|g\|_2^2 = \int_{[0,1]^d} g(x)^2 \, dx$}. Make sure
+to write the full calculation from start to finish (even detailing the steps
+that may be analogous to those in lecture).  
 \marginpar{\small [7 pts]}
 
 Explain why this certifies that the upper bound given in the last question for
