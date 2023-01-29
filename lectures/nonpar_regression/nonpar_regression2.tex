@@ -2,6 +2,7 @@
 
 \def\ParSkip{} 
 \input{../../common/ryantibs}
+\DeclareMathOperator*{\esssup}{ess\,sup}
 
 \title{Nonparametric Regression: Splines and RKHS Methods \\ \smallskip
 \large Advanced Topics in Statistical Learning, Spring 2023 \\ \smallskip
@@ -462,12 +463,289 @@ equivalent kernels.
 
 \section{Error analysis}
 
-Compared to the analysis for kNN and kernel smoothing, the error analysis for
-smoothing splines is a good deal more complex. Hence we'll dedicated an entire
-section to learning the tools behind it. The upshot is that we'll be able to use
-these tools to analyze a number of other estimators: 
+Compared to that for kNN and kernel smoothing, the error analysis for smoothing
+splines is a good deal more nuanced. Hence we'll dedicated an entire section to
+learning the tools behind it. The upshot is that we'll be learning a basic
+framework that can be used to analyze many other estimators---both nonparametric
+(such as other penalized empirical risk minimizers) and parametric (such as
+high-dimensional M-estimators, including the lasso).
+
+\subsection{Sobolev theory*}
+
+We'll begin by introducing Sobolev spaces. This material can be mostly skipped
+without interrupting the flow of understanding the main ideas in the rest of
+this lecture, thus the asterisk. Well actually, you should probably read the
+definition of weak differentiability, but you can treat the rest as
+optional. Yes, optional, but also super interesting and fairly fundamental in
+many ways, which is why we include some of the core details of Sobolev spaces 
+here. To learn more, an excellent reference is \citet{evans2010partial}. 
+
+\subsubsection{Weak derivatives}
+
+First we introduce what is known as \emph{weak differentiability}. A function $f
+: U \to \R$, where $U \subseteq \R^d$ is an open set, is called weakly
+differentiable provided that there is some function $g : U \to \R^d$ such that
+\begin{equation}
+\label{eq:weak_derivative}
+\int_U f(x) D \phi(x) \, dx = - \int_U g(x) \phi(x) \, dx,
+\quad \text{for all $\phi \in C_c^\infty(U)$}, 
+\end{equation}
+where $C_c^\infty(U)$ is the set of all infinitely differentiable functions with
+compact support in $U$, and $D\phi$ is the derivative of one such function
+$\phi$. The function $g$ satisfying \eqref{eq:weak_derivative} is unique almost
+everywhere, and denoted by $Df$ henceforth, called the weak derivative of $f$.
+
+The motivation for this definition of weak differentiability is integration by
+parts: if $f,\phi$ are differentiable in the classical (usual) sense, then
+\smash{$\int_U f(x) D \phi(x) \, dx = - \int_U Df(x) \phi(x) \, dx$} by
+integration by parts (applied componentwise), where there are no boundary terms
+because $\phi$ has compact support. Thus, we define the weak derivative $g = Df$
+such that this holds for all infinitely differentiable compactly-supported
+$\phi$.
+
+Higher-order derivatives follow similarly. For a multi-index
+$\alpha=(\alpha_1,\dots,\alpha_d) \in \Z^d_+$, recall, we write $|\alpha| =
+\alpha_1 + \cdots + \alpha_d$ and we denote  
+\[
+D^\alpha \phi = \frac{\partial^{|\alpha|} \phi}{\partial x_1^{\alpha_1} \partial 
+  x_2^{\alpha_2} \dots \partial x_d^{\alpha_d}},
+\]
+interpreted in the classical (usual) sense for a function $\phi$. In the weak
+sense, $f$ is said to have $\alpha\th$ weak differentiable $g$ if 
+\begin{equation}
+\label{eq:weak_derivative_alpha}
+\int_U f(x) D^\alpha \phi(x) \, dx = - (1)^{|\alpha|} \int_U g(x) \phi(x) \, dx,
+\quad \text{for all $\phi \in C_c^\infty(U)$}.   
+\end{equation}
+Again, the function $g$ satisfying \eqref{eq:weak_derivative_alpha} is unique
+almost everywhere, and we denote by $D^\alpha f$.
+
+Of course, the weak derivative reduces to the classical derivative exists when
+the latter exists. However, weak differentiability is more general. An example
+of a function that is weakly differentiable but not classically differentiable
+is
+\[
+f(x) = x_+, \quad \text{with weak derivative $Df(x) = 1\{x > 0\}$.} 
+\]
+An example of a function that is \emph{not} weakly differentiable is $f(x) =
+1\{x > 0\}$. For this, one can check that the condition
+\eqref{eq:weak_derivative} cannot hold: taking $\phi$ to be any function whose
+support includes 0, we learn that
+\[
+\phi(0) = \int g(x) \phi(x) \, dx.
+\]
+This cannot possibly be true for all infinitely differentiable $\phi$. This
+cannot possibly be true for all $\phi$ unless $g=0$. But if $g=0$, then we
+cannot recover $\phi(0)$ through integration, since the right-hand side above
+will always be 0.   
+
+\subsubsection{Sobolev spaces}
+
+We are now equipped to define what are called \emph{Sobolev spaces}. In what
+follows it'll be simplest to take the domain $U$ to be bounded, so let's 
+assume that henceforth (though to be clear it is by no means necessary). For an
+integer $k \geq 0$, and $1 \leq p \leq \infty$, we define the Sobolev space    
+\[
+W^{k,p}(U) = \Big\{ f : U \to \R \,:\, \text{$D^\alpha f$ exists in the weak
+  sense, and $\|D^\alpha f\|_p < \infty$ for all $|\alpha| \leq k$} \Big\}. 
+\]
+Here $\|\cdot\|_p$ denotes the $L^p$ norm on $U$: \smash{$\|f\|_p = (\int_U
+  |f(x)|^p \, dx)^{1/p}$ for $p < \infty$} and \smash{$\|f\|_\infty = \esssup_{x 
+  \in U} \, |f(x)|$}.
+
+Sobolev spaces are central in the study of partial differential equations, which
+is commonly where you'll find people (mathematicians) referring to them. But
+they also play an important role in nonparametric statistics. For example, if
+you recall the smoothing spline problem \eqref{eq:ss}, where we said that ``the  
+minimization is all functions $f$ for the which the criterion is well-defined
+and finite'', the domain here can actually be viewed as the Sobolev
+space\footnote{We'll ignore here, and in several other places, the fact that the 
+  domain is closed. Recall, we defined Sobolev spaces on open domains, and we  
+  will do the same for H{\"o}lder spaces as well. Hence, we are being slightly 
+  imprecise by abruptly allowing closed domains but it's easiest to do so for
+  simplicity of exposition.}  
+\[
+W^{m,2}([a,b]) = \Big\{ f : [a,b] \to \R \,:\, \text{$D^m f$ exists in the weak
+  sense, and $\|D^m f\|_2^2 = \int_a^b [D^m f(x)]^2 \, dx < \infty$} \Big\}. 
+\]
+
+We note that, generally speaking, when working in Sobolev spaces (just like
+$L^p$ spaces), we identify two functions that are equal almost everywhere. In 
+other words, each element $f$ in a Sobolev space is really an equivalence class
+of functions, any pair of which agree except on a set of measure zero.
+
+Now we recall \emph{H{\"o}lder spaces}. We touched on these in the lecture on 
+kernels. Formally, for an integer $r \geq 0$, and $0 < \gamma \leq 1$, we define
+the H{\"o}lder space
+\begin{multline*}
+C^{r+\gamma}(U) = \Bigg\{ f : U \to \R \,:\, \text{$D^\alpha f$ exists,
+  $\|D^\alpha f\|_\infty < \infty$ for all $|\alpha| \leq r$, and} \\   
+  \sup_{x \not= z} \, \frac{|D^\alpha f(x) - D^\alpha f(z)|}{\|x-z\|_2^\gamma} < 
+  \infty \; \text{for all $|\alpha| = r$} \bigg\}.   
+\end{multline*}
+In the above, we can interpret $D^\alpha f$ to mean a classical derivative, but
+as we'll discuss just below, we can also identify the H{\"o}lder space with a
+particular Sobolev space. 
+
+Let's pause to examine the relationship between the Sobolev space
+$W^{k,\infty}(U)$ and the H{\"o}lder space $C^k(U)$. The former contains all
+functions $f$ such that the $\alpha\th$ weak derivative of $f$ is bounded for
+all $|\alpha| \leq k$. The latter contains all functions $f$ such that the
+$\alpha\th$ derivative of $f$ is bounded for all $|\alpha| < k$, and $D^\alpha
+f$ Lipschitz for $|\alpha| = k$. It turns out that these two conditions are
+really saying the same thing, and we can identify $W^{k,\infty}(U)$ with
+$C^k(U)$. To be precise,  in doing so, we identify each $f$ in the Sobolev space
+with its classically differentiable version.
+
+Much more can be said about the connection between Sobolev and H{\"o}lder
+spaces, which is covered next.
+
+% Theorem 4 in Chapter 5.8 of Evans (2010); requires \partial U to be C^1. 
+
+\subsubsection{Embedding theorems}
+
+Among the whole optional part of material on Sobolev spaces, this next bit   
+really is the \emph{most} optional, but it's too cool not to cover. We start by
+defining norms on Sobolev and H{\"o}lder spaces; namely,
+\[
+\|f\|_{W^{k,p}(U)} = 
+\begin{dcases} 
+\Bigg( \sum_{|\alpha| \leq k} \|D^\alpha f\|_p^p \Bigg)^{1/p} & \text{if $p <
+  \infty$} \\
+\;\;\; \sum_{|\alpha| \leq k} \|D^\alpha f\|_\infty & \text{if $p = \infty$}   
+\end{dcases}
+\qquad \text{for $f \in W^{k,p}(U)$},
+\]
+and 
+\[
+\|f\|_{C^{r+\gamma}(U)} = \sum_{|\alpha| \leq r} \|D^\alpha f\|_\infty +
+\sum_{|\alpha| = r} \sup_{x \not= z} \, \frac{|D^\alpha f(x) - D^\alpha f(z)|} 
+{\|x-z\|_2^\gamma}
+\qquad \text{for $f \in C^{r+\gamma}(U)$}. 
+\] 
+Equipped with these norms, $W^{k,p}(U)$ and $C^{r+\gamma}(U)$ are Banach 
+spaces (complete normed linear spaces). In fact, when $p=2$, the space
+$W^{k,p}(U)$ is a Hilbert space (complete inner product space) under the inner
+product \smash{$\langle f, g \rangle_{W^{k,p}(U)} 
+= \sum_{|\alpha| \leq k} \langle D^\alpha f, D^\alpha g \rangle_2 
+= \sum_{|\alpha| \leq k} \int_U D^\alpha f(x) D^\alpha g(x) \, dx$.}
+
+Now here comes the cool part, which are special inequalities\footnote{In an
+  unfortunate clash of nomenclature with statistics, you'll often hear
+  mathematicians calling these ``estimates''.} involving Sobolev norms that lead 
+to what are known as \emph{embedding theorems}. There are really several
+embedding theorems that were developed over many years, by different authors
+(Gagliardo, Nirenberg, Sobolev, Morrey, others), but now the totality of them is
+usually just called ``the Sobolev embedding theorem''. In a nutshell, this is
+what it says (recall that $d$ refers to the dimension of the domain $U$, which
+is assumed to be an open bounded subset of $\R^d$). 
+
+\paragraph{The case $pk < d$, subcritical regime.}
+
+In this case we a have lower smoothness-to-dimension ratio. Let $0 \leq \ell <
+k$ be an integer, and $p < q < \infty$, such that the pair satisfies   
+\[
+\frac{1}{q} - \frac{\ell}{d} = \frac{1}{p} - \frac{k}{d}.
+\]
+Then we have, for a constant $C>0$ depending only on $k,p,\ell,q$ and $U$, 
+\[
+\|f\|_{W^{\ell,q}(U)} \leq C \|f\|_{W^{k,p}(U)}, \quad \text{for all $f \in
+  W^{k,p}(U)$}.
+\]
+This means that $W^{k,p}(U) \subseteq W^{\ell,q}(U)$, and further we get what
+is known as a \emph{continuous embedding} of normed spaces. From the above    
+inequality, we learn that any norm ball of radius $\rho$ in the former space
+is contained in a normal ball of the latter, whose radius is at most $C\rho$.
+
+Note that in the special case where we take $\ell = 0$, we get that for  
+\[
+q = \frac{pd}{d-pk},
+\]
+and a constant $C>0$ depending only on $k,p,q$ and $U$, it holds that 
+\[
+\|f\|_q \leq C \|f\|_{W^{k,p}(U)}, \quad \text{for all $f \in W^{k,p}(U)$}. 
+\]
+This means that $W^{k,p}(U) \subseteq L^q(U)$, and the embedding is continuous.  
+
+% Theorems 2 and 6 in Chapter 5.6 of Evans (2010); require \partial U to be
+% C^1. Doesn't actually state the result for general \ell, only for \ell=0. 
+
+\paragraph{The case $pk > d$, supercritical regime.}
+
+In this case we a have higher smoothness-to-dimension ratio. Let $0 \leq r < k$
+be an integer, and $0 < \tau \leq 1$, such that the pair satisfies 
+\[
+\frac{r+\tau}{d} = \frac{k}{d} - \frac{1}{p}.
+\]
+A technical detail: if the value of $r,\tau$ satisfying the above results in
+$\tau = 1$, then we need to ``downgrade'' it to a value less than 1. That is,
+let $\gamma = \tau$ if $\tau < 1$, and otherwise let $0 < \gamma < 1$. Then we
+have, for a constant $C>0$ depending only on $k,p,r,\gamma$ and $U$,       
+\[
+\|f\|_{C^{r+\gamma}(U)} \leq C \|f\|_{W^{k,p}(U)}, \quad \text{for all $f \in
+  W^{k,p}(U)$}. 
+\]
+This means that $W^{k,p}(U) \subseteq C^{r+\gamma}(U)$, and the embedding is
+continuous. In view of this, we can always identify each function $f \in
+W^{k,p}(U)$ with its $r$ times classically differentiable version.     
+
+% Theorems 5 and 6 in Chapter 5.6 of Evans (2010); require \partial U to be
+% C^1. Doesn't quite state the result the same way as we do. 
+
+\medskip
+(The critical regime $pk = d$ is actually a bit more subtle and we'll skip over
+it.)  
+
+How do we interpret the Sobolev embedding theorem? In the subcritical regime, it
+says that we can trade off smoothness in the differential sense with smoothness
+in the integral sense. Given a $k$ times (weakly) differentiable function, whose
+derivatives are in $L^p(U)$, the embedding theorem tells us that its derivatives
+of order $\ell < k$ are less ``peaky'' and more ``evenly spread out'', since
+they are $L^q(U)$ with $q > p$.
+
+In the subcritical regime, the conclusion is arguably even more
+interesting---you might even say, amazing! It says that knowing that derivatives
+are smooth in a global (integrated) sense tells us something about local
+smoothness of lower order derivatives, at each point in the domain. Given a $k$
+times (weakly) differentiable function, the embedding theorem starts off with a
+statement about the size of \smash{$\sum_{|\alpha| \leq k} \int_U |D^\alpha
+  f(x)|^p \, dx$}, and translates this into a statement about the H{\"o}lder
+constant of $D^\alpha f$ for $|\alpha| < k$.    
+
+Figure \ref{fig:sobolev} gives an illustration of the tradeoffs navigated by the
+Sobolev embedding theorem (the plots that are shown are sometimes called
+``DeVore diagrams'' in honor of Ron DeVore).  
 
 [[ More to come ... sections below to be filled out ... ]]
+
+\begin{figure}[tb]
+\centering
+\includegraphics[width=\textwidth]{sobolev.pdf}
+\caption{\it Illustration of the Sobolev embedding theorem. In each plot, we
+  parametrize the x-axis by $1/p$ and the y-axis by $k$. Hence, as we move
+  right-to-left, we increase the index of the $L^p$ norm that is used to measure 
+  integral smoothness, and functions get less ``locally peaked'' and more 
+  ``evenly spread out''. As we move top-to-bottom, we decrease the number of
+  (weak) derivatives under consideration. Left: subcritical regime with $pk <
+  d$. We traverse a line of slope $d$, moving down and to the left, in order to
+  visit the different Sobolev spaces into which $W^{k,p}(U)$ embeds, culminating
+  in an intersection with the x-axis ($k=0$) at $q = pd/(d-pk)$. Right:
+  supercritical regime with $pk > d$. Similarly, we traverse a line of slope $d$
+  to find the H{\"o}lder space into which $W^{k,p}(U)$ embeds, which is given by
+  an intersection with the y-axis ($q = \infty$). The open white circles denote
+  cases in which the embedding fails for $\gamma = 1$.}  
+\label{fig:sobolev}
+\end{figure}
+
+
+\subsection{Empirical process theory}
+
+\subsection{Basic inequality}
+
+% Notes to me ... think about how we want to define $W^{k,p}(L; U)$. Just in
+% terms of the Sobolev seminorm? I think so. But then acknowledge that this is a 
+% bit different from how we do things in Sobolev theory. Same with Holder
+% spaces. Make this a long footnoote. 
 
 \section{Multivariate splines}
 
