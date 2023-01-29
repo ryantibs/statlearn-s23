@@ -578,16 +578,16 @@ D^\alpha f = \frac{\partial^{|\alpha|} f}{\partial x_1^{\alpha_1} \partial
   x_2^{\alpha_2} \dots \partial x_d^{\alpha_d}}.
 \]
 For an integer $r \geq 0$, exponent $0 < \gamma \leq 1$, radius $L>0$, and
-domain $\Omega \subseteq \R^d$, we can now define the H{\"o}lder class  
+domain $U \subseteq \R^d$, we can now define the H{\"o}lder class  
 \[
-C^{r+\gamma}(L; \Omega) = \Big\{ f : \Omega \to \R \,:\, | D^\alpha f (x) -
-D^\alpha f(y) | \leq L \|x-y\|_2^\gamma \; \text{for all $|\alpha| = r$, and
-  $x,y \in \Omega$} \Big\}. 
+C^{r+\gamma}(L; U) = \Big\{ f : U \to \R \,:\, | D^\alpha f (x) - D^\alpha f(y)
+| \leq L \|x-y\|_2^\gamma \; \text{for all $|\alpha| = r$, and $x,y \in U$}
+\Big\}.   
 \]
-Note that $C^1(L; \Omega)$ is simply the space of all $L$-Lipschitz functions on
-$\Omega$. Likewise, for an integer $k \geq 1$, $C^k(L; \Omega)$ is the space of
-all functions on $\Omega$ whose order $k-1$ partial derivatives are all
-$L$-Lipschitz. 
+Note that $C^1(L; U)$ is simply the space of all $L$-Lipschitz functions on
+$U$. Likewise, for an integer $k \geq 1$, $C^k(L; U)$ is the space of all
+functions on $U$ whose order $\alpha\th$ derivative is $L$-Lipschitz, for all
+$\alpha = k-1$.
 
 It can be shown that a minimax lower bound over $C^s(L; [0,1]^d)$, for a
 constant $L>0$, is    
