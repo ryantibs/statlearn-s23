@@ -187,7 +187,8 @@ In the above:
   [t_r,\infty)$; and 
 \item $c$ is the number of constraints at the knots $t_1,\dots,t_r$.  
 \end{itemize}
-The fact that the total dimension is $r$ is amazing; this is independent of $k$!  
+The fact that the total dimension is $r$ is pretty remarkable; this is
+independent of $k$!   
 
 We note that there are simple modifications the truncated power basis that gives
 rise to a basis for natural splines, and similarly a modification of the
@@ -432,10 +433,10 @@ by \citet{silverman1984spline}, who proved that the cubic smoothing spline
 estimator is asymptotically equivalent to a kernel regression estimator, with an 
 unusual choice of kernel. Specifically, under suitable regularity conditions, we
 have the large $n$ approximation,\footnote{Silverman actually shows that
-  \smash{$w(x, z) \approx \frac{1}{h(z)} \frac{1}{p(z)} K\left( \frac{x-z}{h(z)}
-    \right)$}, but the version we are stating has a more natural interpretation
-  with respect to Figure \ref{fig:ss_kernel}, and is a consequence of symmetry
-  of the smoother matrix $S$.} 
+  \smash{$w(x, z) \approx \frac{1}{h(z)} \frac{1}{p(z)} K( \frac{x-z}{h(z)})$},
+  but the version we are stating has a more natural interpretation with respect
+  to Figure \ref{fig:ss_kernel}, and is a consequence of symmetry of the
+  smoother matrix $S$.}  
 \[
 w(x, z) \approx \frac{1}{h(x)} \frac{1}{p(x)} K\bigg( \frac{x-z}{h(x)} \bigg), 
 \]
@@ -461,14 +462,13 @@ So it lies outside the scope of usual kernel analysis. There is a lot more work
 building off of Silverman's initial work that connects smoothing splines to
 equivalent kernels. 
 
-\section{Error analysis}
+\section{Analysis tools}
 
 Compared to that for kNN and kernel smoothing, the error analysis for smoothing
 splines is a good deal more nuanced. Hence we'll dedicated an entire section to
 learning the tools behind it. The upshot is that we'll be learning a basic
-framework that can be used to analyze many other estimators---both nonparametric
-(such as other penalized empirical risk minimizers) and parametric (such as
-high-dimensional M-estimators, including the lasso).
+framework that can be used to analyze numerous other nonparametric estimators
+(such as other penalized empirical risk minimizers).  
 
 \subsection{Sobolev theory*}
 
@@ -600,7 +600,7 @@ with its classically differentiable version.
 Much more can be said about the connection between Sobolev and H{\"o}lder
 spaces, which is covered next.
 
-% Theorem 4 in Chapter 5.8 of Evans (2010); requires \partial U to be C^1. 
+% Theorem 4 in Chapter 5.8 of Evans (2010). Requires \partial U to be C^1.  
 
 \subsubsection{Embedding theorems}
 
@@ -652,7 +652,7 @@ Then we have, for a constant $C>0$ depending only on $k,p,\ell,q$ and $U$,
 \|f\|_{W^{\ell,q}(U)} \leq C \|f\|_{W^{k,p}(U)}, \quad \text{for all $f \in
   W^{k,p}(U)$}.
 \]
-This means that $W^{k,p}(U) \subseteq W^{\ell,q}(U)$, and further we get what
+This means that $W^{k,p}(U) \subseteq W^{\ell,q}(U)$, and moreover we have what 
 is known as a \emph{continuous embedding} of normed spaces. From the above    
 inequality, we learn that any norm ball of radius $\rho$ in the former space
 is contained in a normal ball of the latter, whose radius is at most $C\rho$.
@@ -667,7 +667,7 @@ and a constant $C>0$ depending only on $k,p,q$ and $U$, it holds that
 \]
 This means that $W^{k,p}(U) \subseteq L^q(U)$, and the embedding is continuous.  
 
-% Theorems 2 and 6 in Chapter 5.6 of Evans (2010); require \partial U to be
+% Theorems 2 and 6 in Chapter 5.6 of Evans (2010). Requires \partial U to be 
 % C^1. Doesn't actually state the result for general \ell, only for \ell=0. 
 
 \paragraph{The case $pk > d$, supercritical regime.}
@@ -689,7 +689,7 @@ This means that $W^{k,p}(U) \subseteq C^{r+\gamma}(U)$, and the embedding is
 continuous. In view of this, we can always identify each function $f \in
 W^{k,p}(U)$ with its $r$ times classically differentiable version.     
 
-% Theorems 5 and 6 in Chapter 5.6 of Evans (2010); require \partial U to be
+% Theorems 5 and 6 in Chapter 5.6 of Evans (2010). Requires \partial U to be
 % C^1. Doesn't quite state the result the same way as we do. 
 
 \medskip
@@ -703,25 +703,23 @@ derivatives are in $L^p(U)$, the embedding theorem tells us that its derivatives
 of order $\ell < k$ are less ``peaky'' and more ``evenly spread out'', since
 they are $L^q(U)$ with $q > p$.
 
-In the subcritical regime, the conclusion is arguably even more
-interesting---you might even say, amazing! It says that knowing that derivatives
-are smooth in a global (integrated) sense tells us something about local
-smoothness of lower order derivatives, at each point in the domain. Given a $k$
-times (weakly) differentiable function, the embedding theorem starts off with a
-statement about the size of \smash{$\sum_{|\alpha| \leq k} \int_U |D^\alpha
-  f(x)|^p \, dx$}, and translates this into a statement about the H{\"o}lder
-constant of $D^\alpha f$ for $|\alpha| < k$.    
+In the supercritical regime, the conclusion is arguably even more
+fascinating---it says that knowing a function's derivatives are smooth in a
+global (integrated) sense tells us something about local smoothness of lower
+order derivatives, at each point in the domain. Given a $k$ times (weakly)
+differentiable function, the embedding theorem starts off with a statement about
+the size of \smash{$\sum_{|\alpha| \leq k} \int_U |D^\alpha f(x)|^p \, dx$}, and
+translates this into a statement about the H{\"o}lder constant of $D^\alpha f$
+for $|\alpha| < k$.      
 
 Figure \ref{fig:sobolev} gives an illustration of the tradeoffs navigated by the
 Sobolev embedding theorem (the plots that are shown are sometimes called
 ``DeVore diagrams'' in honor of Ron DeVore).  
 
-[[ More to come ... sections below to be filled out ... ]]
-
 \begin{figure}[tb]
 \centering
 \includegraphics[width=\textwidth]{sobolev.pdf}
-\caption{\it Illustration of the Sobolev embedding theorem. In each plot, we
+\caption{\it Illustrations of the Sobolev embedding theorem. In each plot, we 
   parametrize the x-axis by $1/p$ and the y-axis by $k$. Hence, as we move
   right-to-left, we increase the index of the $L^p$ norm that is used to measure 
   integral smoothness, and functions get less ``locally peaked'' and more 
@@ -737,10 +735,181 @@ Sobolev embedding theorem (the plots that are shown are sometimes called
 \label{fig:sobolev}
 \end{figure}
 
-
 \subsection{Empirical process theory}
 
+\def\Rad{\mathrm{Rad}}
+
+Next we cover some important concepts and probabilistic tools from empirical
+process theory. We cover this material in a more utilitarian manner than our
+treatment of Sobolev theory. That is, we will really mostly just stick to the
+details needed to understand the error analysis to come in the next section. A
+lot more can be said; two excellent references on the subject are
+\citet{vandegeer2000empirical, wainwright2019high}.   
+
+\subsubsection{Entropy and Rademacher complexity} 
+
+\def\diam{\mathrm{diam}}
+
+Given a class of functions $\cF$, we define its \emph{metric entropy} (or simply   
+entropy) as the logarithm of smallest number of balls in a norm $\|\cdot\|$ of
+radius $\delta>0$ needed to cover $\cF$. This is denoted     
+\[
+\log N(\delta, \cF, \|\cdot\|), 
+\]
+and also referred to as its log covering number. A visualization is given in
+Figure \ref{fig:covering}.
+
+\begin{figure}[tb]
+\centering
+\includegraphics[width=0.45\textwidth]{covering.pdf}
+\caption{\it Illustration of a covering using balls of radius $\delta$. The
+  entropy is the logarithm of the smallest possible number of balls in such a
+  covering. Credit: Chapter 5 of \citet{wainwright2019high}.}
+\label{fig:covering}
+\end{figure}
+
+Seemingly unrelated, but actually connected idea, is Rademacher complexity. This
+itself comes in two flavors. The \emph{empirical Rademacher complexity} based
+on a sample $x_1,\dots,x_n$ is the expected largest absolute inner product
+achievable with i.i.d.\ Rademacher noise $\sigma_1,\dots,\sigma_n$ (each of
+which take on the value $\pm 1$ with equal probability). To be precise, this is 
+defined as   
+\[
+\Rad(\cF, x_{1:n}) = \E \Bigg[ \sup_{f \in \cF} \, \frac{1}{n} \Bigg|
+\sum_{i=1}^n \epsilon_i f(x_i) \Bigg| \Bigg]. 
+\]
+The expectation above is over $\sigma_1,\dots,\sigma_n$ with $x_1,\dots,x_n$
+fixed. Meanwhile, we can then just define \emph{population Rademacher
+  complexity} as the expected value of the empirical Rademacher complexity,   
+\[
+\Rad(\cF) = \E\big[ \Rad(\cF, x_{1:n}) \big],
+\]
+over i.i.d.\ draws $x_1,\dots,x_n$ from some input distribution.
+
+A general result connecting these two notions of complexity is called
+\emph{Dudley's entropy integral}, which we can state as follows. Denote by
+$B_n(\rho)$ the ball in the norm $\|\cdot\|_n$ (the empirical norm based on the
+sample $x_1,\dots,x_n$) of radius $\rho$ centered at the origin. Then there
+exists a constant $C>0$ such that
+\begin{equation}
+\label{eq:dudley}
+\Rad(\cF \cap B_n(\rho), x_{1:n}) \leq \frac{C}{\sqrt{n}} \int_0^\rho
+\sqrt{\log N(\delta, \cF, \|\cdot\|_n)} \, d \delta.
+\end{equation}
+
+% Example 5.24 in Chapter 5.3 of Wainwright (2019).
+
+Entropy and Rademacher complexity are each interesting and important, and have
+several applications in probability and nonparametric analysis, but for our
+purposes, we can think of them as follows. Entropy arises naturally in a
+probabilistic technique known as chaining. This can be used to control
+sub-Gaussian processes; in particular, it can be used to bound what is known as
+the sub-Gaussian complexity   
+\[
+\sup_{f \in \cF} \, \Bigg| \frac{1}{n} \sum_{i=1}^n \epsilon_i f(x_i) \Bigg|, 
+\]
+where $\epsilon_1,\dots,\epsilon_n$ are i.i.d.\ mean zero sub-Gaussian random
+variables. We'll see this quantity arising naturally in our error analysis of
+smoothing splines, and we'll see the role entropy plays in Lemma
+\ref{lem:sg_complexity} below. 
+
+On the other hand, Rademacher complexity appears when using a technique called
+symmetrization, and other techniques, to analyze the fluctuations of empirical
+averages around their population means. For us, we will see it can be used to
+control the difference between the empirical $\|\cdot\|_n$ and population
+$\|\cdot\|_2$ norms, with high probability (over the draws of
+$x_1,\dots,x_n$). We'll see this in Lemma \ref{lem:norm_coupling} below.     
+
+Lastly, we remark that we are commonly interested in (an upper bound on) how
+$\log N(\delta, \cF, \|\cdot\|_n)$ scales with $\delta$, as $\delta \to 0$, and
+since we are considering here the empirical norm $\|\cdot\|_n$, we ideally want
+log covering number bounds that hold for any arrangement of
+$x_1,\dots,x_n$. This can be upper bounded by considering $\log N(\delta, \cF,
+\|\cdot\|_\infty)$ (because $\|f-g\|_\infty \leq \delta$ implies $\|f-g\|_n \leq
+\delta$). Table \ref{tab:entropy} gives entropy rates for a few example function
+classes of interest. 
+
+\begin{table}[tb]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{p{3in}|c|c}
+Function class $\cF$ & Norm $\|\cdot\|$ & Entropy rate \\ \hline \hline 
+$r$-dimensional (e.g., class of natural splines with $r$ knots) with $\diam(\cF,
+  \|\cdot\|_n) = \rho$ & $\|\cdot\|_n$ & $r \log(\rho/\delta)$ \\ \hline
+% Example 5.8 in Chapter 5.1 of Wainwright (2019)
+$L$-Lipschitz functions on $[0,1]^d$ & $\|\cdot\|_\infty$ & $(L/\delta)^d$
+  \\ \hline
+% Example 5.10 in Chapter 5.1 of Wainwright (2019)
+$m$-times weakly differentiable functions on $[0,1]$ such that $\int_0^1 
+[D^m f(x)]^2 \, dx \leq L$ and $\|f\|_\infty \leq M$, where $m \geq 2$ & 
+$\|\cdot\|_\infty$ & $(L/\delta)^{1/m} + \log(M/\delta)$ \\ \hline 
+% Birman and Solomyak (1967)
+Weakly differentiable functions on $[0,1]$ such that $\int_0^1 [f'(x)]^2 \, dx 
+  \leq L$ and $\|f\|_\infty \leq M$ & $\|\cdot\|_2$ & $L/\delta + 
+  \log(M/\delta)$  
+% Birman and Solomyak (1967)
+\end{tabular}
+\caption{\it Entropy rates for some function classes of interest in
+  nonparametric analysis.} 
+\renewcommand{\arraystretch}{1}
+\label{tab:entropy}
+\end{table}
+
+[[ More to come ... sections below to be filled out ... ]]
+
+\subsubsection{Sub-Gaussian random variables}
+
+sub-Gaussian distribution
+
+Tail bound for max
+
+Tail bound for quadratic form
+
+\subsubsection{Sub-Gaussian complexity bound}
+
+sub-Gaussian complexity bound as in Lemmas 9 or 14.
+
+\begin{lemma}
+\label{lem:sg_complexity}
+\end{lemma}
+
+\subsubsection{Empirical and population norm coupling}
+
+Coupling of empirical and population norms as in Lemma 15. 
+We will need Theorem 14.1 of Wainwright. 
+
+\begin{lemma}
+\label{lem:norm_coupling}
+\end{lemma}
+
+Mention one-sided bound? As in Lemma 17
+
+\section{Main analysis} 
+
 \subsection{Basic inequality}
+
+Derive the basic inequality. Remark that a more refined analysis at the start
+can do better in terms of the constants, leading to what is known as an oracle 
+inequality, and we'll see this later when we analyze the lasso.  
+
+\subsection{Localization}
+
+Interlude on how complexity combined with an population or empirical norm bound
+gives you a sup norm bound. Statement similar to Lemma 7
+\[
+\|f\|_\infty \leq R_1 \|f\|_n + R_2 J(f)
+\]
+and also similar to Lemma 16
+\[
+\|f\|_\infty \leq R_1 \|f\|_2 + R_2 J(f)
+\]
+Yes! This is right, I think just look at the proof of Lemma 7
+
+\subsection{Sub-Gaussian control}
+
+\subsection{Approximation error}
+
+\subsection{An example theorem}
 
 % Notes to me ... think about how we want to define $W^{k,p}(L; U)$. Just in
 % terms of the Sobolev seminorm? I think so. But then acknowledge that this is a 
