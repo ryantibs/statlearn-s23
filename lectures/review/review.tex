@@ -106,14 +106,14 @@ Let $X_n$, $n=1,2,3,\dots$ be a sequence of real-valued random variables.
   \P(|X - \mu| \geq t) \leq \frac{\sigma^2}{t^2}.
   \]
 
-\item Hoeffding's inequality: if $X_1,\dots,X_n$ are independent and zero mean
+\item Hoeffding's inequality: if $X_1,\dots,X_n$ are independent and mean zero
   with $a_i \leq X_i \leq b_i$ for each $i$, then for any $t > 0$,
   \[
   \P( \bar{X}_n \geq t) \leq \exp\bigg( \frac{-2nt^2}{
     \frac{1}{n}\sum_{i=1}^n (b_i^2 - a_i^2)} \bigg).
   \]
 
-\item Bernstein's inequality: if $X_1,\dots,X_n$ are independent and zero mean
+\item Bernstein's inequality: if $X_1,\dots,X_n$ are independent and mean zero
   with $\sigma_i^2 = \Var[X_i]$, and $|X_i| \leq M$ for each $i$, then for any
   $t > 0$,  
   \[
@@ -702,8 +702,8 @@ an underlying linear model
 \label{eq:linear_model}
 Y = X\beta_0 + \epsilon,
 \end{equation}
-with $X$ fixed, and $\epsilon \in \R^n$ having i.i.d.\ entires with zero mean
-and variance $\sigma^2$. First, observe that  
+with $X$ fixed, and $\epsilon \in \R^n$ having i.i.d.\ entires with mean zero
+and variance $\sigma^2$. First, observe that   
 \[
 \E[X \hbeta] = P_X \E[Y] = P_X X \beta_0 = X \beta_0,
 \]
