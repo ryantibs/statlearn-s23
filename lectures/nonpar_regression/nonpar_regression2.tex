@@ -319,7 +319,8 @@ the problem in \eqref{eq:ss_finite_dim} can be written more succintly as
 \]
 showing the smoothing spline problem to be a type of generalized ridge
 regression problem. Its solution has the explicit form \smash{$\hbeta = (N^\T N
-  + \lambda \Omega)^{-1} N^T Y$}, and thus, we can write the smoothing spline as   
+  + \lambda \Omega)^{-1} N^\T Y$}, and thus, we can write the smoothing spline
+as    
 \[
 \hf(x) = (\eta_1(x),\dots,\eta_n(x))^\T (N^\T N + \lambda \Omega)^{-1} N^\T Y =
 w(x)^\T Y,   
@@ -600,7 +601,7 @@ with its classically differentiable version.
 Much more can be said about the connection between Sobolev and H{\"o}lder
 spaces, which is covered next.
 
-% Theorem 4 in Chapter 5.8 of Evans (2010). Requires \partial U to be C^1.  
+% Theorem 4 in Chapter 5.8 of Evans (2010), requires \partial U to be C^1
 
 \subsubsection{Embedding theorems}
 
@@ -667,8 +668,8 @@ and a constant $C>0$ depending only on $k,p,q$ and $U$, it holds that
 \]
 This means that $W^{k,p}(U) \subseteq L^q(U)$, and the embedding is continuous.  
 
-% Theorems 2 and 6 in Chapter 5.6 of Evans (2010). Requires \partial U to be 
-% C^1. Doesn't actually state the result for general \ell, only for \ell=0. 
+% Theorems 2 and 6 in Chapter 5.6 of Evans (2010), requires \partial U to be 
+% C^1, doesn't actually state the result for general \ell, only for \ell = 0  
 
 \paragraph{The case $pk > d$, supercritical regime.}
 
@@ -689,8 +690,8 @@ This means that $W^{k,p}(U) \subseteq C^{r+\gamma}(U)$, and the embedding is
 continuous. In view of this, we can always identify each function $f \in
 W^{k,p}(U)$ with its $r$ times classically differentiable version.     
 
-% Theorems 5 and 6 in Chapter 5.6 of Evans (2010). Requires \partial U to be
-% C^1. Doesn't quite state the result the same way as we do. 
+% Theorems 5 and 6 in Chapter 5.6 of Evans (2010), requires \partial U to be
+% C^1, doesn't quite state the result the same way as we do
 
 \medskip
 (The critical regime $pk = d$ is actually a bit more subtle and we'll skip over
@@ -797,7 +798,7 @@ exists a constant $C>0$ such that
 \sqrt{\log N(\delta, \cF, \|\cdot\|_n)} \, d \delta.
 \end{equation}
 
-% Example 5.24 in Chapter 5.3 of Wainwright (2019).
+% Example 5.24 in Chapter 5.3 of Wainwright (2019)
 
 Entropy and Rademacher complexity are each interesting and important, and have
 several applications in probability and nonparametric analysis, but for our
@@ -855,15 +856,89 @@ Weakly differentiable functions on $[0,1]$ such that $\int_0^1 [f'(x)]^2 \, dx
 \label{tab:entropy}
 \end{table}
 
-[[ More to come ... sections below to be filled out ... ]]
-
 \subsubsection{Sub-Gaussian random variables}
 
-sub-Gaussian distribution
+\emph{Sub-Gaussianity} is a condition that captures some of the key properties
+of the Gaussian tail (but at the same time accomodates many distributions that
+are not Gaussian).   
 
-Tail bound for max
+A random variable $X$ is said to be sub-Gaussian with mean $\mu$ and
+variance-proxy $\sigma^2>0$ if   
+\[
+\E[ e^{t (X - \mu)} ] \leq e^{\sigma^2 t^2 / 2}, \quad \text{for all $t \in
+  \R$}. 
+\]
+This says that the moment generating function of $X$ is dominated by the moment
+generating function of $N(\mu, \sigma^2)$ random variable.
 
-Tail bound for quadratic form
+Here are some examples of sub-Gaussian random variables.
+
+\begin{itemize}
+\item A $N(\mu, \sigma^2)$ random variable. 
+\item A bounded random variable. Hence e.g., Rademacher, Bernoulli, and binomial   
+  random variables are all sub-Gaussian.
+\item A random variable $X$ for which all even moments exist and satisfy  
+\[
+\E[X^{2k}] \leq \frac{(2k)!}{2^k k!} \theta^{2k}, \quad \text{for all
+  $k=1,2,3,\dots$},
+\]
+for some parameter $\theta \geq 0$. In fact this moment condition is equivalent
+to sub-Gaussianity.   
+% Theorem 2.6 (III) in Section 2.1 of Wainwright (2019)
+\end{itemize}
+
+An example of a random variable that is not sub-Gaussian is a Poisson random
+variable with any mean $\mu$ (this is instead \emph{sub-exponential}, which is a 
+weaker condition).
+
+\paragraph{Tail bound for averages.}
+
+An important fact about sub-Gaussian random variables is that they admit a 
+Bernstein-type tail bound: if $X_i$, $i=1,\dots,n$ are independent sub-Gaussian
+random variables, with each $X_i$ having mean zero and variance-proxy
+$\sigma_i^2$, then for all $t > 0$,    
+\[
+\P(\bar{X}_n \geq t) \leq \exp \bigg( \frac{-nt^2}{
+    \frac{1}{n}\sum_{i=1}^n \sigma_i^2} \bigg),
+\]
+where \smash{$\bar{X}_n = \frac{1}{n} \sum_{i=1}^n X_i$}. We can also get a
+two-sided bound where we multiply right-hand side above by 2 (since $X$ is mean
+zero sub-Gaussian with variance-proxy $\sigma^2$ if and only if $-X$ is).    
+
+\paragraph{Tail bound for maxima.}
+
+Another useful fact about sub-Gaussian random variables is that maximum of a
+large number of them sharply concentrates: if $X_i$, $i=1,\dots,n$ are sub-Gaussian
+random variables, which need not be independent, and each $X_i$ has mean zero
+and variance-proxy $\sigma^2$, then for all $t > 0$,    
+\[
+\P \bigg(\max_{i=1,\dots,n} \, X_i \geq \sigma \sqrt{2 (\log n + t)} \bigg) 
+\leq e^{-t}.  
+\]
+It also holds that
+\[
+\E \bigg[ \max_{i=1,\dots,n} \, X_i \bigg] \leq \sigma \sqrt{2 \log n}.
+\]
+
+\paragraph{Tail bound for quadratic forms.}
+
+A last useful fact we will cite about sub-Gaussian random variables concerns
+tail concentration for quadratic forms: if $X_i$, $i=1,\dots,n$ are independent
+sub-Gaussian random variables, with each $X_i$ having mean zero and
+variance-proxy $\sigma^2$, then for any positive semidefinite matrix $Q \in
+\R^{n \times n}$ and all $t > 0$,   
+\[
+\P\Big( X^\T Q X \geq \sigma^2 \big[ \tr(Q) + 2 \|Q\|_F \sqrt{t} + 2
+\|Q\|_{\mathrm{op}} \, t \big] \Big) \leq e^{-t},
+\]
+where $X = (X_1,\dots,X_n) \in \R^n$ is the vector of sub-Gaussian variates, so 
+that \smash{$ X^\T Q X = \sum_{i,j=1}^n Q_{ij} X_i X_j$}, and $\|Q\|_F,
+\|Q\|_{\mathrm{op}}$ denote the Frobenius and operator norms of $Q$,
+respectively. Note: the inequality we state here is from \citet{hsu2012tail},
+which is similar to the Hanson-Wright inequality (but has simple explicit
+constants).  
+
+[[ More to come ... sections below to be filled out ... ]]
 
 \subsubsection{Sub-Gaussian complexity bound}
 
