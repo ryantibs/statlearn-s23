@@ -230,8 +230,6 @@ spline, and defined via
 
 \subsection{Representer theorem}
 
-\def\tf{\tilde{f}}
-
 Remarkably, it so happens that the minimizer in the general smoothing spline
 problem \eqref{eq:ss} is unique, and it is a natural $k\th$ degree spline with 
 knots at the input points $x_1,\dots,x_n$! This is known as a \emph{representer
@@ -241,23 +239,22 @@ Proof: we'll stick to the cubic case, $k=3$, and follow Chapter 2.2 of
 \citet{green1993nonparametric} for a nice direct proof. The result for general
 $k$ will follow from RKHS theory.  
 
-The key result can be stated as follows: if \smash{$\tf$} is any function on 
-$[a,b]$ such that the penalty is well-defined (it has two derivatives, its
-second derivative is square integrable), and $x_1,\dots,x_n \in [a,b]$ are
-arbitrary, then there exists a natural cubic spline $f$ with knots at
-$x_1,\dots,x_n$ such that:
+The key result can be stated as follows: if $g$ is any function on $[a,b]$ such
+that the penalty is well-defined (it has two derivatives, its second derivative
+is square integrable), and $x_1,\dots,x_n \in [a,b]$ are arbitrary, then there
+exists a natural cubic spline $f$ with knots at $x_1,\dots,x_n$ such that: 
 \begin{itemize}
-\item $f(x_i) = \tf(x_i)$, $i=1,\dots,n$; and 
-\item $\int_a^b [f''(x)]^2 \, dx \leq \int_a^b [\tf''(x)]^2 \, dx$.
+\item $f(x_i) = g(x_i)$, $i=1,\dots,n$; and 
+\item $\int_a^b [f''(x)]^2 \, dx \leq \int_a^b [g''(x)]^2 \, dx$.
 \end{itemize}
 Note that this would in fact prove that we can restrict our attention in problem 
 \eqref{eq:ss3} to natural splines with knots at $x_1,\dots,x_n$.
 
 To prove the key result, we start with the fact that the cubic natural spline
-space with knots at $x_1,\dots,x_n$ is $n$-dimensional, so given any $n$ points  
-\smash{$z_i = \tf(x_i)$}, $i=1,\dots,n$, we can always find a natural spline $f$ 
-with knots at $x_1,\dots,x_n$ that satisfies $f(x_i) = z_i$, $i=1,\dots,n$. Now 
-define \smash{$h = \tf - f$}. Consider
+space with knots at $x_1,\dots,x_n$ is $n$-dimensional, so given any $n$ points
+$z_i = g(x_i)$, $i=1,\dots,n$, we can always find a natural spline $f$ with
+knots at $x_1,\dots,x_n$ that satisfies $f(x_i) = z_i$, $i=1,\dots,n$. Now
+define $h = g-f$. Consider
 \begin{align*}
 \int_a^b f''(x) h''(x) \, dx 
 &= f''(x) h'(x) \Big|_a^b - \int_a^b f'''(x) h'(x) \, dx \\
@@ -277,19 +274,19 @@ spline. Since each $h(x_i)=0$, we conclude from the last display that
 \]
 From this, it follows that
 \[
-\int_a^b [\tf''(x)]^2 \, dx 
+\int_a^b [g''(x)]^2 \, dx 
 = \int_a^b \big[ f''(x) + h''(x) \big]^2 \, dx 
 = \int_a^b [f''(x)]^2 \, dx + \int_a^b [h''(x)]^2 \, dx
 \]
 since the cross term is zero, and therefore 
 \[
-\int_a^b [f''(x)]^2 \, dx \leq \int_a^b [\tf''(x)]^2 \, dx,
+\int_a^b [f''(x)]^2 \, dx \leq \int_a^b [g''(x)]^2 \, dx,
 \]
 with equality if and only if $h''(x)=0$ for all $x \in [a,b]$. Note that $h''=0$
 implies that $h$ must be linear, and since we already know that $h(x_i)=0$ for
 all $i=1,\dots,n$, this is equivalent to $h=0$. In other words, the last display
-holds strictly except when \smash{$\tf=f$}, so the solution in \eqref{eq:ss3} is
-uniquely a natural spline with knots at the inputs.
+holds strictly except when $g=f$, so the solution in \eqref{eq:ss3} is uniquely
+a natural spline with knots at the inputs. 
 
 \subsection{Finite-dimensional form}
 
@@ -463,25 +460,24 @@ So it lies outside the scope of usual kernel analysis. There is a lot more work
 building off of Silverman's initial work that connects smoothing splines to
 equivalent kernels. 
 
-\section{Analysis tools}
-
 Compared to that for kNN and kernel smoothing, the error analysis for smoothing
-splines is a good deal more nuanced. Hence we'll dedicated an entire section to
-learning the tools behind it. The upshot is that we'll be learning a basic
-framework that can be used to analyze numerous other nonparametric estimators
-(such as other penalized empirical risk minimizers).  
+splines is a good deal more nuanced. Hence we'll dedicate a whole lecture to
+learning the tools behind it, a bit later in the course. The upshot is that
+we'll be learning a basic framework that can be used to analyze numerous other
+nonparametric estimators (such as other penalized empirical risk minimizers).     
 
-\subsection{Sobolev theory*}
+\section{Sobolev theory*}
 
-We'll begin by introducing Sobolev spaces. This material can be mostly skipped
-without interrupting the flow of understanding the main ideas in the rest of
-this lecture, thus the asterisk. Well actually, you should probably read the
-definition of weak differentiability, but you can treat the rest as
-optional. Yes, optional, but also super interesting and fairly fundamental in
-many ways, which is why we include some of the core details of Sobolev spaces 
-here. To learn more, an excellent reference is \citet{evans2010partial}. 
+In something like an interlude, we use this section to introduce Sobolev
+spaces. This material can be mostly skipped without interrupting the flow of
+understanding the main ideas in the rest of this lecture, hence the
+asterisk. Well actually, you should probably read the definition of weak
+differentiability, but you can treat the rest as optional. Yes, optional, but
+also super interesting and fairly fundamental in many ways, which is why we
+include some of the core details of Sobolev spaces here. To learn more, an
+excellent reference is \citet{evans2010partial}.  
 
-\subsubsection{Weak derivatives}
+\subsection{Weak derivatives}
 
 First we introduce what is known as \emph{weak differentiability}. A function $f
 : U \to \R$, where $U \subseteq \R^d$ is an open set, is called weakly
@@ -540,7 +536,7 @@ cannot possibly be true for all $\phi$ unless $g=0$. But if $g=0$, then we
 cannot recover $\phi(0)$ through integration, since the right-hand side above
 will always be 0.   
 
-\subsubsection{Sobolev spaces}
+\subsection{Sobolev spaces}
 
 We are now equipped to define what are called \emph{Sobolev spaces}. In what
 follows it'll be simplest to take the domain $U$ to be bounded, so let's 
@@ -603,7 +599,7 @@ spaces, which is covered next.
 
 % Theorem 4 in Chapter 5.8 of Evans (2010), requires \partial U to be C^1
 
-\subsubsection{Embedding theorems}
+\subsection{Embedding theorems}
 
 Among the whole optional part of material on Sobolev spaces, this next bit   
 really is the \emph{most} optional, but it's too cool not to cover. We start by
@@ -735,317 +731,6 @@ Sobolev embedding theorem (the plots that are shown are sometimes called
   cases in which the embedding fails for $\gamma = 1$.}  
 \label{fig:sobolev}
 \end{figure}
-
-\subsection{Empirical process theory}
-
-\def\Rad{\mathrm{Rad}}
-
-Next we cover some important concepts and probabilistic tools from empirical
-process theory. We cover this material in a more utilitarian manner than our
-treatment of Sobolev theory. That is, we will mostly just stick to the details
-needed to understand the error analysis to come in the next section. A lot more
-can be said; two excellent references on the subject are
-\citet{vandegeer2000empirical, wainwright2019high}.    
-
-\subsubsection{Entropy and Rademacher complexity} 
-
-\def\diam{\mathrm{diam}}
-
-Given a class of functions $\cF$, we define its \emph{metric entropy} (or simply   
-entropy) as the logarithm of smallest number of balls in a norm $\|\cdot\|$ of
-radius $\delta>0$ needed to cover $\cF$. This is denoted     
-\[
-\log N(\delta, \cF, \|\cdot\|), 
-\]
-and also referred to as its log covering number. A visualization is given in
-Figure \ref{fig:covering}.
-
-\begin{figure}[tb]
-\centering
-\includegraphics[width=0.45\textwidth]{covering.pdf}
-\caption{\it Illustration of a covering using balls of radius $\delta$. The
-  entropy is the logarithm of the smallest possible number of balls in such a
-  covering. Credit: Chapter 5 of \citet{wainwright2019high}.}
-\label{fig:covering}
-\end{figure}
-
-Seemingly unrelated, but actually connected idea, is Rademacher complexity. This
-itself comes in two flavors. The \emph{empirical Rademacher complexity} based
-on a sample $x_1,\dots,x_n$ is the expected largest absolute inner product
-achievable with i.i.d.\ Rademacher noise $\sigma_1,\dots,\sigma_n$ (each of
-which take on the value $\pm 1$ with equal probability). To be precise, this is 
-defined as   
-\[
-\Rad(\cF, x_{1:n}) = \E \Bigg[ \sup_{f \in \cF} \, \frac{1}{n} \Bigg|
-\sum_{i=1}^n \epsilon_i f(x_i) \Bigg| \Bigg]. 
-\]
-The expectation above is over $\sigma_1,\dots,\sigma_n$ with $x_1,\dots,x_n$
-fixed. Meanwhile, we can then just define \emph{population Rademacher
-  complexity} as the expected value of the empirical Rademacher complexity,   
-\[
-\Rad(\cF) = \E\big[ \Rad(\cF, x_{1:n}) \big],
-\]
-over i.i.d.\ draws $x_1,\dots,x_n$ from some input distribution.
-
-A general result connecting these two notions of complexity is called
-\emph{Dudley's entropy integral}, which we can state as follows. Denote by
-$B_n(\rho)$ the ball in the norm $\|\cdot\|_n$ (the empirical norm based on the
-sample $x_1,\dots,x_n$) of radius $\rho$ centered at the origin. Then there
-exists a constant $C>0$ such that
-\begin{equation}
-\label{eq:dudley}
-\Rad(\cF \cap B_n(\rho), x_{1:n}) \leq \frac{C}{\sqrt{n}} \int_0^\rho
-\sqrt{\log N(\delta, \cF, \|\cdot\|_n)} \, d \delta.
-\end{equation}
-
-% Example 5.24 in Chapter 5.3 of Wainwright (2019)
-
-Entropy and Rademacher complexity are each interesting and important, and have
-several applications in probability and nonparametric analysis, but for our
-purposes, we can think of them as follows. Entropy arises naturally in a
-probabilistic technique known as chaining. This can be used to control
-sub-Gaussian processes; in particular, it can be used to bound what is known as
-the sub-Gaussian complexity   
-\[
-\sup_{f \in \cF} \, \Bigg| \frac{1}{n} \sum_{i=1}^n \epsilon_i f(x_i) \Bigg|, 
-\]
-where $\epsilon_1,\dots,\epsilon_n$ are i.i.d.\ mean zero sub-Gaussian random
-variables. We'll see this quantity arising naturally in our error analysis of
-smoothing splines, and we'll see the role entropy plays in Lemma
-\ref{lem:sg_complexity} below. 
-
-On the other hand, Rademacher complexity appears when using a technique called
-symmetrization, and other techniques, to analyze the fluctuations of empirical
-averages around their population means. For us, we will see it can be used to
-control the difference between the empirical $\|\cdot\|_n$ and population
-$\|\cdot\|_2$ norms, with high probability (over the draws of
-$x_1,\dots,x_n$). We'll see this in Lemma \ref{lem:norm_coupling} below.     
-
-Lastly, we remark that we are commonly interested in (an upper bound on) how
-$\log N(\delta, \cF, \|\cdot\|_n)$ scales with $\delta$, as $\delta \to 0$, and
-since we are considering here the empirical norm $\|\cdot\|_n$, we ideally want
-log covering number bounds that hold for any arrangement of
-$x_1,\dots,x_n$. This can be upper bounded by considering $\log N(\delta, \cF,
-\|\cdot\|_\infty)$ (because $\|f-g\|_\infty \leq \delta$ implies $\|f-g\|_n \leq
-\delta$). Table \ref{tab:entropy} gives entropy rates for a few example function
-classes of interest. 
-
-\begin{table}[tb]
-\centering
-\renewcommand{\arraystretch}{1.5}
-\begin{tabular}{p{3in}|c|c}
-Function class $\cF$ & Norm $\|\cdot\|$ & Entropy rate \\ \hline \hline 
-$r$-dimensional (e.g., class of natural splines with $r$ knots) with $\diam(\cF,
-  \|\cdot\|_n) = \rho$ & $\|\cdot\|_n$ & $r \log(\rho/\delta)$ \\ \hline
-% Example 5.8 in Chapter 5.1 of Wainwright (2019)
-$L$-Lipschitz functions on $[0,1]^d$ & $\|\cdot\|_\infty$ & $(L/\delta)^d$
-  \\ \hline
-% Example 5.10 in Chapter 5.1 of Wainwright (2019)
-$m$-times weakly differentiable functions on $[0,1]$ such that $\int_0^1 
-[D^m f(x)]^2 \, dx \leq L$ and $\|f\|_\infty \leq M$, where $m \geq 2$ & 
-$\|\cdot\|_\infty$ & $(L/\delta)^{1/m} + \log(M/\delta)$ \\ \hline 
-% Birman and Solomyak (1967)
-Weakly differentiable functions on $[0,1]$ such that $\int_0^1 [f'(x)]^2 \, dx 
-  \leq L$ and $\|f\|_\infty \leq M$ & $\|\cdot\|_2$ & $L/\delta + 
-  \log(M/\delta)$  
-% Birman and Solomyak (1967)
-\end{tabular}
-\caption{\it Entropy rates for some function classes of interest in
-  nonparametric analysis.} 
-\renewcommand{\arraystretch}{1}
-\label{tab:entropy}
-\end{table}
-
-\subsubsection{Sub-Gaussian random variables}
-
-\emph{Sub-Gaussianity} is a condition that captures some of the key properties
-of the Gaussian tail (but at the same time accomodates many distributions that
-are not Gaussian).   
-
-A random variable $X$ is said to be sub-Gaussian with mean $\mu$ and
-variance proxy $\sigma^2>0$ if   
-\[
-\E[ e^{t (X - \mu)} ] \leq e^{\sigma^2 t^2 / 2}, \quad \text{for all $t \in
-  \R$}. 
-\]
-This says that the moment generating function of $X$ is dominated by the moment
-generating function of $N(\mu, \sigma^2)$ random variable.
-
-Here are some examples of sub-Gaussian random variables.
-
-\begin{itemize}
-\item A $N(\mu, \sigma^2)$ random variable. 
-\item A bounded random variable. Hence e.g., Rademacher, Bernoulli, and binomial   
-  random variables are all sub-Gaussian.
-\item A random variable $X$ for which all even moments exist and satisfy  
-\[
-\E[X^{2k}] \leq \frac{(2k)!}{2^k k!} \theta^{2k}, \quad \text{for all
-  $k=1,2,3,\dots$},
-\]
-for some parameter $\theta \geq 0$. In fact this moment condition is equivalent
-to sub-Gaussianity.   
-% Theorem 2.6 (III) in Section 2.1 of Wainwright (2019)
-\end{itemize}
-
-An example of a random variable that is not sub-Gaussian is a Poisson random
-variable with any mean $\mu$ (this is instead \emph{sub-exponential}, which is a 
-weaker condition).
-
-\paragraph{Tail bound for averages.}
-
-An important fact about sub-Gaussian random variables is that they admit a 
-Bernstein-type tail bound: if $X_i$, $i=1,\dots,n$ are independent sub-Gaussian
-random variables, with each $X_i$ having mean zero and variance proxy
-$\sigma_i^2$, then for all $t>0$,    
-\[
-\P(\bar{X}_n \geq t) \leq \exp \bigg( \frac{-nt^2}{
-    \frac{1}{n}\sum_{i=1}^n \sigma_i^2} \bigg),
-\]
-where \smash{$\bar{X}_n = \frac{1}{n} \sum_{i=1}^n X_i$}. We can also get a
-two-sided bound where we multiply right-hand side above by 2 (since $X$ is mean
-zero sub-Gaussian with variance proxy $\sigma^2$ if and only if $-X$ is).    
-
-\paragraph{Tail bound for maxima.}
-
-Another useful fact about sub-Gaussian random variables is that maximum of a
-large number of them sharply concentrates: if $X_i$, $i=1,\dots,n$ are sub-Gaussian
-random variables, which need not be independent, and each $X_i$ has mean zero
-and variance proxy $\sigma^2$, then for all $t>0$,    
-\[
-\P \bigg(\max_{i=1,\dots,n} \, X_i \geq \sigma \sqrt{2 (\log n + t)} \bigg) 
-\leq e^{-t}.  
-\]
-It also holds that
-\[
-\E \bigg[ \max_{i=1,\dots,n} \, X_i \bigg] \leq \sigma \sqrt{2 \log n}.
-\]
-
-\paragraph{Tail bound for quadratic forms.}
-
-A last useful fact we will cite about sub-Gaussian random variables concerns
-tail concentration for quadratic forms: if $X_i$, $i=1,\dots,n$ are independent
-sub-Gaussian random variables, with each having mean zero and variance proxy 
-$\sigma^2$, then for any positive semidefinite matrix $Q \in \R^{n \times n}$
-and all $t>0$,    
-\begin{equation}
-\label{eq:sg_quadratic}
-\P\Big( X^\T Q X \geq \sigma^2 \big[ \tr(Q) + 2 \|Q\|_F \sqrt{t} + 2
-\|Q\|_{\mathrm{op}} \, t \big] \Big) \leq e^{-t},
-\end{equation}
-where $X = (X_1,\dots,X_n) \in \R^n$ is the vector of sub-Gaussian variates, so 
-that \smash{$ X^\T Q X = \sum_{i,j=1}^n Q_{ij} X_i X_j$}, and \smash{$\|Q\|_F, 
-\|Q\|_{\mathrm{op}}$} denote the Frobenius and operator norms of $Q$, 
-respectively. The result we are stating here is from \citet{hsu2012tail}, which
-is similar to the Hanson-Wright inequality (but has simple explicit constants).       
-
-\subsubsection{Sub-Gaussian complexity bound}
-
-We now turn to the most sophisticated and powerful empirical process theory 
-result we've seen thus far.
-
-\begin{lemma}[Adapted from Lemma 3.5 of \citealt{vandegeer1990estimating}] 
-\label{lem:sg_complexity}
-Let $\epsilon_i$, $i=1,\ldots,n$ denote independent sub-Gaussian random
-variables, each having mean zero variance proxy $\sigma^2$. Let $J$ be a
-seminorm on acting on functions from $U$ to $\R$, and denote its unit seminorm
-ball by 
-\[
-B_J(1) = \{ f : U \to \R \,:\, J(f) \leq 1 \},
-\]
-Also denote \smash{$B_\infty(M) = \{ f : U \to \R \,:\, \|f\|_\infty \leq M
-  \}$}, where $M>0$ is an arbitrary constant. Assume that for sufficiently small
-$\delta>0$, there exists constants $0<w<2$ and $C>0$ such that     
-\[
-\sup_{x_1,\dots,x_n} \,
-\log N\big(\delta, B_J(1) \cap B_\infty(1), \|\cdot\|_n \big) \leq C
-\delta^{-w}. 
-\]
-Then there are constants $c_1,c_2,n_0>0$, depending only on
-$\sigma,M,C,w$, such that for all $\gamma \geq c_1$ and $n \geq n_0$,        
-\[
-\sup_{x_1,\dots,x_n} \,
-\sup_{f \in B_J(1) \cap B_\infty(M)} \,
-\frac{\frac{1}{n} \sum_{i=1}^n \epsilon_i f(x_i)} 
-{\|f\|_n^{1-w/2}} \leq \frac{\gamma}{\sqrt{n}}, 
-\]
-with probability at least $1-\exp(-c_2 \gamma^2)$.
-\end{lemma}
-
-To get a sense of what the result in the lemma gives us, let's rewrite the
-conclusion a little differently: it says that uniformly over all $f$ with $J(f)
-\leq 1$ and $\|f\|_\infty \leq M$, we have 
-\[
-\frac{1}{n} \sum_{i=1}^n \epsilon_i f(x_i) \leq \gamma \|f\|_n
-\frac{\|f\|_n^{-w/2}}{\sqrt n},
-\]
-with high probability. Now think about what a simple application of
-Cauchy-Schwartz would give us: 
-\[
-\frac{1}{n} \sum_{i=1}^n \epsilon_i f(x_i) \leq \|\epsilon\|_n \|f\|_n 
-\leq c \|f\|_n,
-\]
-where the second inequality holds with high probability, for some constant  
-$c>0$. Here we are abusing notation somewhat and denoting 
-\smash{$\|\epsilon\|_n^2 = \frac{1}{n} \sum_{i=1}^n \epsilon_i^2$}; and for the
-high probability statement we are (vaguely) referring to the concentration
-result \eqref{eq:sg_quadratic} for a quadratic form of sub-Gaussians (with
-\smash{$Q = \frac{1}{n} I$}). If we ignore the leading factors of $\gamma, c$,
-then we see that the second-to-last display is better than the last display when  
-\[
-\frac{\|f\|_n^{-w/2}}{\sqrt n} \leq 1 \iff \|f\|_n \geq n^{-1/w}.
-\]
-That is, except for functions $f$ of really small empirical norm, we improve on
-Cauchy-Schwartz, and dramatically so when $f$ is of larger empirical norm. For
-example, when \smash{$\|f\|_n = n^{-1/(2+w)}$} (this is not an arbitrarily
-chosen rate ... you'll see why we're interested in this a bit later, when we do
-the error analyis), then the ``speedup'' we get from
-Lemma \ref{lem:sg_complexity} is:
-\[
-\frac{\|f\|_n^{-w/2}}{\sqrt n} = n^{-1/(2+w)}.
-\]
-
-\subsubsection{Empirical and population norm coupling}
-
-Coupling of empirical and population norms as in Lemma 15. 
-We will need Theorem 14.1 of Wainwright. 
-
-\begin{lemma}
-\label{lem:norm_coupling}
-\end{lemma}
-
-Mention one-sided bound? As in Lemma 17
-
-\section{Main analysis} 
-
-\subsection{Basic inequality}
-
-Derive the basic inequality. Remark that a more refined analysis at the start
-can do better in terms of the constants, leading to what is known as an oracle 
-inequality, and we'll see this later when we analyze the lasso.  
-
-\subsection{Localization}
-
-Interlude on how complexity combined with an population or empirical norm bound
-gives you a sup norm bound. Statement similar to Lemma 7
-\[
-\|f\|_\infty \leq R_1 \|f\|_n + R_2 J(f)
-\]
-and also similar to Lemma 16
-\[
-\|f\|_\infty \leq R_1 \|f\|_2 + R_2 J(f)
-\]
-Yes! This is right, I think just look at the proof of Lemma 7
-
-\subsection{Sub-Gaussian control}
-
-\subsection{Approximation error}
-
-\subsection{An example theorem}
-
-% Notes to me ... think about how we want to define $W^{k,p}(L; U)$. Just in
-% terms of the Sobolev seminorm? I think so. But then acknowledge that this is a 
-% bit different from how we do things in Sobolev theory. Same with Holder
-% spaces. Make this a long footnoote. 
 
 \section{Multivariate splines}
 

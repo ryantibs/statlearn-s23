@@ -150,24 +150,26 @@ negligible relative to the overall estimation error that we will encounter.
 
 \subsection{What we cover here}
 
-The goal is to expose you to a variety of methods over our lectures on
-nonparametric regression, and give you a flavor of some interesting results, 
+The goal is to expose you to a variety of methods over this and our next lecture 
+on nonparametric regression, and give you a flavor of some interesting results,  
 under different assumptions. A few topics we will cover into more depth than
 others. Of the many texts you can consult for more details, proofs, etc., we
 highlight \citet{gyorfi2002distribution, wasserman2006all,
   tsybakov2009introduction} as general references on theory;
 \citet{hastie2009elements} as a general reference on methods.
 
-Throughout, our discussion will bounce back and forth between the univariate
-case ($d=1$) and multivariate case ($d>1$). Some methods have obvious (natural) 
-multivariate extensions; some don't. Nevertheless, we can always use
-low-dimensional (even just univariate) nonparametric regression methods as
-building blocks for a high-dimensional nonparametric estimator. We may study 
-this later, if and when we end up talking about additive models.
+With nearest neighbor and kernel methods, we will be able to starting working
+directly in the multivariate case ($d>1$) without much setup or forewarning; but
+with splines, we will need to spend a good deal of time in the univariate case 
+($d=1$) first, and even then moving to the multivariate setting will be far from 
+trivial. In general, some methods in nonparametric regression have obvious
+(natural) multivariate extensions, and others don't. Nonetheless, we can always
+use low-dimensional (even just univariate) nonparametric regression methods as  
+building blocks for high-dimensional nonparametric regression---we may study 
+this later in the course, if and when we end up talking about additive models.    
 
 Lastly, a lot of what we cover for nonparametric regression also carries over to
-nonparametric classification, which we'll cover (in much less detail) a bit
-later. 
+nonparametric classification, which we may also cover later in the course.  
 
 \section{Nearest neighbors methods}
 
