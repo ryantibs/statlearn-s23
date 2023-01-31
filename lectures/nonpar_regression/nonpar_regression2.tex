@@ -742,10 +742,10 @@ Sobolev embedding theorem (the plots that are shown are sometimes called
 
 Next we cover some important concepts and probabilistic tools from empirical
 process theory. We cover this material in a more utilitarian manner than our
-treatment of Sobolev theory. That is, we will really mostly just stick to the
-details needed to understand the error analysis to come in the next section. A
-lot more can be said; two excellent references on the subject are
-\citet{vandegeer2000empirical, wainwright2019high}.   
+treatment of Sobolev theory. That is, we will mostly just stick to the details
+needed to understand the error analysis to come in the next section. A lot more
+can be said; two excellent references on the subject are
+\citet{vandegeer2000empirical, wainwright2019high}.    
 
 \subsubsection{Entropy and Rademacher complexity} 
 
@@ -863,7 +863,7 @@ of the Gaussian tail (but at the same time accomodates many distributions that
 are not Gaussian).   
 
 A random variable $X$ is said to be sub-Gaussian with mean $\mu$ and
-variance-proxy $\sigma^2>0$ if   
+variance proxy $\sigma^2>0$ if   
 \[
 \E[ e^{t (X - \mu)} ] \leq e^{\sigma^2 t^2 / 2}, \quad \text{for all $t \in
   \R$}. 
@@ -895,22 +895,22 @@ weaker condition).
 
 An important fact about sub-Gaussian random variables is that they admit a 
 Bernstein-type tail bound: if $X_i$, $i=1,\dots,n$ are independent sub-Gaussian
-random variables, with each $X_i$ having mean zero and variance-proxy
-$\sigma_i^2$, then for all $t > 0$,    
+random variables, with each $X_i$ having mean zero and variance proxy
+$\sigma_i^2$, then for all $t>0$,    
 \[
 \P(\bar{X}_n \geq t) \leq \exp \bigg( \frac{-nt^2}{
     \frac{1}{n}\sum_{i=1}^n \sigma_i^2} \bigg),
 \]
 where \smash{$\bar{X}_n = \frac{1}{n} \sum_{i=1}^n X_i$}. We can also get a
 two-sided bound where we multiply right-hand side above by 2 (since $X$ is mean
-zero sub-Gaussian with variance-proxy $\sigma^2$ if and only if $-X$ is).    
+zero sub-Gaussian with variance proxy $\sigma^2$ if and only if $-X$ is).    
 
 \paragraph{Tail bound for maxima.}
 
 Another useful fact about sub-Gaussian random variables is that maximum of a
 large number of them sharply concentrates: if $X_i$, $i=1,\dots,n$ are sub-Gaussian
 random variables, which need not be independent, and each $X_i$ has mean zero
-and variance-proxy $\sigma^2$, then for all $t > 0$,    
+and variance proxy $\sigma^2$, then for all $t>0$,    
 \[
 \P \bigg(\max_{i=1,\dots,n} \, X_i \geq \sigma \sqrt{2 (\log n + t)} \bigg) 
 \leq e^{-t}.  
@@ -924,29 +924,85 @@ It also holds that
 
 A last useful fact we will cite about sub-Gaussian random variables concerns
 tail concentration for quadratic forms: if $X_i$, $i=1,\dots,n$ are independent
-sub-Gaussian random variables, with each $X_i$ having mean zero and
-variance-proxy $\sigma^2$, then for any positive semidefinite matrix $Q \in
-\R^{n \times n}$ and all $t > 0$,   
-\[
+sub-Gaussian random variables, with each having mean zero and variance proxy 
+$\sigma^2$, then for any positive semidefinite matrix $Q \in \R^{n \times n}$
+and all $t>0$,    
+\begin{equation}
+\label{eq:sg_quadratic}
 \P\Big( X^\T Q X \geq \sigma^2 \big[ \tr(Q) + 2 \|Q\|_F \sqrt{t} + 2
 \|Q\|_{\mathrm{op}} \, t \big] \Big) \leq e^{-t},
-\]
+\end{equation}
 where $X = (X_1,\dots,X_n) \in \R^n$ is the vector of sub-Gaussian variates, so 
-that \smash{$ X^\T Q X = \sum_{i,j=1}^n Q_{ij} X_i X_j$}, and $\|Q\|_F,
-\|Q\|_{\mathrm{op}}$ denote the Frobenius and operator norms of $Q$,
-respectively. Note: the inequality we state here is from \citet{hsu2012tail},
-which is similar to the Hanson-Wright inequality (but has simple explicit
-constants).  
-
-[[ More to come ... sections below to be filled out ... ]]
+that \smash{$ X^\T Q X = \sum_{i,j=1}^n Q_{ij} X_i X_j$}, and \smash{$\|Q\|_F, 
+\|Q\|_{\mathrm{op}}$} denote the Frobenius and operator norms of $Q$, 
+respectively. The result we are stating here is from \citet{hsu2012tail}, which
+is similar to the Hanson-Wright inequality (but has simple explicit constants).       
 
 \subsubsection{Sub-Gaussian complexity bound}
 
-sub-Gaussian complexity bound as in Lemmas 9 or 14.
+We now turn to the most sophisticated and powerful empirical process theory 
+result we've seen thus far.
 
-\begin{lemma}
+\begin{lemma}[Adapted from Lemma 3.5 of \citealt{vandegeer1990estimating}] 
 \label{lem:sg_complexity}
+Let $\epsilon_i$, $i=1,\ldots,n$ denote independent sub-Gaussian random
+variables, each having mean zero variance proxy $\sigma^2$. Let $J$ be a
+seminorm on acting on functions from $U$ to $\R$, and denote its unit seminorm
+ball by 
+\[
+B_J(1) = \{ f : U \to \R \,:\, J(f) \leq 1 \},
+\]
+Also denote \smash{$B_\infty(M) = \{ f : U \to \R \,:\, \|f\|_\infty \leq M
+  \}$}, where $M>0$ is an arbitrary constant. Assume that for sufficiently small
+$\delta>0$, there exists constants $0<w<2$ and $C>0$ such that     
+\[
+\sup_{x_1,\dots,x_n} \,
+\log N\big(\delta, B_J(1) \cap B_\infty(1), \|\cdot\|_n \big) \leq C
+\delta^{-w}. 
+\]
+Then there are constants $c_1,c_2,n_0>0$, depending only on
+$\sigma,M,C,w$, such that for all $\gamma \geq c_1$ and $n \geq n_0$,        
+\[
+\sup_{x_1,\dots,x_n} \,
+\sup_{f \in B_J(1) \cap B_\infty(M)} \,
+\frac{\frac{1}{n} \sum_{i=1}^n \epsilon_i f(x_i)} 
+{\|f\|_n^{1-w/2}} \leq \frac{\gamma}{\sqrt{n}}, 
+\]
+with probability at least $1-\exp(-c_2 \gamma^2)$.
 \end{lemma}
+
+To get a sense of what the result in the lemma gives us, let's rewrite the
+conclusion a little differently: it says that uniformly over all $f$ with $J(f)
+\leq 1$ and $\|f\|_\infty \leq M$, we have 
+\[
+\frac{1}{n} \sum_{i=1}^n \epsilon_i f(x_i) \leq \gamma \|f\|_n
+\frac{\|f\|_n^{-w/2}}{\sqrt n},
+\]
+with high probability. Now think about what a simple application of
+Cauchy-Schwartz would give us: 
+\[
+\frac{1}{n} \sum_{i=1}^n \epsilon_i f(x_i) \leq \|\epsilon\|_n \|f\|_n 
+\leq c \|f\|_n,
+\]
+where the second inequality holds with high probability, for some constant  
+$c>0$. Here we are abusing notation somewhat and denoting 
+\smash{$\|\epsilon\|_n^2 = \frac{1}{n} \sum_{i=1}^n \epsilon_i^2$}; and for the
+high probability statement we are (vaguely) referring to the concentration
+result \eqref{eq:sg_quadratic} for a quadratic form of sub-Gaussians (with
+\smash{$Q = \frac{1}{n} I$}). If we ignore the leading factors of $\gamma, c$,
+then we see that the second-to-last display is better than the last display when  
+\[
+\frac{\|f\|_n^{-w/2}}{\sqrt n} \leq 1 \iff \|f\|_n \geq n^{-1/w}.
+\]
+That is, except for functions $f$ of really small empirical norm, we improve on
+Cauchy-Schwartz, and dramatically so when $f$ is of larger empirical norm. For
+example, when \smash{$\|f\|_n = n^{-1/(2+w)}$} (this is not an arbitrarily
+chosen rate ... you'll see why we're interested in this a bit later, when we do
+the error analyis), then the ``speedup'' we get from
+Lemma \ref{lem:sg_complexity} is:
+\[
+\frac{\|f\|_n^{-w/2}}{\sqrt n} = n^{-1/(2+w)}.
+\]
 
 \subsubsection{Empirical and population norm coupling}
 
