@@ -181,9 +181,9 @@ dimension by counting as follows:
 \]
 In the above: 
 \begin{itemize}
-\item $a$ is the number of free parameters in the interior intervals $[t_1,t_2], 
-  \dots, [t_{r-1},t_r]$;
-\item $b$ is the number of free parameters in the exterior intervals $(-\infty,t_1],
+\item $a$ is the number of parameters in the interior intervals $[t_1,t_2],
+  \dots, [t_{r-1},t_r]$; 
+\item $b$ is the number of parameters in the exterior intervals $(-\infty,t_1],
   [t_r,\infty)$; and 
 \item $c$ is the number of constraints at the knots $t_1,\dots,t_r$.  
 \end{itemize}
@@ -460,11 +460,26 @@ So it lies outside the scope of usual kernel analysis. There is a lot more work
 building off of Silverman's initial work that connects smoothing splines to
 equivalent kernels. 
 
+\subsection{Rate of convergence} 
+
 Compared to that for kNN and kernel smoothing, the error analysis for smoothing
-splines is a good deal more nuanced. Hence we'll dedicate a whole lecture to
-learning the tools behind it, a bit later in the course. The upshot is that
-we'll be learning a basic framework that can be used to analyze numerous other
-nonparametric estimators (such as other penalized empirical risk minimizers).     
+splines is more nuanced. Hence we'll dedicate a whole lecture to learning the
+tools behind it, a bit later in the course. The upshot is that we'll learn a
+general framework, and accompanying probabilistic tools, that can be used 
+to analyze numerous other nonparametric estimators (such as other penalized 
+empirical risk minimizers).        
+
+The punchline for smoothing splines will be as follows. If we assume that $f_0
+\in W^{m,1}(L; [0,1])$ for a constant $L>0$, we write to mean that $D^m f_0$
+exists in the weak sense (to be defined precisely below) and \smash{$\int_0^1
+  [D^m f_0(x)]^2 \, dx \leq L^2$}, and we assume mild conditions on the input 
+points and sub-Gaussian noise, then the smoothing spline estimator of degree
+$k=2m-1$ with tuning parameter \smash{$\lambda \asymp n^{1/(2m+1)}$} satisfies    
+\[
+\max \Big\{ \|\hf - f_0\|_n^2 , \, \|\hf - f_0\|_2^2 \Big\} \lesssim
+n^{-2m/(2m+1)} \quad \text{in probability},
+\]
+with respect to draws of $(x_i,y_i)$, $i=1,\dots,n$.
 
 \section{Sobolev theory*}
 
@@ -546,21 +561,25 @@ integer $k \geq 0$, and $1 \leq p \leq \infty$, we define the Sobolev space
 W^{k,p}(U) = \Big\{ f : U \to \R \,:\, \text{$D^\alpha f$ exists in the weak
   sense, and $\|D^\alpha f\|_p < \infty$ for all $|\alpha| \leq k$} \Big\}. 
 \]
-Here $\|\cdot\|_p$ denotes the $L^p$ norm on $U$: \smash{$\|f\|_p = (\int_U
-  |f(x)|^p \, dx)^{1/p}$ for $p < \infty$} and \smash{$\|f\|_\infty = \esssup_{x 
-  \in U} \, |f(x)|$}.
+Here $\|\cdot\|_p$ denotes the $L^p$ norm on $U$: 
+\[
+\|f\|_p^p = \int_U |f(x)|^p \, dx \quad \text{for $p < \infty$}, 
+\]
+and \smash{$\|f\|_\infty = \esssup_{x \in U} \, |f(x)|$} (the essential
+supremum, the smallest upper bound possible over all subsets of $U$ of full
+measure).
 
 Sobolev spaces are central in the study of partial differential equations, which
 is commonly where you'll find people (mathematicians) referring to them. But
 they also play an important role in nonparametric statistics. For example, if
-you recall the smoothing spline problem \eqref{eq:ss}, where we said that ``the  
+you recall the smoothing spline problem \eqref{eq:ss}, where we said that ``the
 minimization is all functions $f$ for the which the criterion is well-defined
 and finite'', the domain here can actually be viewed as the Sobolev
-space\footnote{We'll ignore here, and in several other places, the fact that the 
-  domain is closed. Recall, we defined Sobolev spaces on open domains, and we  
-  will do the same for H{\"o}lder spaces as well. Hence, we are being slightly 
-  imprecise by abruptly allowing closed domains but it's easiest to do so for
-  simplicity of exposition.}  
+space\footnote{We'll ignore here, and in several other places, the fact that
+  the domain is closed. Recall, we defined Sobolev spaces on open domains, 
+  and we will do the same for H{\"o}lder spaces as well. Hence, we are being 
+  slightly imprecise by abruptly allowing closed domains but it's easiest to do 
+  so for simplicity of exposition.}    
 \[
 W^{m,2}([a,b]) = \Big\{ f : [a,b] \to \R \,:\, \text{$D^m f$ exists in the weak
   sense, and $\|D^m f\|_2^2 = \int_a^b [D^m f(x)]^2 \, dx < \infty$} \Big\}. 
@@ -623,7 +642,7 @@ and
 Equipped with these norms, $W^{k,p}(U)$ and $C^{r+\gamma}(U)$ are Banach 
 spaces (complete normed linear spaces). In fact, when $p=2$, the space
 $W^{k,p}(U)$ is a Hilbert space (complete inner product space) under the inner
-product \smash{$\langle f, g \rangle_{W^{k,p}(U)} 
+product \smash{$\langle f, g \rangle_{W^{k,p}(U)}   
 = \sum_{|\alpha| \leq k} \langle D^\alpha f, D^\alpha g \rangle_2 
 = \sum_{|\alpha| \leq k} \int_U D^\alpha f(x) D^\alpha g(x) \, dx$.}
 
@@ -710,8 +729,8 @@ translates this into a statement about the H{\"o}lder constant of $D^\alpha f$
 for $|\alpha| < k$.      
 
 Figure \ref{fig:sobolev} gives an illustration of the tradeoffs navigated by the
-Sobolev embedding theorem (the plots that are shown are sometimes called
-``DeVore diagrams'' in honor of Ron DeVore).  
+Sobolev embedding theorem (these types of plots are sometimes called ``DeVore
+diagrams'' in honor of Ron DeVore).   
 
 \begin{figure}[tb]
 \centering
@@ -733,6 +752,73 @@ Sobolev embedding theorem (the plots that are shown are sometimes called
 \end{figure}
 
 \section{Multivariate splines}
+
+We move on to methods for fitting multivariate splines in nonparametric
+regression. In a sense, both of the following statements are true. 
+
+\begin{enumerate}
+\item There are several multivariate extensions of spline estimators: e.g,
+  tensor product splines and thin-plate splines (among others). We'll cover
+  these. 
+\item There are no real multivariate extensions of spline estimators: tensor
+  product splines and thin-plate splines are not ``really'' splines. In fact,
+  even defining a multivariate spline is generally very tricky. 
+\end{enumerate}
+
+How can this be? Let's go about this backwards, and start by explaining the very
+last part of the second point: suppose you were to (reasonably) insist that a 
+multivariate spline should be, like a univariate spline, a piecewise polynomial
+of a degree $k$ that is $C^{k-1}$, which means it has continuous derivatives of
+all orders less than $k$. Then in general this is going to be very tricky to
+fulfill in any dimension $d \geq 2$. This is essentially due to the explosion in 
+the number of constraints such continuity imposes. Recall that a $k\th$ degree 
+polynomial in $d$ dimensions is of the form (again using multi-index notation
+$\alpha = (\alpha_1,\dots,\alpha_d) \in \Z^d_+$):         
+\begin{equation}
+\label{eq:poly}
+f(x) = \sum_{|\alpha| \leq k} \beta_\alpha \, x_1^{\alpha_1} x_2^{\alpha_2}
+\dots x_d^{\alpha_d}   
+\end{equation}
+for coefficients $\beta_\alpha$, $|\alpha| \leq k$. The number of coefficients,
+and hence the dimension of the space of $k\th$ degree polynomials in $d$
+dinensions, is
+\[
+\sum_{\ell=0}^k {d-1+\ell \choose \ell} = {d + k \choose k}.
+\]
+Now let's just think about quadratic order $k=2$ in dimension $d=2$, and try to
+understand the claim that it's tricky to construct a $C^1$ piecewise quadratic, 
+where we'll consider the ``pieces'' to be triangles. Suppose that we have two 
+triangles sharing an edge $e$. Then on each triangle we have \smash{${4 \choose
+    2} = 6$} parameters to define the polynomial. Denoting by $f,g$ the
+polynomials on our two adjacent triangles, the spline condition says    
+\[
+D^\alpha f(x) = D^\alpha g(x), \quad \text{for all $|\alpha| \leq 1$ and all $x
+  \in e$}. 
+\] 
+It can be shown that this reduces to \smash{${3 \choose 2} + {2 \choose 1} = 5$} 
+linear constraints on the coefficients. But this is just for one edge! Now
+imagine that there is a third triangle, and we have 3 adjacent edges, and 3 
+bivariate quadratics $f,g,h$. Then we have  
+\[
+6+6+6 = 18 \; \text{parameters, but} \; 5+5+5 = 15 \; \text{constraints},    
+\]
+which only leaves us 3 free parameters left in order to define our $C^1$
+piecewise quadratic. This is obviously not desirable. Moreover, it can be shown
+that the existence of completely ``free'' $C^r$ piecewise polynomial on a
+triangulation in $d$ dimensions requires its polynomial degree $q$ to satisfy  
+\[
+q \geq r(d+1) + d.
+\]
+When $r=1$ and $d=2$ the minimal degree 5; that is, we have to use a piecewise  
+quintic to get ``uninhibited'' $C^1$ smoothness, which seems terribly wasteful. 
+
+This is not a complete show-stopper for multivariate and the story is much
+richer than this but we'll not go in that direction. To learn more, some
+wonderful references are deBoor1,2,3, Schumaker Lai
+
+\subsection{Tensor product splines}
+
+\subsection{Thin-plate splines}
 
 \section{RKHS methods}
 
