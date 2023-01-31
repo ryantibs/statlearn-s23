@@ -506,9 +506,10 @@ in practice.
 \subsection{Rate of convergence}
 
 Assuming that $f_0 \in C^1(L; [0,1]^d)$, the underlying regression function
-$f_0$ is Lipschitz continuous on $[0,1]^d$ for some constant $L>0$, and we place
-mild conditions on the input distribution, the kernel smoothing estimator with a  
-spherical kernel and bandwidth \smash{$h \asymp n^{-1/(2+d)}$} satisfies    
+$f_0$ is Lipschitz continuous on $[0,1]^d$ with some Lipschitz constant $L>0$,
+and we place mild conditions on the input distribution, the kernel smoothing
+estimator with a spherical kernel and bandwidth \smash{$h \asymp n^{-1/(2+d)}$}
+satisfies     
 \begin{equation}
 \label{eq:kernel_rate}
 \E\|\hf - f_0\|_2^2 \lesssim n^{-2/(2+d)} \quad \text{in probability},
@@ -576,7 +577,7 @@ D^\alpha f = \frac{\partial^{|\alpha|} f}{\partial x_1^{\alpha_1} \partial
   x_2^{\alpha_2} \dots \partial x_d^{\alpha_d}}.
 \]
 For an integer $r \geq 0$, exponent $0 < \gamma \leq 1$, radius $L>0$, and
-domain $U \subseteq \R^d$, we can now define the H{\"o}lder class  
+domain $U \subseteq \R^d$, we now define the H{\"o}lder class  
 \[
 C^{r+\gamma}(L; U) = \Big\{ f : U \to \R \,:\, | D^\alpha f (x) - D^\alpha f(y)
 | \leq L \|x-y\|_2^\gamma \; \text{for all $|\alpha| = r$, and $x,y \in U$}
