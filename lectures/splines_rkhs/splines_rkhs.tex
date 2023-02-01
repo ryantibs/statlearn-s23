@@ -260,7 +260,7 @@ define $h = g-f$. Consider
 &= f''(x) h'(x) \Big|_a^b - \int_a^b f'''(x) h'(x) \, dx \\
 &= -\int_{x_1}^{x_n} f'''(x) h'(x) \, dx \\ 
 &= -\sum_{i=1}^{n-1} f'''(x) h(x) \Big|_{x_i}^{x_{i+1}} +  
-\int_{x_1}^{x_n} D^4 f(x) h'(x) \, dx \\
+\int_{x_1}^{x_n} D^4 f(x) h(x) \, dx \\
 &= -\sum_{i=1}^{n-1} f'''(x_i^+) (h(x_{i+1}) - h(x_i)).
 \end{align*}
 In the first line we used integration by parts; in the second line we used the
@@ -785,14 +785,14 @@ dinensions, is
 \[
 \sum_{\ell=0}^k {d-1+\ell \choose \ell} = {d + k \choose k}.
 \]
-Now let's just think about cubic order $k=3$ in dimension $d=2$, and try to 
+Now let's just think about cubic degree $k=3$ in dimension $d=2$, and try to  
 understand the claim that it's tricky to construct a $C^2$ piecewise cubic,
-where we'll consider the ``pieces'' to be triangles. In fact, it's already going
-to be hard enough to construct a $C^1$ piecewise cubic. Suppose that we have two 
+when we consider the ``pieces'' to be triangles. In fact, it's already going to
+be hard enough to construct a $C^1$ piecewise cubic. Suppose that we have two  
 triangles sharing an edge $e$. Then on each triangle we have \smash{${5 \choose  
     2} = 10$} parameters to define the cubic, and hence 20 parameters in
-total. Denoting by $f,g$ the two cubics on our adjacent triangles, the $C^1$
-condition says        
+total. Denoting by $f,g$ the two cubics on our adjacent triangles, the $C^1$ 
+condition says that
 \[
 D^\alpha f(x) = D^\alpha g(x), \quad \text{for all $|\alpha| \leq 1$ and all $x
   \in e$}. 
@@ -801,34 +801,43 @@ It can be shown that this reduces to 10 constraints on the coefficients; but
 importantly, the structure of these constraints is such that, for a given set of
 values at the vertices of the triangles, it is unclear whether there will exist
 a set of coefficients that satisfies the constraints \emph{and} meets the
-prescribed  values at the vertices. Figure \ref{fig:c1_poly} gives an
-illustration.      
+prescribed  values at the vertices. This basically happens because particular
+coefficients are entangled in too many linear constraints. Figure
+\ref{fig:c1_constraints} gives an illustration.          
 
-% even though there are 20 coefficients in total (from the two
-% cubics), it is not clear that 
+To get around this problem we have to increase the degree of the polynomial. As
+it turns out, for quintic degree $k=5$, this problem doesn't occur for two
+adjacent triangles in dimension $d=2$, and we get what is sometimes called a
+``free'' $C^1$ smoothness condition, where this kind of entanglement of
+constraints doesn't happen. One can ask: in dimension $d$, what is the
+requirement on the degree $k$ (for a generic partition of points into simplices)
+such that we get a ``free'' $C^s$ smoothness condition? The answer is,
+disappointingly,              
+\[
+k \geq s(d+1) + d.
+\]
+We see that for ``free'' $C^1$ smoothness when $d=2$, the minimal degree is
+indeed $k=5$, and when $d=3$ it is $k=7$. This seems very wasteful.   
 
-% the nature of these constraints is such it is not clear that they
-% have a solution a single coefficient 
+\begin{figure}[tb]
+\centering
+\includegraphics[width=0.5\textwidth]{c1_cubic.png}
+\caption{\it Illustration of the constraints for $C^1$ smoothness, for a cubic
+  on each triangle, right: quintic degree $k=5$. Credit:
+  \citet{deboor2009way}. It turns out that a polynomial of an arbitrary degree
+  on a triangle can be written be in what is called B-form (in an expansion of 
+  Berstein basis polynomials), whose coefficients can be assigned to anchor
+  points drawn as open blue circles. When $k=3$, the set of coefficients that
+  are tied together in a linear equation needed for $C^1$ smoothness are drawn
+  as a red quadrilateral. There are two anchor points whose coefficients are 
+  simultaneously involved in three equations.}
+\label{fig:c1_constraints}
+\end{figure}
 
-%  But this is just for one edge! Now  
-% imagine that there is a third triangle, and we have 3 adjacent edges, and 3 
-% bivariate quadratics $f,g,h$. Then we have  
-% \[
-% 6+6+6 = 18 \; \text{parameters, but} \; 5+5+5 = 15 \; \text{constraints},    
-% \]
-% which only leaves us 3 free parameters left in order to define our $C^1$
-% piecewise quadratic. This is obviously not desirable. Moreover, it can be shown
-% that the existence of completely ``free'' $C^r$ piecewise polynomial on a
-% triangulation in $d$ dimensions requires its polynomial degree $q$ to satisfy  
-% \[
-% q \geq r(d+1) + d.
-% \]
-% When $r=1$ and $d=2$ the minimal degree 5; that is, we have to use a piecewise  
-% quintic to get ``uninhibited'' $C^1$ smoothness, which seems terribly wasteful. 
-
-% This is not a complete show-stopper for multivariate and the story is much
-% richer than this but we'll not go in that direction. To learn more, some
-% wonderful references are deBoor1,2,3, Schumaker Lai
+This is not a complete show-stopper for multivariate splines and there is much
+more to the story than this but we'll not travel in that direction. To learn
+more, two definitive references are \citet{deboor1993box} and
+\citet{lai2007spline}, and \citet{deboor2009way} is a lighter, enjoyable review.  
 
 \subsection{Tensor product splines}
 
