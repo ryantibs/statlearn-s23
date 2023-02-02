@@ -72,7 +72,7 @@ $t_1,\dots,t_r$?  The most natural way is to use the \emph{truncated power
 \begin{equation}
 \begin{gathered}
 \label{eq:tpb}
-g_j(x) = \frac{1}{(j-1)!} x^j, \quad j=1,\dots,k+1, \\
+g_j(x) = \frac{1}{(j-1)!} x^{j-1}, \quad j=1,\dots,k+1, \\
 g_{j+k+1}(x) = \frac{1}{k!} (x-t_j)^k_+, \quad j=1,\dots,r,
 \end{gathered}
 \end{equation}
@@ -225,7 +225,7 @@ when the $m\th$ derivative of $f$ is wiggly. The tuning parameter $\lambda \geq
 By far the most commonly considered case is $k=3$, called the cubic smoothing
 spline, and defined via
 \begin{equation}
-\label{eq:ss3}
+\label{eq:ss_cubic}
 \minimize_f \; \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \int_a^b [f''(x)]^2 \, dx.
 \end{equation}
 
@@ -249,7 +249,7 @@ exists a natural cubic spline $f$ with knots at $x_1,\dots,x_n$ such that:
 \item $\int_a^b [f''(x)]^2 \, dx \leq \int_a^b [g''(x)]^2 \, dx$.
 \end{itemize}
 Note that this would in fact prove that we can restrict our attention in problem 
-\eqref{eq:ss3} to natural splines with knots at $x_1,\dots,x_n$.
+\eqref{eq:ss_cubic} to natural splines with knots at $x_1,\dots,x_n$.
 
 To prove the key result, we start with the fact that the cubic natural spline
 space with knots at $x_1,\dots,x_n$ is $n$-dimensional, so given any $n$ points
@@ -286,8 +286,8 @@ since the cross term is zero, and therefore
 with equality if and only if $h''(x)=0$ for all $x \in [a,b]$. Note that $h''=0$
 implies that $h$ must be linear, and since we already know that $h(x_i)=0$ for
 all $i=1,\dots,n$, this is equivalent to $h=0$. In other words, the last display
-holds strictly except when $g=f$, so the solution in \eqref{eq:ss3} is uniquely
-a natural spline with knots at the inputs. 
+holds strictly except when $g=f$, so the solution in \eqref{eq:ss_cubic} is
+uniquely a natural spline with knots at the inputs. 
 
 \subsection{Finite-dimensional form}
 
@@ -600,9 +600,11 @@ C^{r+\gamma}(U) = \Bigg\{ f : U \to \R \,:\, \text{$D^\alpha f$ exists,
   \sup_{x \not= z} \, \frac{|D^\alpha f(x) - D^\alpha f(z)|}{\|x-z\|_2^\gamma} < 
   \infty \; \text{for all $|\alpha| = r$} \bigg\}.   
 \end{multline*}
-In the above, we can interpret $D^\alpha f$ to mean a classical derivative, but
-as we'll discuss just below, we can also identify the H{\"o}lder space with a
-particular Sobolev space. 
+In the above, we can interpret $D^\alpha f$ \underline{as a classical
+  derivative}, and $\|\cdot\|_\infty$ \underline{as the supremum norm} (we don't
+need the essential supremum norm). This may all seem more restrictive than
+Sobolev spaces, but as we'll discuss just below, we can actually identify the
+H{\"o}lder space with a particular Sobolev space.      
 
 Let's pause to examine the relationship between the Sobolev space
 $W^{k,\infty}(U)$ and the H{\"o}lder space $C^k(U)$. The former contains all
@@ -759,10 +761,10 @@ regression. In a sense, both of the following statements are true.
 
 \begin{enumerate}
 \item There are several multivariate extensions of spline estimators: e.g,
-  tensor product splines and thin-plate splines (among others). We'll cover
+  tensor product splines and thin plate splines (among others). We'll cover
   these. 
 \item There are no real multivariate extensions of spline estimators: tensor
-  product splines and thin-plate splines are not ``really'' splines. In fact,
+  product splines and thin plate splines are not ``really'' splines. In fact,
   even defining a multivariate spline is generally very tricky. 
 \end{enumerate}
 
@@ -776,7 +778,7 @@ constraints such continuity imposes in the multivariate setting. Recall that a
 $k\th$ degree polynomial in $d$ dimensions is of the form (using multi-index
 notation $\alpha = (\alpha_1,\dots,\alpha_d) \in \Z^d_+$):
 \begin{equation}
-\label{eq:poly}
+\label{eq:polynomial}
 f(x) = \sum_{|\alpha| \leq k} \beta_\alpha \, x_1^{\alpha_1} x_2^{\alpha_2}
 \dots x_d^{\alpha_d},
 \end{equation}
@@ -829,8 +831,8 @@ indeed $k=5$, and when $d=3$ it is $k=7$. This seems very wasteful.
   expansion of what are called Bernstein basis polynomials), whose coefficients
   can be assigned to anchor points, drawn above as blue circles. The set of
   coefficients that are tied together in a linear equation needed for $C^1$
-  smoothness are drawn as a red quadrilateral. We see that the linear systems
-  are entangled, since they each overlap at an anchor point.}   
+  smoothness are highlighted as a red quadrilateral. We can see that the linear
+  systems are entangled, since pairs of them overlap at an anchor point.}     
 \label{fig:c1_constraints}
 \end{figure}
 
@@ -877,9 +879,9 @@ product splines
 \]
 Figure \ref{fig:tensor} displays a few tensor products of bivariate B-splines.
 
-\begin{figure}[htb]
+\begin{figure}[!t]
 \centering
-\includegraphics[width=0.915\textwidth]{tensor.png}
+\includegraphics[width=0.925\textwidth]{tensor.png}
 \caption{\it Bivariate tensor products of cubic B-splines. Credit: Chapter 5 of 
   \citet{hastie2009elements}.}    
 \label{fig:tensor}
@@ -898,50 +900,227 @@ compact form as
 \[
 \minimize_\beta \; \big\| Y - (G_1 \otimes \cdots G_d) \beta \big\|_2^2. 
 \]
-As usual, given the solution \smash{$\hbeta$}, the tensor product regression
-spline makes predictions according to  
-\[
-\hf(x) = \sum_{j \in [N]^d} \hbeta_j \, g_{j_1}(x_1) \otimes \cdots \otimes 
-g_{j_d}(x_d).
-\]
+As usual, given the solution \smash{$\hbeta$},  we make predictions according to
+\smash{$\hf(x) = \sum_{j \in [N]^d} \hbeta_j \, g_{j_1}(x_1) \otimes \cdots
+  \otimes g_{j_d}(x_d)$}, and since \smash{$\hbeta$} is linear in $Y$, the
+tensor product spline \smash{$\hf$} is a linear smoother.
 
 Few notes: there is no reason that the knots have to be the same along each 
 dimension, that is only done here for simplicity. We could have also used
 regularization, though for ``variationally-motivated'' regularization we'd turn 
-to thin-plate splines (covered next).
+to thin plate splines (covered next).
 
 \subsubsection{What are these functions?} 
 
 We should be clear that tensor product construction \emph{does not ``really'' 
   give us a multivariate spline}, if we maintain that a spline is a $k\th$
-piecewise polynomial that is also $C^{k-1}$. A tensor product of univariate
-$k\th$ degree splines produces a function that is indeed $C^{k-1}$, and indeed
-a piecewise polynomial---it is a polynomial on hypercubes of the form    
+piecewise polynomial that is also $C^{k-1}$. Why? Note that a tensor product of
+univariate $k\th$ degree splines produces a function that is indeed $C^{k-1}$,
+and indeed a piecewise polynomial: it is a polynomial on each hypercube of the
+form        
 \[
 [t_{j_1}, t_{j_1+1}] \times \cdots \times [t_{j_d}, t_{j_d+1}]. 
 \]
-But it is \emph{not} necessarily a $k\th$ degree polynomial on these
-hypercubes. Rather, it is a tensor product of univariate $k\th$ degree
-polynomials. Technically, out of this we can get a polynomial of degree up to
-$k^d$, and at the same time, we can't actually generate any polynomial of degree
+But it is \emph{not} necessarily a $k\th$ degree polynomial on each
+hypercube; it is a tensor product of univariate $k\th$ degree
+polynomials. Technically, out of this we can get a polynomial of degree up to 
+$k^d$, and at the same time, we can't actually generate any polynomial of degree 
 $k^d$. We are restricted to functions of the form   
 \[
 f(x) = \sum_{\alpha_1,\dots,\alpha_d \leq k} \beta_\alpha \, x_1^{\alpha_1}
 x_2^{\alpha_2} \dots x_d^{\alpha_d}.
 \]
-There is important difference here, compared to \eqref{eq:poly}. As a concrete 
-example, take $k=1$ and $d=2$: then the tensor product of univariate linear
-functions give us (what are called bilinear) functions of the form
+There is important difference here, compared to \eqref{eq:polynomial}. As a
+concrete example, take $k=1$ and $d=2$: then the tensor product of univariate
+linear functions give us (what are called bilinear) functions of the form
 \[
 1 + a x_1 + b x_2 + c x_1 x_2,
 \]
 which is \emph{not} linear, because of the cross term $x_1 x_2$. At the same
-time, we can't get any quadratic out of this, because we're missing $x_1^2$ and
-$x_2^2$. 
+time, we can't get any quadratic out of this, because we're missing the terms
+$x_1^2$ and $x_2^2$. 
 
-\subsection{Thin-plate splines}
+This seems to bothers some people (researchers, practitioners), but doesn't
+bother others---it really must depend on the problem setting or application one
+has in mind. Sometimes the highly anisotropic (coordinate-aligned) nature of a
+tensor product spline may be desirable, and other times it may not.    
 
+\subsection{Thin plate splines}
 
+An alternative route is to try to extend the variational problem \eqref{eq:ss}
+that defined the univariate smoothing spline. At the outset, let's aim for the
+most general extension, which is to define an estimator by solving
+\begin{equation}
+\label{eq:ss_multivariate}
+\minimize_f \; \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \int_U \sum_{|\alpha| =
+  m} [D^\alpha f(x)]^2 \, dx,
+\end{equation}
+for an integer order $m \geq 1$. Here $U \in \R^d$ is be some bounded set that
+contains the input points $x_i$, $i=1,\dots,n$, and we can consider the
+minimization to be over the Sobolev space $W^{m,2}(U)$ (recall, this contains
+$m$ times weakly differentiable functions whose $\alpha\th$ derivative is in
+$L^2(U)$, for all $|\alpha| \leq m$).     
+
+Is this a good idea? It depends. When $2m > d$, problem
+\eqref{eq:ss_multivariate} is well-defined in the sense that it admits a
+solution. This solution is what we'll eventually call the thin plate spline
+estimator (in a particular case). But when $2m \leq d$, there is a fundamental
+issue with this approach: problem \eqref{eq:ss_multivariate} is
+\emph{ill-defined in the sense that it has no solution}. This is a manifestation
+of the Sobolev embedding theorem.
+
+\subsubsection{Return of the Sobolev embedding theorem}
+
+Let's recall what we learned from the Sobolev embedding theorem earlier (if you
+skipped it, since we did say it it was optional, then also that's fine---the 
+following explanation should still be pretty self-contained). When $2m > d$,
+which we called the supercritical regime, the Sobolev space $W^{m,2}(U)$ embeds
+continuously into a H{\"o}lder space $C^{r+\gamma}(U)$, so in particular it
+embeds continuously into $C^0(U)$: this is simply the space of continuous
+functions on $U$ equipped with the $L^\infty$ norm. Why is this important?
+Given a sequence such that $f_k \to f$ as $k \to \infty$ in
+\smash{$\|\cdot\|_{W^{m,2}(U)}$} norm, the continuous embedding property implies
+$f_k \to f$ as $k \to \infty$ in $L^\infty$ norm,\footnote{On $C^0(U)$, as
+  with all H{\"o}lder spaces, we take to be the $L^\infty$ the sup norm, and
+  \emph{not} the essential sup norm.}  
+which implies $f_k(x) \to f(x)$ for each $x \in U$. Thus we have established a
+critical conclusion:
+\[
+\text{\emph{the point evaluation operator is continuous on $W^{m,2}(U)$}}. 
+\]
+This means we can do things like solve the variational problem
+\eqref{eq:ss_multivariate}. But when $2m \leq d$, which we called the
+subcritical regime,\footnote{Actually, to be precise, here we're lumping the
+  subcritical $2m < d$ and critical $2m=d$ regimes together.}
+we do not get an embedding into $C^0(U)$, and it turns out that:
+\[
+\text{\emph{the point evaluation operator is not continuous on $W^{m,2}(U)$}}.  
+\]
+This means that there can be a sequence such that $f_k \to f$ as $k \to \infty$ 
+in \smash{$\|\cdot\|_{W^{m,2}(U)}$} norm but $f_k(x) \not\to f(x)$ for some $x
+\in U$. In fact, it's not hard to see this from first principles when $2m < d$:
+take $f$ to be any infinitely differentiable ``bump'' function that is symmetric
+about the origin, with $f(0) = 1$, and that is zero outside of the unit $k_2$
+ball $\{x : \|x\|_2 \leq 1\} \subseteq U$. Now define $f_k(x) = f(k x)$, for
+$k=1,2,3,\dots$, so that $f_k$ collapses smoothly to a spike at the origin as $k 
+\to \infty$. Then 
+\[
+\int_U \sum_{|\alpha| = m} [D^\alpha f_k(x)]^2 \, dx = 
+k^{d-2m} \int_U \sum_{|\alpha| = m} [D^\alpha f(u)]^2 \, du, 
+\]
+simply by a change of variables $u = k x$. If $d > 2m$, then as $k \to \infty$,
+we get that $f_k \to 0$ (the zero function) in \smash{$\|\cdot\|_{W^{m,2}(U)}$}
+norm. However, recall $f_k(0) = 1$ for all $k$, so clearly we do not get
+pointwise convergence at the origin. Altogether, this means we \emph{cannot} do
+things like solve the variational problem \eqref{eq:ss_multivariate}.
+
+\subsubsection{Restrictions to the rescue}
+
+To circumvent the above issue, we can just restrict $2m > d$. Note that this
+forces us to take more derivatives as $d$ grows, which is not really desirable
+(more on this later). In any case, when $d=2$, it is valid to take $m=2$, which
+yields the \emph{thin plate spline} estimator, defined by solving   
+\begin{equation}
+\label{eq:thin_plate1}
+\minimize_f \; \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \int_U \|\nabla^2
+f(x)\|_F^2 \, dx,
+\end{equation}
+where $\nabla^2 f$ denotes the weak Hessian (matrix of weak second derivatives)
+of $f$, and $\|\cdot\|_F$ is the Frobenius norm. Note that this can be
+equivalently written as 
+\begin{equation}
+\label{eq:thin_plate2}
+\minimize_f \; \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \int_U \bigg[
+\bigg( \frac{\partial^2 f(x)}{\partial x_1^2}\bigg)^2 + 
+2\bigg( \frac{\partial^2 f(x)}{\partial x_1 \partial x_2} \bigg)^2 + 
+\bigg( \frac{\partial^2 f(x)}{\partial x_2^2} \bigg)^2 \bigg] \, dx.
+\end{equation}
+Like the cubic smoothing spline problem \eqref{eq:ss_cubic}, the thin plate
+spline problem \eqref{eq:thin_plate2} (or equivalently, \eqref{eq:thin_plate1}) 
+has a representer theorem for its solution. One can show that it suffices to
+consider functions of the form  
+\begin{equation} 
+\label{eq:polyharmonic}
+f(x) = a^\T x + \sum_{j=1}^n \beta_j \eta(\|x - x_i\|_2),
+\end{equation}
+where 
+\[
+\eta(r) = \frac{1}{16 \pi} r^2 \log r^2,
+\]
+(As $\log 0$ is undefined, we adopt a continuous extention at zero, and set
+$\eta(0) = 0$.) Plugging in $f$ of the form \eqref{eq:polyharmonic} into problem 
+\eqref{eq:thin_plate2}, the latter becomes finite-dimensional. One can show that
+it is still of generalized ridge form, and so its solution---the fitted coefficients
+\smash{$\hat{a}, \hbeta$}---are linear in $Y$. Since we make predictions
+according to \smash{$\hf(x) = \hat{a}^\T x + \sum_{j=1}^n \hbeta_j \eta(\|x -
+  x_i\|_2)$}, we see that the thin plate spline is a linear smoother.  
+
+The function $f$ in \eqref{eq:polyharmonic} often called a \emph{polyharmonic
+  spline}. Again, it is \emph{not ``really'' a multivariate spline}, because it
+is not a piecewise polynomial. But let's emphasize an important property: $\eta$
+is symmetric around the origin. In fact, if we just look back at the criterion
+\eqref{eq:thin_plate1}, we see that if we rotated the coordinate system by an
+arbitrary orthogonal transform $V \in \R^{2 \times 2}$, taking our new
+coordinates to be $z=Vx$, then we get 
+\[
+\minimize_f \; \sum_{i=1}^n (y_i - f(z_i))^2 + \lambda \int_U \underbrace{
+\| V \nabla^2 f(z) V^\T\|_F^2}_{= \|\nabla^2 f(z)\|_F^2} \, dz,  
+\]
+where we used the fact that $\|V A V^\T\|_F = \|A\|_F$ for any matrix $A$ due to
+orthogonality of $V$. This means that the thin plate spline estimator is
+\emph{rotationally invariant}: if we rotated the coordinate system of the input
+points, then the new solution would just be a rotation of the old solution. This
+is \emph{not} true of tensor product splines. 
+
+To take steps towards greater generality: when $d=3$, the choice $m=2$ is still
+valid, and the corresponding estimator is often still called the thin plate
+spline. The details are similar to the above. In fact, whenever $2m > d$, the
+variational problem \eqref{eq:ss_multivariate} has a representer theorem and
+admits a finite-dimensional solution which is a polyharmonic spline, and the
+problem reduces to a generalized ridge regression. Instead of focusing on the
+details, we'll simply move on to RKHS theory. It will turn out that the
+estimator defined by \eqref{eq:ss_multivariate}, when $2m > d$, it just a
+special case of an RKHS estimator.
+
+\subsubsection{Can we do anything else?}
+
+Before moving on to RKHS, it's worth emphasizing restrictive the condition  
+$2m > d$ is. Though it's a very simple calculation, Table
+\ref{tab:supercritical} lists the requirement on $m$ for $d=1$ through 5.  
+
+\begin{table}[htb]
+\centering
+\begin{tabular}{c|c}
+Dimension & Restriction \\
+\hline
+$d=1$ & $m \geq 1$ \\
+$d=2$ & $m \geq 2$ \\
+$d=3$ & $m \geq 2$ \\
+$d=4$ & $m \geq 3$ \\
+$d=5$ & $m \geq 3$ 
+\end{tabular}
+\caption{\it Translating the supercritical condition $2m > d$, for each $d 
+  \leq 5$.} 
+\label{tab:supercritical} 
+\end{table}
+
+This is obviously not desirable: the choice of smoothness order $m$ (which then
+dictates the degree of the polyharmonic spline) should be up to the modeler, and
+not dictated by the ambient dimension.
+
+There is another way. We can ``discretize'' the variational problem
+\eqref{eq:ss_multivariate}, in particular, we can substitute the penalty with a
+discrete approximation based on a graph Laplacian---where the graph is built 
+using the input points $x_1,\dots,x_n$. This has the advantage of being (i)
+well-defined for any $m,d$, and (ii) more computationally efficient than solving 
+\eqref{eq:ss_multivariate} even when the latter is well-posed. Furthermore, the
+estimator from this graph-based approach can be shown to be minimax rate optimal
+over norm balls in $W^{m,2}([0,1]^d)$. (To get optimal rates in general, we will
+actually need to do something a bit different than just solve a discrete version 
+of \eqref{eq:ss_multivariate}, and instead work with a version of the Laplacian
+whose spectrum is suitably truncated.)  Of course, we're skirting a lot of the
+details here, but for more, see the recent work \citet{green2021minimax1,
+  green2021minimax2}. 
 
 \section{RKHS methods}
 
