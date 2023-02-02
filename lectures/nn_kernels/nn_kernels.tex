@@ -526,8 +526,9 @@ first-order Taylor expansion of $f_0$:
 w_i(x_0) \bigg] + R,  
 \]
 where $R$ is a small remainder term that we'll ignore. The Lipschitz condition
-implies that $f_0$ is almost everywhere differentiable with $\|\nabla
-f_0\|_\infty \leq L$ (by Rademacher's theorem). Hence for the squared bias,
+actually implies that $f_0$ is differentiable almost everywhere with $\|\nabla 
+f_0(x)\|_2 \leq L$ for almost every $x$ (by Rademacher's theorem). Hence for the
+squared bias,  
 \[
 \Bias^2(\hf(x_0) | x_0) 
 \leq L^2 \bigg\| \sum_{i=1}^n (x_i-x_0) w_i(x_0) \bigg\|_2^2 
