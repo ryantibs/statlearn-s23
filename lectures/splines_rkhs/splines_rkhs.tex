@@ -219,15 +219,17 @@ the which the criterion is well-defined and finite (this is called the $L^2$
 Sobolev space of order $m$ on $[a,b]$, which we denote by $W^{m,2}([a,b])$, and
 will study a bit later). The criterion in \eqref{eq:ss} trades off the squared
 error of $f$ over $(x_i,y_i)$, $i=1,\dots,n$, with a penalty term that is large
-when the $m\th$ derivative of $f$ is wiggly. The tuning parameter $\lambda \geq 
-0$ governs the tradeoff between these two terms. 
+when the $(m-1)^{\text{st}}$ derivative of $f$ is wiggly. The tuning parameter
+$\lambda \geq 0$ governs the tradeoff between these two terms. 
 
-By far the most commonly considered case is $k=3$, called the cubic smoothing
-spline, and defined via
+By far the most commonly considered case is $k=3$, the cubic smoothing spline,
+defined via 
 \begin{equation}
 \label{eq:ss_cubic}
 \minimize_f \; \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \int_a^b [f''(x)]^2 \, dx.
 \end{equation}
+This is so common that often you'll just hear this called \emph{the} smoothing
+spline. 
 
 \subsection{Representer theorem}
 
@@ -248,14 +250,13 @@ exists a natural cubic spline $f$ with knots at $x_1,\dots,x_n$ such that:
 \item $f(x_i) = g(x_i)$, $i=1,\dots,n$; and 
 \item $\int_a^b [f''(x)]^2 \, dx \leq \int_a^b [g''(x)]^2 \, dx$.
 \end{itemize}
-Note that this would in fact prove that we can restrict our attention in problem 
-\eqref{eq:ss_cubic} to natural splines with knots at $x_1,\dots,x_n$.
-
-To prove the key result, we start with the fact that the cubic natural spline
-space with knots at $x_1,\dots,x_n$ is $n$-dimensional, so given any $n$ points
-$z_i = g(x_i)$, $i=1,\dots,n$, we can always find a natural spline $f$ with
-knots at $x_1,\dots,x_n$ that satisfies $f(x_i) = z_i$, $i=1,\dots,n$. Now
-define $h = g-f$. Consider
+This would imply that we can restrict our attention in problem
+\eqref{eq:ss_cubic} to natural splines with knots at $x_1,\dots,x_n$. To prove
+the key result, we start with the fact that the cubic natural spline space with
+knots at $x_1,\dots,x_n$ is $n$-dimensional, so given any $n$ points $z_i =
+g(x_i)$, $i=1,\dots,n$, we can always find a natural spline $f$ with knots at
+$x_1,\dots,x_n$ that satisfies $f(x_i) = z_i$, $i=1,\dots,n$. Now define $h =
+g-f$. Consider 
 \begin{align*}
 \int_a^b f''(x) h''(x) \, dx 
 &= f''(x) h'(x) \Big|_a^b - \int_a^b f'''(x) h'(x) \, dx \\
@@ -303,7 +304,7 @@ reparametrize the problem \eqref{eq:ss} as
 This is a finite-dimensional problem, and after we solve for the coefficients
 \smash{$\hbeta \in \R^n$}, the smoothing spline estimator is simply given by  
 \[
-\hf(x)=\sum_{j=1}^n \hbeta_j \eta_j(x).
+\hf(x) = \sum_{j=1}^n \hbeta_j \eta_j(x).
 \]
 Defining the basis matrix $N \in \R^{n \times n}$ and penalty matrix $\Omega \in
 \R^{n \times n}$ to have entries
@@ -313,7 +314,7 @@ N_{ij} = \eta_j(x_i), \quad
 \]
 the problem in \eqref{eq:ss_finite_dim} can be written more succintly as
 \[
-\minimize_\beta \; \|Y - N\beta\|_2^2 + \lambda \beta \Omega \beta,  
+\minimize_\beta \; \|Y - N\beta\|_2^2 + \lambda \beta^\T \Omega \beta,   
 \]
 showing the smoothing spline problem to be a type of generalized ridge
 regression problem. Its solution has the explicit form \smash{$\hbeta = (N^\T N
@@ -952,14 +953,18 @@ that defined the univariate smoothing spline. At the outset, let's aim for the
 most general extension, which is to define an estimator by solving
 \begin{equation}
 \label{eq:ss_multivariate}
-\minimize_f \; \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \int_U \sum_{|\alpha| =
-  m} [D^\alpha f(x)]^2 \, dx,
+\minimize_f \; \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \int \sum_{|\alpha| =  m}
+[D^\alpha f(x)]^2 \, dx, 
 \end{equation}
-for an integer order $m \geq 1$. Here $U \in \R^d$ is be some bounded set that
-contains the input points $x_i$, $i=1,\dots,n$, and we can consider the
-minimization to be over the Sobolev space $W^{m,2}(U)$ (recall, this contains
-$m$ times weakly differentiable functions whose $\alpha\th$ derivative is in
-$L^2(U)$, for all $|\alpha| \leq m$).     
+for an integer order $m \geq 1$. Here we can consider the minimization to be
+over the Sobolev space $W^{m,2}(\R^d)$; recall, this contains $m$ times weakly
+differentiable functions with $\alpha\th$ derivative in $L^2(\R^c)$, for
+$|\alpha| \leq m$.\footnote{Previously we defined and worked with Sobolev
+  spaces on bounded domains. This was done for convenience (simplicity of the
+  statements we were making). Here and henceforth, it is more convenient to work
+  on $\R^d$. But this is of no consequence, since everything we said about
+  Sobolev theory transfers over appropriately to unbounded domains, in
+  particular, to $U=\R^d$.}  
 
 Is this a good idea? It depends. When $2m > d$, problem
 \eqref{eq:ss_multivariate} is well-defined in the sense that it admits a
@@ -974,45 +979,48 @@ of the Sobolev embedding theorem.
 Let's recall what we learned from the Sobolev embedding theorem earlier (if you
 skipped it, since we did say it it was optional, then also that's fine---the 
 following explanation should still be pretty self-contained). When $2m > d$,
-which we called the supercritical regime, the Sobolev space $W^{m,2}(U)$ embeds
-continuously into a H{\"o}lder space $C^{r+\gamma}(U)$, so in particular it
-embeds continuously into $C^0(U)$: this is simply the space of continuous
-functions on $U$ equipped with the $L^\infty$ norm. Why is this important?
-Given a sequence such that $f_k \to f$ as $k \to \infty$ in
-\smash{$\|\cdot\|_{W^{m,2}(U)}$} norm, the continuous embedding property implies
-$f_k \to f$ as $k \to \infty$ in $L^\infty$ norm,\footnote{On $C^0(U)$, as
-  with all H{\"o}lder spaces, we take to be the $L^\infty$ the sup norm, and
-  \emph{not} the essential sup norm.}  
-which implies $f_k(x) \to f(x)$ for each $x \in U$. Thus we have established a
-critical conclusion:
-\[
-\text{\emph{the point evaluation operator is continuous on $W^{m,2}(U)$}}. 
-\]
+which we called the supercritical regime, the Sobolev space $W^{m,2}(\R^d)$
+embeds continuously into a H{\"o}lder space $C^{r+\gamma}(\R^d)$, so in
+particular it embeds continuously into $C^0(\R^d)$: this is simply the space of
+continuous functions on $\R^d$ equipped with the $L^\infty$ norm.\footnote{On 
+  $C^0(\R^d)$, as with all H{\"o}lder spaces, we take to be the $L^\infty$ the
+  sup norm, \emph{not} the essential sup norm.}   
+Why is this important? Well, given a sequence such that $f_k \to f$ as $k \to
+\infty$ in \smash{$\|\cdot\|_{W^{m,2}(\R^d)}$} norm, the continuous embedding
+property implies $f_k \to f$ as $k \to \infty$ in $L^\infty$ norm, which implies
+$f_k(x) \to f(x)$ for all $x$. Thus we have shown a critical fact: 
+\begin{quote}
+\centering\it
+For $2m > d$, the point evaluation operator is continuous on $W^{m,2}(\R^d)$. 
+\end{quote}
 This means we can do things like solve the variational problem
 \eqref{eq:ss_multivariate}. But when $2m \leq d$, which we called the
 subcritical regime,\footnote{Actually, to be precise, here we're lumping the
   subcritical $2m < d$ and critical $2m=d$ regimes together.}
-we do not get an embedding into $C^0(U)$, and it turns out that:
-\[
-\text{\emph{the point evaluation operator is not continuous on $W^{m,2}(U)$}}.  
-\]
+we do not get an embedding into $C^0(\R^d)$, and it turns out that:
+\begin{quote}
+\centering\it
+For $2m \leq d$, the point evaluation operator is not continuous on
+$W^{m,2}(\R^d)$. 
+\end{quote}
 This means that there can be a sequence such that $f_k \to f$ as $k \to \infty$ 
-in \smash{$\|\cdot\|_{W^{m,2}(U)}$} norm but $f_k(x) \not\to f(x)$ for some $x
-\in U$. In fact, it's not hard to see this from first principles when $2m < d$:
+in \smash{$\|\cdot\|_{W^{m,2}(\R^d)}$} norm but $f_k(x) \not\to f(x)$ for some
+$x$. In fact, it's not hard to see this from first principles when $2m < d$:
 take $f$ to be any infinitely differentiable ``bump'' function that is symmetric
-about the origin, with $f(0) = 1$, and that is zero outside of the unit $k_2$
-ball $\{x : \|x\|_2 \leq 1\} \subseteq U$. Now define $f_k(x) = f(k x)$, for
-$k=1,2,3,\dots$, so that $f_k$ collapses smoothly to a spike at the origin as $k 
+about the origin, with $f(0) = 1$, and that is zero outside of the unit $\ell_2$ 
+ball $\{x : \|x\|_2 \leq 1\}$. Now define $f_k(x) = f(k x)$, for
+$k=1,2,3,\dots$, so that $f_k$ collapses smoothly to a spike at the origin as $k  
 \to \infty$. Then 
 \[
-\int_U \sum_{|\alpha| = m} [D^\alpha f_k(x)]^2 \, dx = 
-k^{d-2m} \int_U \sum_{|\alpha| = m} [D^\alpha f(u)]^2 \, du, 
+\int \sum_{|\alpha| = m} [D^\alpha f_k(x)]^2 \, dx = 
+k^{d-2m} \int \sum_{|\alpha| = m} [D^\alpha f(u)]^2 \, du, 
 \]
 simply by a change of variables $u = k x$. If $d > 2m$, then as $k \to \infty$,
-we get that $f_k \to 0$ (the zero function) in \smash{$\|\cdot\|_{W^{m,2}(U)}$}
-norm. However, recall $f_k(0) = 1$ for all $k$, so clearly we do not get
-pointwise convergence at the origin. Altogether, this means we \emph{cannot} do
-things like solve the variational problem \eqref{eq:ss_multivariate}.
+we get that $f_k \to 0$ (the zero function) in
+\smash{$\|\cdot\|_{W^{m,2}(\R^d)}$} norm. However, recall $f_k(0) = 1$ for all
+$k$, so clearly we do not get pointwise convergence at the origin. Altogether,
+this means we \emph{cannot} do things like solve the variational problem
+\eqref{eq:ss_multivariate}. 
 
 \subsubsection{Restrictions to the rescue}
 
@@ -1022,18 +1030,18 @@ forces us to take more derivatives as $d$ grows, which is not really desirable
 yields the \emph{thin plate spline} estimator, defined by solving   
 \begin{equation}
 \label{eq:thin_plate1}
-\minimize_f \; \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \int_U \|\nabla^2
-f(x)\|_F^2 \, dx,
+\minimize_f \; \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \int \|\nabla^2
+f(x)\|_F^2 \, dx, 
 \end{equation}
 where $\nabla^2 f$ denotes the weak Hessian (matrix of weak second derivatives)
-of $f$, and $\|\cdot\|_F$ is the Frobenius norm. Note that this can be
-equivalently written as 
+of $f$, and $\|\cdot\|_F$ is the Frobenius norm. This can be equivalently
+written as  
 \begin{equation}
 \label{eq:thin_plate2}
-\minimize_f \; \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \int_U \bigg[
-\bigg( \frac{\partial^2 f(x)}{\partial x_1^2}\bigg)^2 + 
-2\bigg( \frac{\partial^2 f(x)}{\partial x_1 \partial x_2} \bigg)^2 + 
-\bigg( \frac{\partial^2 f(x)}{\partial x_2^2} \bigg)^2 \bigg] \, dx.
+\minimize_f \; \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \int \bigg[ \bigg(
+\frac{\partial^2 f(x)}{\partial x_1^2}\bigg)^2 +  2\bigg( \frac{\partial^2
+  f(x)}{\partial x_1 \partial x_2} \bigg)^2 +  \bigg( \frac{\partial^2
+  f(x)}{\partial x_2^2} \bigg)^2 \bigg] \, dx. 
 \end{equation}
 Like the cubic smoothing spline problem \eqref{eq:ss_cubic}, the thin plate
 spline problem \eqref{eq:thin_plate2} (or equivalently, \eqref{eq:thin_plate1}) 
@@ -1063,8 +1071,8 @@ is symmetric around the origin. In fact, if we just look back at the criterion
 arbitrary orthogonal transform $V \in \R^{2 \times 2}$, taking our new
 coordinates to be $z=Vx$, then we get 
 \[
-\minimize_f \; \sum_{i=1}^n (y_i - f(z_i))^2 + \lambda \int_U \underbrace{
-\| V \nabla^2 f(z) V^\T\|_F^2}_{= \|\nabla^2 f(z)\|_F^2} \, dz,  
+\minimize_f \; \sum_{i=1}^n (y_i - f(z_i))^2 + \lambda \int \underbrace{\| V
+  \nabla^2 f(z) V^\T\|_F^2}_{= \|\nabla^2 f(z)\|_F^2} \, dz,   
 \]
 where we used the fact that $\|V A V^\T\|_F = \|A\|_F$ for any matrix $A$ due to
 orthogonality of $V$. This means that the thin plate spline estimator is
@@ -1109,20 +1117,247 @@ dictates the degree of the polyharmonic spline) should be up to the modeler, and
 not dictated by the ambient dimension.
 
 There is another way. We can ``discretize'' the variational problem
-\eqref{eq:ss_multivariate}, in particular, we can substitute the penalty with a
-discrete approximation based on a graph Laplacian---where the graph is built 
+\eqref{eq:ss_multivariate}, specifically, we can substitute the penalty with a
+discrete approximation based on a graph Laplacian, where the graph is built 
 using the input points $x_1,\dots,x_n$. This has the advantage of being (i)
-well-defined for any $m,d$, and (ii) more computationally efficient than solving 
-\eqref{eq:ss_multivariate} even when the latter is well-posed. Furthermore, the
-estimator from this graph-based approach can be shown to be minimax rate optimal
-over norm balls in $W^{m,2}([0,1]^d)$. (To get optimal rates in general, we will
-actually need to do something a bit different than just solve a discrete version 
-of \eqref{eq:ss_multivariate}, and instead work with a version of the Laplacian
-whose spectrum is suitably truncated.)  Of course, we're skirting a lot of the
-details here, but for more, see the recent work \citet{green2021minimax1,
-  green2021minimax2}. 
+always well-defined, and (ii) more computationally efficient than solving
+\eqref{eq:ss_multivariate} even when the latter is well-posed. In fact, beyond
+just being well-defined, the graph-based approach can even be minimax rate
+optimal (over norm balls in Sobolev spaces) in regimes where the variational
+problem \eqref{eq:ss_multivariate} is ill-posed. Of course, we're skirting a lot
+of details, but the takeaway you should know is this:  
+\begin{quote}
+\centering\it
+Consistent estimation over $W^{m,2}([0,1]^d)$---even minimax rate optimal
+estimation---is still possible when $2m \leq d$. We can't use variational
+methods like \eqref{eq:ss_multivariate}, but we can do other things.
+\end{quote}
+However, to qualify the above statement, we \emph{must} be in the Random-X
+setting, where $x_i$, $i=1,\dots,n$ are random. If the input points were fixed,
+then when $2m \leq d$, a construction using ``bump'' functions (just like the
+one we gave above to show that the point evaluation operator is not continuous)
+will show that consistent estimation is impossible. To learn more, see 
+\citet{green2021minimax1}. See also \citet{green2021minimax2} for a related
+approach that forms a nonparametric estimator by projecting onto eigenvectors of 
+the graph Laplacian (rather than penalizing according to the graph Laplacian)
+and has even stronger theory.  
 
 \section{RKHS methods}
+
+Lastly, we turn to RKHS methods. This will require covering some theory first in
+order to properly understand what's going on, but RKHS theory is arguably easier
+than Sobolev theory. Two great references on the former are
+\citet{scholkopf2002learning, christmann2008support}.  
+
+A \textbf{warning} before we begin: don't confuse any of what follows with
+kernel smoothing (as covered in the last lecture) or the kernel functions used
+therein! They are completely separate ideas. 
+
+\subsection{Kernels, Hilbert spaces, RKHS}
+
+We start off by defining the ingredients needed for an RKHS. 
+
+\paragraph{Inner products.}
+
+Let $\cH$ be a vector space over $\R$ (for our purposes: think of this as a
+space of real-valued functions). An \emph{inner product} on $\cH$ is a function
+$\langle \,\cdot\,, \,\cdot\, \rangle_\cH : \cH \times \cH \to \R$ satisfying
+three properties, which must hold for all $f,g,h \in \cH$ and all $a,b \in \R$: 
+\begin{enumerate}
+\item $\langle af + bg, h \rangle_\cH = a \langle f,h \rangle_\cH + b \langle
+  g,h \rangle_\cH$;
+\item $\langle f,g \rangle_\cH = \langle g,h \rangle_\cH$;
+\item $\langle f,f \rangle_\cH \geq 0$ with equality iff $f=0$. 
+\end{enumerate}
+We can always define a norm based on this inner product, denoted
+$\|\cdot\|_\cH$, by \smash{$\|f\|_\cH^2 = \langle f, f, \rangle_\cH$}. Equipped
+with its inner product $\langle \,\cdot\,, \,\cdot\, \rangle_\cH$, we call $\cH$
+an \emph{inner product space}. 
+
+\paragraph{Hilbert spaces.} 
+
+An inner product space $\cH$ is called a \emph{Hilbert space} if it is
+complete. Recall that completeness means that Cauchy sequences converge to  
+limits in the space.\footnote{Concretely, given any sequence $f_n$,
+  $n=1,2,3,\ldots$ in $\cH$ such that for any $\epsilon>0$, we have $\|f_n - 
+  f_m\|_\cH < \epsilon$ for large enough $n,m$, it must hold that $\|f_n - 
+  f\|_\cH \to 0$ as $n \to \infty$ for some $f \in \cH$.}
+
+\paragraph{Kernels.}
+
+There are different ways to define kernels, and in fact different ways to arrive 
+at an RKHS. One way is this. A \emph{kernel} is function $k : \cX \times \cX \to 
+\R$ for which there exists a map $\phi : \cX \to \cH$ (for our purposes: think
+of this as a feature map) such that for any $x,y \in \cX$,  
+\[
+k(x,y) = \langle \phi(x), \phi(y) \rangle_\cH.
+\]
+Note that $k$ is always symmetric and nonnegative, because $\langle \,\cdot\,, 
+\,\cdot\, \rangle_\cH$ is an inner product. 
+
+Moreover, it is easy to check from first principles that $k$ satisfies the
+following property: for any $n \geq 1$ and $x_1,\dots,x_n \in \cX$, if we define
+a matrix $K \in \R^{n \times n}$ to have entries $K_{ij} = k(x_i, x_j)$, then 
+\[
+a^\T K a \geq 0, \quad \text{for all $a \in \R^n$}.
+\]
+A function $k$ that is symmetric and satisfies the above property is called 
+\emph{positive semidefinite}. 
+
+Thus, from what we have just argued, a kernel function is always positive
+semidefinite. Remarkably, the converse is also true: any positive semidefinite
+function $k : \cX \times \cX \to \R$ is a kernel. This means that \emph{in order
+  to define a kernel $k$, we don't have to explicitly specify the feature map 
+  $\phi$; we just need to satisfy positive semidefiniteness}.  
+
+Examples of kernels on $\cX = \R^d$ include the polynomial kernel:   
+\[
+k(x,y) = (1 + x^\T y)^m,
+\]
+the exponential kernel:
+\[
+k(x,y) = \exp(x^\T y),
+\]
+and the Gaussian kernel: 
+\[
+k(x,y) = \exp(-\|x-y\|_2^2 / \sigma^2).
+\]
+Importantly, kernels need not be restricted to $\cX = \R^d$; they can be defined
+over much more exotic spaces $\cX$, like spaces of images or text strings, we
+just need a suitable (positive semidefinite) notion of similarity between
+objects.   
+
+\paragraph{Reproducing kernel Hilbert spaces.} 
+
+A Hilbert space $\cH$ is called a \emph{reproducing kernel Hilbert space}
+(RKHS), with kernel $k : \cX \times \cX \to \R$, provided that the following two 
+conditions are satisfied: 
+\begin{enumerate}
+\item for any $x \in \cX$, the function $k(\cdot, x)$ is an element of $\cH$;   
+\item for any function $f \in \cH$ and $x \in \cX$, it holds that $\langle f,
+  k(\cdot, x) \rangle_\cH = f(x)$. 
+\end{enumerate}
+The functions $k(\cdot, x)$ in the first property are often called the
+``reproducers of evaluation''. Accordingly, the second property is often called
+the ``reproducing property''. 
+
+In particular, note that the reproducing property implies that for any $x,y$,
+\[
+k(x,y) = \langle k(\cdot, x), k(\cdot, y) \rangle_\cH.
+\]
+This means that the map $\phi(x) = k(\cdot, x)$ is a valid feature map for $k$. 
+
+\paragraph{Equivalent formulation of an RKHS.}
+
+Here is an equivalent formulation of an RKHS that reveals a nice connection to
+Sobolev spaces. For $x \in \cX$, denote by $\delta_x$ the evaluation operator on
+$\cH$, which acts according to $\delta_x(f) = f(x)$. Then a Hilbert space $\cH$
+is an RKHS if and only if all of the evaluation operators are continuous. 
+
+Recall that the Sobolev space $W^{m,2}(\R^d)$ is a Hilbert space, for any $m
+\geq 0$. Recall also that point evaluation in a Sobolev space is continuous if
+and only if $2m > d$. Therefore, we learn the following:     
+\begin{quote}
+\centering\it
+A Sobolev space $W^{m,2}(\R^d)$ is an RKHS if and only if $2m > d$.
+\end{quote}
+This is an amazing fact. 
+
+A natural follow-up question: what is the kernel $k$ corresponding to
+$W^{m,2}(\R^d)$, for $2m > d$? Well, it's a bit complicated. Are you ready for
+it? It's\footnote{The integral here---hence the kernel---only takes real values,
+  because $\exp(2\pi i (x-y)^\T u) = \cos(2\pi(x-y)^\T u) + i (2\pi i (x-y)^\T
+  u)$ and the integral of the imaginary part is zero since the corresponding
+  integrand is odd.} 
+\[
+k(x,y) = \int \frac{\exp(2\pi i (x-y)^\T u)}{1 + \sum_{0 < |\alpha| \leq m}
+  \prod_{j=1}^d (2\pi u_j)^{2\alpha_j}} \, du.
+\]
+While this certainly looks complicated, it simplifies in a few important cases.  
+% For $d=1$ and $m=1$, we get:
+% \[
+% k(x,y) = \frac{1}{2} \exp(-|x-y|).
+% \]
+Meanwhile, for $d=1$ and $m=1$, we get:
+\begin{equation}
+\label{eq:ss_rkhs}
+k(x,y) = \frac{\sqrt{3}}{3} \exp\bigg( -\frac{\sqrt{3}|x-y|}{2} \bigg) 
+\sin\bigg( \frac{|x-y|}{2} + \frac{\pi}{6} \bigg) 
+\qquad \text{(smoothing spline kernel)}.   
+\end{equation}
+For $d=2$ and $m=2$, we get: 
+\begin{equation}
+\label{eq:tp_rkhs}
+k(x,y) = \frac{1}{16 \pi} \|x-y\|_2^2 \, \log \|x-y\|_2^2 
+\qquad \text{(thin plate spline kernel)}.   
+\end{equation}
+So continuing on with the amazing facts, indeed smoothing splines and thin plate
+splines---norm penalized least squares estimators over Sobolev spaces---will
+just be special cases of RKHS estimators, which we discuss next.
+
+\subsection{RKHS regression}
+
+After all that build up, this next part is going to be (surprisingly?)
+simple. Let $\cH$ be an RKHS, and let $k : \cX \times \cX \to \R$ be its
+kernel. We can now define an \emph{RKHS regression estimator} by solving 
+\begin{equation}
+\label{eq:rkhs}
+\minimize_f \; \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \|f\|_\cH^2,
+\end{equation}
+where $\|\cdot\|_\cH$ is the norm associated with $\cH$. Note: here the input
+points satisfy $x_i \in \cX$, and $\cX$ can be completely arbitrary (it doesn't
+need to be a subset of $\R^d$). 
+
+Popular choices of $k$, as we already mentioned, include the polynomial kernel,
+Gaussian kernel, and exponential kernel, which gives novel nonparametric
+regression estimators---novel in the sense that you haven't seem them thus far
+in these lectures on nonparametric regresion. We can also choose particular
+kernels, as given in \eqref{eq:ss_rkhs} and \eqref{eq:tp_rkhs}, to reproduce (no
+pun in intended) smoothing splines and thin plate splines. 
+
+\subsection{Representer theorem}
+
+One of the main points of appeal of RKHS regression is the fact that we have a
+\emph{representer theorem} for the infinite-dimensional problem \eqref{eq:rkhs}.
+This generalizes the results stated thus far on splines.
+
+Remarkably, it so happens that the minimizer in the general smoothing spline
+problem \eqref{eq:ss} is unique, and it is a natural $k\th$ degree spline with 
+knots at the input points $x_1,\dots,x_n$! This is known as a \emph{representer
+  theorem} for \eqref{eq:ss} (we will see more such results later). The result
+can be stated as follows. The solution in \eqref{eq:rkhs} is unique and achieved
+at a function of the form 
+\[
+f(x) = \sum_{i=1}^n \beta_i k(x, x_i).
+\]
+Note that this is a linear combination of the representers of evaluation. The
+proof of this result is actually not very hard. We'll walk through it on the
+homework.  
+
+\subsection{Finite-dimensional form}
+
+From the representer result, we can rewrite \eqref{eq:rkhs} as
+\begin{equation}
+\label{eq:rkhs_finite_dim}
+\minimize_\beta \; \sum_{i=1}^n \bigg( y_i - \sum_{j=1}^n \beta_j k(x_i, x_j) 
+\bigg)^2 + \lambda \sum_{i,j=1}^n \beta_i \beta_j \langle k(\cdot, x_i) ,
+k(\cdot, x_j) \rangle_\cH.
+\end{equation}
+Using the reproducing property $\langle k(\cdot, x_i), k(\cdot, x_j) \rangle_\cH
+= k(x_i, x_j)$, and denoting by $K \in \R^{n \times n}$ the kernel matrix with
+entries $K_{ij} = k(x_i, x_j)$, problem \eqref{eq:rkhs_finite_dim} simplifies
+even further to
+\[
+\minimize_\beta \; \|Y - K\beta\|_2^2 + \lambda \beta^\T K \beta.
+\]
+This is (once again) a generalized ridge regression. Its solution is
+\[
+\hbeta = (K^\T K + \lambda K)^{-1} K^\T Y = (K + \lambda I)^{-1} Y,
+\]
+where we have used the fact that $K$ is symmetric and invertible. The RKHS
+estimator makes predictions according to \smash{$\hf(x) = \sum_{j=1}^d \hbeta_j
+  k(x, x_j)$}, and since \smash{$\hbeta$} is linear in $Y$, it is (once again) a
+linear smoother. 
 
 \bibliographystyle{plainnat}
 \bibliography{../../common/ryantibs.bib}
