@@ -215,12 +215,11 @@ given odd integer order $k \geq 1$, is defined to solve
 dx, \quad \text{where $m=(k+1)/2$}.
 \end{equation}
 This is an infinite-dimensional optimization problem over all functions $f$ for
-the which the criterion is well-defined and finite (this is called the $L^2$
-Sobolev space of order $m$ on $[a,b]$, which we denote by $W^{m,2}([a,b])$, and
-will study a bit later). The criterion in \eqref{eq:ss} trades off the squared
-error of $f$ over $(x_i,y_i)$, $i=1,\dots,n$, with a penalty term that is large
-when the $(m-1)^{\text{st}}$ derivative of $f$ is wiggly. The tuning parameter
-$\lambda \geq 0$ governs the tradeoff between these two terms. 
+the which the criterion is well-defined and finite. The criterion in
+\eqref{eq:ss} trades off the squared error of $f$ over $(x_i,y_i)$,
+$i=1,\dots,n$, with a penalty term that is large when the $(m-1)^{\text{st}}$
+derivative of $f$ is wiggly. The tuning parameter $\lambda \geq 0$ governs the
+tradeoff between these two terms.  
 
 By far the most commonly considered case is $k=3$, the cubic smoothing spline,
 defined via 
@@ -238,8 +237,8 @@ problem \eqref{eq:ss} is unique, and it is a natural $k\th$ degree spline with
 knots at the input points $x_1,\dots,x_n$! This is known as a \emph{representer
   theorem} for \eqref{eq:ss} (we will see more such results later). 
 
-Proof for the case $k=3$: we'll follow Chapter 2.2 of
-\citet{green1993nonparametric} for a nice direct proof. 
+Proof: we'll just consider the cubic case, $k=3$, and follow Chapter 2.2 of
+\citet{green1993nonparametric} who give a nice direct proof.   
 % The result for general $k$ will follow from RKHS theory. 
 
 The key result can be stated as follows: if $g$ is any function on $[a,b]$ such
@@ -250,6 +249,7 @@ exists a natural cubic spline $f$ with knots at $x_1,\dots,x_n$ such that:
 \item $f(x_i) = g(x_i)$, $i=1,\dots,n$; and 
 \item $\int_a^b [f''(x)]^2 \, dx \leq \int_a^b [g''(x)]^2 \, dx$.
 \end{itemize}
+
 This would imply that we can restrict our attention in problem
 \eqref{eq:ss_cubic} to natural splines with knots at $x_1,\dots,x_n$. 
 
@@ -475,7 +475,7 @@ to analyze numerous other nonparametric estimators (such as other penalized
 empirical risk minimizers).        
 
 The punchline for smoothing splines will be as follows. If we assume that $f_0
-\in W^{m,1}(L; [0,1])$ for a constant $L>0$, we write to mean that $D^m f_0$
+\in W^{m,2}(L; [0,1])$ for a constant $L>0$, we write to mean that $D^m f_0$
 exists in the weak sense (to be defined precisely below) and \smash{$\int_0^1
   [D^m f_0(x)]^2 \, dx \leq L^2$}, and we assume mild conditions on the input 
 points and sub-Gaussian noise, then the smoothing spline estimator of degree
@@ -578,15 +578,16 @@ is commonly where you'll find people (mathematicians) referring to them. But
 they also play an important role in nonparametric statistics. For example, if
 you recall the smoothing spline problem \eqref{eq:ss}, where we said that ``the
 minimization is all functions $f$ for the which the criterion is well-defined
-and finite'', the domain here can actually be viewed as the Sobolev
-space\footnote{We'll ignore here, and in several other places, the fact that
+and finite'', we can actually take the domain here to be the $L^2$ Sobolev 
+space\footnote{We'll ignore here, and in several other places, the fact that 
   the domain is closed. Recall, we defined Sobolev spaces on open domains, 
   and we will do the same for H{\"o}lder spaces as well. Hence, we are being 
   slightly imprecise by abruptly allowing closed domains but it's easiest to do 
   so for simplicity of exposition.}    
 \[
-W^{m,2}([a,b]) = \Big\{ f : [a,b] \to \R \,:\, \text{$D^m f$ exists in the weak
-  sense, and $\|D^m f\|_2^2 = \int_a^b [D^m f(x)]^2 \, dx < \infty$} \Big\}. 
+W^{m,2}([a,b]) = \Big\{ f : [a,b] \to \R \,:\, \text{$D^\alpha f$ exists in the
+  weak sense, and $\|D^\alpha f\|_2^2 < \infty$, for all $\alpha \leq m$}
+\Big\}.     
 \]
 
 We note that, generally speaking, when working in Sobolev spaces (just like
@@ -603,11 +604,11 @@ C^{r+\gamma}(U) = \Bigg\{ f : U \to \R \,:\, \text{$D^\alpha f$ exists,
   \sup_{x \not= z} \, \frac{|D^\alpha f(x) - D^\alpha f(z)|}{\|x-z\|_2^\gamma} < 
   \infty \; \text{for all $|\alpha| = r$} \bigg\}.   
 \end{multline*}
-In the above, we can interpret $D^\alpha f$ \underline{as a classical
-  derivative}, and $\|\cdot\|_\infty$ \underline{as the supremum norm} (we don't
-need the essential supremum norm). This may all seem more restrictive than
-Sobolev spaces, but as we'll discuss just below, we can actually identify the
-H{\"o}lder space with a particular Sobolev space.      
+In the above, we can interpret $D^\alpha f$ as a classical derivative, and
+$\|\cdot\|_\infty$ as the supremum norm (we don't need the essential supremum
+norm). This may all seem more restrictive than Sobolev spaces, but as we'll
+discuss just below, we can actually identify the H{\"o}lder space with a
+particular Sobolev space.       
 
 Let's pause to examine the relationship between the Sobolev space
 $W^{k,\infty}(U)$ and the H{\"o}lder space $C^k(U)$. The former contains all
@@ -967,11 +968,12 @@ most general extension, which is to define an estimator by solving
 \minimize_f \; \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \int_U \sum_{|\alpha| =
   m} [D^\alpha f(x)]^2 \, dx,   
 \end{equation}
-for an integer order $m \geq 1$. Here we can take $U$ to be a subset of $\R^d$
-containing the inputs $x_i$, $i=1,\dots,n$, and consider the minimization to be
-over the Sobolev space $W^{m,2}(U)$; recall, this contains $m$ times weakly
-differentiable functions with $\alpha\th$ derivative in $L^2(U)$, for $|\alpha|
-\leq m$.  
+for an integer order $m \geq 1$. Here $U$ is a subset of $\R^d$ that contains
+the input points $x_i$, $i=1,\dots,n$, and the minimization is over all
+functions $f$ for the which the criterion is well-defined and finite. For
+example, we can consider the minimization to be over the Sobolev space
+$W^{m,2}(U)$, which recall contains $m$ times weakly differentiable functions
+with $\alpha\th$ derivative in $L^2(U)$, for $|\alpha| \leq m$.
 
 % RJT note: I don't love this, because when we take U = \R^d, then W^{m,2}(\R^d)
 % doesn't contain polynomials of degree m, since these don't have finite L2 norm
