@@ -402,25 +402,29 @@ In this exercise, we will analyze the risk of wavelet denoising.
 
 \section{Bonus: minimax lower bounds for H{\"o}lder classes [8 points]}  
 
-This is an optional bonus problem. Generalize the univariate calculation given
-in the minimax lecture to the multivariate case, to show that for the
-$d$-dimensional H{\"o}lder ball   
+This is an optional bonus problem. Consider the $d$-dimensional H{\"o}lder ball    
 \[
 C^k(L; [0,1]^d) = \Big\{ f : [0,1]^d \to \R \,:\, | D^\alpha f (x) - D^\alpha
 f(z) | \leq L \|x-z\|_2 \; \text{for all $|\alpha| < k$, and $x,z \in [0,1]^d$}
 \Big\},  
 \]
 where $k \geq 1$ is an integer and $L>0$ is a constant (not growing with $n$),
-the following holds. Given data  
+and consider the data model 
 \[
-y_i = f(x_i) + \epsilon_i, \quad i=1,\dots,n,
+y_i = f(x_i) + \epsilon_i, \quad \epsilon_i \sim N(0,1), \quad i=1,\dots,n. 
 \]
-where $\epsilon_i \sim N(0,1)$, independently, for $i=1,\dots,n$, and $x_i \in
-[0,1]^d$, $i=1,\dots,n$ are fixed and are laid out on a regular lattice, there
-exists constants $C,N>0$ such that for all $n \geq N$, 
+You may either assume a Random-X model: $(x_i,\epsilon_i)$, $i=1,\dots,n$ are 
+i.i.d.\ with each $x_i \sim \mathrm{Unif}[0,1]^d$ and $x_i \perp \epsilon_i$,
+or a Fixed-X model: $x_i$, $i=1,\dots,n$ are fixed and laid out on a regular
+lattice in $[0,1]^d$, and $\epsilon_i$, $i=1,\dots,n$ are i.i.d. Whatever you
+prefer.   
+
+Generalize the calculation given in the minimax theory lecture to show that
+there exists a constant $c>0$ (which may depend on $L$) such that for large
+enough $n$,
 \[
 \inf_{\hf} \, \sup_{f \in C^k_d(L; [0,1]^d)} \, \E \|f - \hf \|_2^2 \geq
-C n^{-2k/(2k+d)}. 
+c n^{-2k/(2k+d)}. 
 \]
 To be clear, here \smash{$\|g\|_2^2 = \int_{[0,1]^d} g(x)^2 \, dx$}. Make sure
 to write the full calculation from start to finish (even detailing the steps
