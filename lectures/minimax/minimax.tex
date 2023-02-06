@@ -623,7 +623,7 @@ indexed by $\omega$.
 For $\omega,\nu \in \Omega$, note that by the non-overlapping supports property, 
 \begin{align}
 \nonumber
-\| f_\omega - f_\nu \|_2^2 
+\int_{[0,1]^d} (f_\omega(x) - f_\nu(x))^2 \, dx
 &= \int_{[0,1]^d} \bigg( \sum_{i=1}^m (\omega_i - \nu_i) g_i(x) \bigg)^2 \, dx
   \\    
 \nonumber
@@ -663,7 +663,6 @@ upper bound on the Hamming distance of $m$,
 \beta = \max_{j \not= k} \, \KL(P_j,P_k) \leq m L^2 h^{2+d} \|K\|_2^2 / 2 
 = 4c L^2 r^{-2}.
 \]
-
 Finally, it is time to choose the grid side length $r$. We would like to have
 $\beta \leq (\log N)/(4n)$ in order to be able to apply Corollary
 \ref{cor:fano}. Recalling that $N \geq 2^{m/8}$, we have $\log N \geq (\log 2) m
@@ -702,28 +701,32 @@ $[0,1]^d$ that are $m$ times weakly differentiable with
 \[
 \int_{[0,1]^d} \sum_{|\alpha| = m} [D^\alpha f(x)]^2 \, dx \leq L^2.
 \]
-When $2m > d$, standard calculations can be used to show that the Random-X and
-Fixed-X minimax rates in squared $L^2$ loss over $W^{m,2}(L; [0,1]^d)$ are each 
-\smash{$n^{-2s/(2s+d)}$} (assuming for simplicity here that $L$ does not grow 
-with $n$). Note that this generalizes all results for H{\"o}lder classes,
-including Lipschitz classes, that we have seen thus far.  
+When $2m > d$, standard calculations can be used to show that (assuming for
+simplicity at the moment that $L$ does not grow with $n$): 
+\[
+\inf_{\hf} \, \sup_{f \in W^{m,2}(L; [0,1]^d)} \, \E \bigg[ \int_{[0,1]^d}
+(\hf(x) - f(x))^2 \, dx \bigg] \asymp n^{-2s/(2s+d)},
+\]
+in both the Random-X and Fixed-X models. Note that this generalizes all results
+for H{\"o}lder classes, including Lipschitz classes, that we have seen in
+lectures thus far.   
 
 When $2m \leq d$, in a Random-X model, it can still be shown that the minimax
-rate in squared $L^2$ loss over $W^{m,2}(L; [0,1]^d)$ is
-\smash{$n^{-2s/(2s+d)}$}. However, in this regime, in a Fixed-X model it turns
-out that the minimax rate is a constant---meaning, the sup risk of any estimator
-over $W^{m,2}(L; [0,1]^d)$ cannot go to zero!
+rate in squared $L^2$ loss over $W^{m,2}(L; [0,1]^d)$ is still as above,
+\smash{$n^{-2s/(2s+d)}$}. However, when $2m \leq d$ and we use a Fixed-X model
+it turns out that the minimax rate is a constant---meaning that the sup risk of
+any estimator over $W^{m,2}(L; [0,1]^d)$ cannot go to zero!
 
-The underlying issue here is similar to that we encountered in the splines
-lecture. In the subcritical regime, $2m \leq d$, we cannot really talk about
-point evaluation in a Sobolev space (because the point evaluation operator is 
-not continuous). Fortunately, in a Random-X model, the randomness in the inputs
-$x_i$, $i=1,\dots,n$ sort of finesses this problem. But in a Fixed-X model,
-obtaining knowledge of $f(x_i)$, $i=1,\dots,n$ doesn't help you reason about
-what $f$ looks like on the rest of the domain $[0,1]^d$, for $f \in W^{m,2}(L; 
-[0,1]^d)$. (This is the case even if you know that its Sobolev seminorm is
-zero!) Altogether, this makes consistent estimation, in the sense of sup risk,
-impossible. 
+The underlying issue here is similar to what we encountered in the splines
+lecture. In what we referred to there as the subcritical regime, $2m \leq d$, we
+cannot really talk about point evaluation in a Sobolev space (as the point
+evaluation operator is not continuous). Fortunately, in a Random-X model, the
+randomness in the inputs $x_i$, $i=1,\dots,n$ sort of finesses this problem. But 
+in a Fixed-X model, obtaining knowledge of $f(x_i)$, $i=1,\dots,n$ doesn't help
+you reason about what $f$ looks like on the rest of the domain $[0,1]^d$, for $f
+\in W^{m,2}(L; [0,1]^d)$. (This is the case even if you know that its Sobolev
+seminorm is zero!) And this makes consistent estimation, in the sense of sup
+risk, impossible. 
 
 There's more to say about this general phenomenon but to avoid going on a huge
 tangent, we'll save that for another day (another lecture?). 
