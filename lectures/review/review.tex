@@ -436,15 +436,15 @@ You'll often see authors writing down a model of the form:
 y_i = f(x_i) + \epsilon_i, \quad i=1,\dots,n.
 \]
 This is often referred to as a ``signal-plus-noise'' model. You might initially
-think that this is a different model from an XY-Pairs model, but it's actually
-the same, for i.i.d.\ mean zero stochastic errors $\epsilon_i$, $i=1,\dots,n$,
-provided we treat the predictors $x_i$, $i=1,\dots,n$ as suitably random as
+think that this is assuming more than an XY-Pairs model, but it's actually the
+same, for i.i.d.\ mean zero stochastic errors $\epsilon_i$, $i=1,\dots,n$,
+provided we treat the predictors $x_i$, $i=1,\dots,n$ as suitably random as 
 well. Let's ammend the above to emphasize this:   
 \begin{equation}
 \begin{gathered}
 \label{eq:random_x}
-y_i = f(x_i) + \epsilon_i, \; \text{where $\E[\epsilon_i] = 0$}, \\
-\text{and $(x_i, \epsilon_i)$, $i=1,\dots,n$ are i.i.d.},
+\text{$(x_i, y_i)$, $i=1,\dots,n$ are i.i.d.}, \\
+\text{where each $y_i = f(x_i) + \epsilon_i$, and $\E[\epsilon_i] = 0$}. 
 \end{gathered}
 \end{equation}
 which we'll call the Random-X signal-plus-noise model. To see that
@@ -459,9 +459,9 @@ Fixed-X signal-plus-noise model:
 \begin{equation}
 \begin{gathered}
 \label{eq:fixed_x}
-y_i = f(x_i) + \delta_i, \; \text{where $\E[\delta_i] = 0$}, \\
-\text{and $\delta_i$, $i=1,\dots,n$ are i.i.d.}, \\  
-\text{and $x_i$, $i=1,\dots,n$ are fixed.}   
+\text{$x_i$, $i=1,\dots,n$ are fixed}, \\
+\text{$\delta_i$, $i=1,\dots,n$ are i.i.d.}, \\
+\text{where each $y_i = f_0(x_i) + \delta_i$, and $\E[\delta_i] = 0$}. 
 \end{gathered}
 \end{equation}
 The interpretation you'll often hear: this is just given by the Random-X 
@@ -486,8 +486,8 @@ But to be clear, it is an \emph{extra assumption} and does not fall out of the
 generic XY-Pairs model. It's also not totally harmless. To see this, suppose
 that we were in a situation where the true model is:  
 \begin{gather*}
-y_i = f(x_i) + g_0(z_i) + \xi_i, \; \text{where $\E[\xi_i] = 0$}, \\  
-\text{and $(x_i,z_i,\xi_i)$, $i=1,\dots,n$ are i.i.d.}
+\text{$(x_i, z_i, y_i)$, $i=1,\dots,n$ are i.i.d.}, \\
+\text{where each $y_i = f(x_i) + g_0(z_i) + \xi_i$, and $\E[\xi_i] = 0$}, 
 \end{gather*}
 Let's even assume that each $x_i \indep \xi_i$, and $\E[g_0(z_i) | x_i] =
 0$. Then the regression function (of $y_i$ on $x_i$) is indeed $f$. But in the  
