@@ -123,7 +123,7 @@ In this exercise, we will work on risk calculations for least squares regression
   Follow/reproduce the calculations in the review lecture to show that
   \marginpar{\small [3 pts]} 
   \[
-  \E\bigg[\frac{1}{n} \sum_{i=1}^n \Var(\hf(x_i) \,|\, X) \bigg]= \sigma^2 
+  \E\bigg[ \frac{1}{n} \sum_{i=1}^n \Var(\hf(x_i) \,|\, X) \bigg] = \sigma^2   
   \frac{d}{n}, 
   \]
   and that, for an independent draw $x_0$ from the predictor distribution,
@@ -135,7 +135,7 @@ In this exercise, we will work on risk calculations for least squares regression
   Therefore, using part (a), argue that
   \marginpar{\small [1 pt]}
   \[
-  \E[\Var(\hf(x_0) \, | X, x_0)] \geq \E\bigg[\frac{1}{n} \sum_{i=1}^n
+  \E[\Var(\hf(x_0) \, | X, x_0)] \geq \E\bigg[ \frac{1}{n} \sum_{i=1}^n
   \Var(\hf(x_i) \,|\, X) \bigg]. 
   \]
 
@@ -148,8 +148,8 @@ In this exercise, we will work on risk calculations for least squares regression
   \citet{rosset2020from} to prove the inequality: 
   \marginpar{\small [6 pts]} 
   \[
-  \E[\Bias^2(\hf(x_0) \, | X, x_0)] \geq  \frac{1}{n} \sum_{\ell=1}^n 
-  \E[\Bias^2(\hf(x_i) \,|\, X)].
+  \E[\Bias^2(\hf(x_0) \, | X, x_0)] \geq \E\bigg[ \frac{1}{n} \sum_{\ell=1}^n 
+  \Bias^2(\hf(x_i) \,|\, X) \bigg].
   \]
   Note that you have shown that
   \[
