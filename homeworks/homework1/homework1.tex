@@ -117,13 +117,14 @@ In this exercise, we will work on risk calculations for least squares regression
   Let $Y \in \R^n$ be the response vector and $X \in \R^{n \times d}$ the
   predictor matrix (whose $i\th$ row is $x_i$). Let \smash{$\hbeta = (X^\T
     X)^{-1} X^\T Y$} be the least squares solution of $Y$ on $X$ (where we 
-  assume $X^T X$ is invertible, which requires $d \leq n$), and let
+  assume that $X^T X$ is invertible, which requires $d \leq n$), and let 
   \smash{$\hf(x) = x^\T \hbeta$}.  
 
   Follow/reproduce the calculations in the review lecture to show that
   \marginpar{\small [3 pts]} 
   \[
-  \frac{1}{n} \sum_{i=1}^n \Var(\hf(x_i)) = \sigma^2 \frac{d}{n},
+  \E\bigg[\frac{1}{n} \sum_{i=1}^n \Var(\hf(x_i) \,|\, X) \bigg]= \sigma^2 
+  \frac{d}{n}, 
   \]
   and that, for an independent draw $x_0$ from the predictor distribution,
   \marginpar{\small [3 pts]} 
@@ -134,7 +135,8 @@ In this exercise, we will work on risk calculations for least squares regression
   Therefore, using part (a), argue that
   \marginpar{\small [1 pt]}
   \[
-  \E[\Var(\hf(x_0) \, | X, x_0)] \geq \frac{1}{n} \sum_{i=1}^n \Var(\hf(x_i)).
+  \E[\Var(\hf(x_0) \, | X, x_0)] \geq \E\bigg[\frac{1}{n} \sum_{i=1}^n
+  \Var(\hf(x_i) \,|\, X) \bigg]. 
   \]
 
   Hint: the calculations in lecture assumed the underlying model was linear and
