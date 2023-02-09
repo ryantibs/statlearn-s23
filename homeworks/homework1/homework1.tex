@@ -311,7 +311,8 @@ In this exercise, we will analyze the risk of wavelet denoising.
   \,+\,
   4\underbrace{\sum_{j \leq j^*,k} (\theta_{jk}(f) - \ttheta_{jk}(f))^2}_{e_2}
   \,+\, 
-  4\underbrace{\sum_{j \leq j^*,k} (\ttheta_{jk}(f) - \ttheta_{jk}(y))^2}_{e_3}.
+  4\underbrace{\E\Bigg[ \sum_{j \leq j^*,k} (\ttheta_{jk}(f) -
+    \ttheta_{jk}(y))^2 \Bigg]}_{e_3}. 
   \]
   We can interpret $e_1$ as the \emph{truncation error}, $e_2$ as the
   \emph{discretization error} (between population and empirical wavelet
@@ -358,8 +359,8 @@ In this exercise, we will analyze the risk of wavelet denoising.
 
   From the risk bound from part (b), note that we have
   \[
-  \sum_{j \leq j^*,k} (\ttheta_{jk}(f) - \ttheta_{jk}(y))^2 \leq 
-  \frac{\sigma^2}{n} + (2 \log{n} + 1) \sum_{j \leq j^*,k} \min 
+  \E\Bigg[ \sum_{j \leq j^*,k} (\ttheta_{jk}(f) - \ttheta_{jk}(y))^2 \Bigg] 
+  \leq \frac{\sigma^2}{n} + (2 \log{n} + 1) \sum_{j \leq j^*,k} \min 
   \bigg \{ \ttheta_{jk}^2(f), \frac{\sigma^2}{n} \bigg\}.
   \]
   Use the second inequality in \eqref{eq:besov_condition}, on the empirical
