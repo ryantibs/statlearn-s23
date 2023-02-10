@@ -972,8 +972,13 @@ for an integer order $m \geq 1$. Here $U$ is a subset of $\R^d$ that contains
 the input points $x_i$, $i=1,\dots,n$, and the minimization is over all
 functions $f$ for the which the criterion is well-defined and finite. For
 example, we can consider the minimization to be over the Sobolev space
-$W^{m,2}(U)$, which recall contains $m$ times weakly differentiable functions
-with $\alpha\th$ derivative in $L^2(U)$, for $|\alpha| \leq m$.
+$W^{m,2}(U)$,\footnote{There is a subtlety here about what we actually mean here
+  for unbounded domain like $U = \R^d$. The problem is that the Sobolev space 
+  $W^{m,2}(\R^d)$ doesn't admit polynomials of degree $m-1$, whereas we'd like
+  all of these to be allowed in the minimization. We may follow up later with a
+  separate note about this.}   
+which recall contains $m$ times weakly differentiable functions with $\alpha\th$
+derivative in $L^2(U)$, for $|\alpha| \leq m$. 
 
 % RJT note: I don't love this, because when we take U = \R^d, then W^{m,2}(\R^d)
 % doesn't contain polynomials of degree m, since these don't have finite L2 norm
@@ -997,9 +1002,9 @@ following explanation should still be pretty self-contained). When $2m > d$,
 which we called the supercritical regime, the Sobolev space $W^{m,2}(U)$ embeds
 continuously into a H{\"o}lder space $C^{r+\gamma}(U)$, so in particular it
 embeds continuously into $C^0(U)$: this is simply the space of continuous
-functions on $U$ equipped with the $L^\infty$ norm.\footnote{On $C^0(U)$,
-  as with all H{\"o}lder spaces, we take to be the $L^\infty$ the sup norm,
-  \emph{not} the essential sup norm.}    
+functions on $U$ equipped with the $L^\infty$ norm. %\footnote{On $C^0(U)$, 
+  % as with all H{\"o}lder spaces, we take $L^\infty$ to be the sup norm, and
+  % \emph{not} the essential sup norm.}     
 Why is this important? Well, given a sequence such that $f_k \to f$ as $k \to
 \infty$ in \smash{$\|\cdot\|_{W^{m,2}(U)}$} norm, the continuous embedding
 property implies $f_k \to f$ as $k \to \infty$ in $L^\infty$ norm, which implies
@@ -1009,10 +1014,10 @@ $f_k(x) \to f(x)$ for all $x$. Thus we have shown a critical fact:
 For $2m > d$, the point evaluation operator is continuous on $W^{m,2}(U)$.   
 \end{quote}
 This means we can do things like solve the variational problem
-\eqref{eq:ss_multivariate}. But when $2m \leq d$, which we called the
-subcritical regime,\footnote{Actually, to be precise, here we're lumping the
-  subcritical $2m < d$ and critical $2m = d$ regimes together.}  
-we do not get an embedding into $C^0(U)$, and it turns out that: 
+\eqref{eq:ss_multivariate}. 
+
+But when $2m \leq d$, we do not get an embedding into $C^0(U)$, and it turns out
+that:   
 \begin{quote}
 \centering\it
 For $2m \leq d$, the point evaluation operator is not continuous on
@@ -1209,7 +1214,7 @@ call $\cH$ an \emph{inner product space}.
 \paragraph{Hilbert spaces.} 
 
 An inner product space $\cH$ is called a \emph{Hilbert space} if it is
-complete. Recall that completeness means that Cauchy sequences converge to  
+complete. Recall that completeness means that Cauchy sequences converge to   
 limits in the space.\footnote{Concretely, given any sequence $f_n$,
   $n=1,2,3,\dots$ in $\cH$ such that for any $\epsilon>0$, we have $\|f_n - 
   f_m\|_\cH < \epsilon$ for large enough $n,m$, it must hold that $\|f_n - 
@@ -1253,6 +1258,7 @@ and the Gaussian kernel:
 \[
 k(x,y) = \exp(-\|x-y\|_2^2 / \sigma^2).
 \]
+
 Importantly, kernels need not be restricted to $\cX \subseteq \R^d$; they can be
 defined over much more exotic spaces $\cX$, like spaces of images or text
 strings, we just need a suitable (positive semidefinite) notion of similarity
@@ -1260,9 +1266,9 @@ between objects.
 
 \paragraph{Reproducing kernel Hilbert spaces.} 
 
-A Hilbert space $\cH$ is called a \emph{reproducing kernel Hilbert space}
-(RKHS), with kernel $k : \cX \times \cX \to \R$, provided that the following two 
-conditions are satisfied: 
+A Hilbert space $\cH$ of functions is called a \emph{reproducing kernel Hilbert
+  space} (RKHS), with kernel $k : \cX \times \cX \to \R$, provided the following
+two conditions are satisfied:  
 \begin{enumerate}
 \item for any $x \in \cX$, the function $k(\cdot, x)$ is an element of $\cH$;   
 \item for any function $f \in \cH$ and $x \in \cX$, it holds that $\langle f,
@@ -1270,7 +1276,8 @@ conditions are satisfied:
 \end{enumerate}
 The functions $k(\cdot, x)$ in the first property are often called the
 ``reproducers of evaluation''. Accordingly, the second property is often called
-the ``reproducing property''. In particular, note that it implies
+the ``reproducing property''. In particular, note that the reproducing property
+implies 
 \[
 k(x,y) = \langle k(\cdot, x), k(\cdot, y) \rangle_\cH,
 \]
@@ -1282,8 +1289,8 @@ feature map for $k$.
 Here is an equivalent formulation of an RKHS that reveals a nice connection to
 Sobolev spaces. For $x \in \cX$, denote by $\delta_x$ the corresponding
 evaluation operator on $\cH$, which acts according to $\delta_x(f) = f(x)$. Then
-a Hilbert space $\cH$ is an RKHS if and only if all of the evaluation operators
-are continuous.  
+a Hilbert space of functions $\cH$ is an RKHS if and only if all of the
+evaluation operators are continuous.  
 
 Recall that the Sobolev space $W^{m,2}(U)$, where $U \subseteq \R^d$, is a
 Hilbert space, for any $m \geq 0$. Recall also that point evaluation in a
