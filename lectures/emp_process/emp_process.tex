@@ -603,8 +603,7 @@ satisfies
 J(f_0), 
 \end{equation}
 with probability at least $1 - \exp(-c_1\gamma) - \exp(-c_2n)$. In particular,  
-taking \smash{$\lambda = \gamma n^{-2/(2+w)} J(f_0)^{2w/(2+w) - v}$} 
-gives  
+for \smash{$\lambda = \gamma n^{-2/(2+w)} J(f_0)^{2w/(2+w) - v}$}, it holds that 
 \begin{equation}
 \label{eq:error_bd2}
 \|\hf - f_0\|_n^2 \leq 2 \gamma n^{-2/(2+w)} J(f_0)^{2w/(2+w)},
@@ -654,26 +653,27 @@ Before delivering the proof in the next subsection, we make several remarks.
   form
   \[
   \|\hf - f_0\|_n^2 \leq \inf_{\bar{f} \in \cS} \, \Big( \|\bar{f} - f_0\|_n^2
-  + 2 \lambda \max\{ J(f_0),  J(\bar{f}) \}^v \Big),
+  + c \lambda \max\{ J(f_0),  J(\bar{f}) \}^v \Big),
   \]
-  with probability at least $1 - \exp(-c_1\gamma) - \exp(-c_2n)$. This is often 
-  called an \emph{oracle inequality}. The first term in the above
-  \smash{$\|\bar{f} - f_0\|_n^2$} can be made small by ensuring that $\cS$ is 
-  chosen to have good approximation guarantees over $\{ f : [0,1] \to \R \,:\,
-  J(f) < \infty\}$. For example, this is true, with respect to various seminorms
-  $J$, if we choose $\cS$ to be a space of splines with suitably chosen knots. 
-  In such cases, the approximation error term \smash{$\|\bar{f} - f_0\|_n^2$}
-  will be of much smaller order than the second term \smash{$2 \lambda \max\{
-    J(f_0), J(\bar{f}) \}^v$}, which will scale as \smash{$n^{-2/(2+w)}$} when
-  $J(f_0) \asymp 1$ (as seen in \eqref{eq:error_bd2}). This is very useful
-  because it means that we can use splines to approximately solve
-  \eqref{eq:variational_opt} (regardless of whether or not splines actually
-  solve \eqref{eq:variational_opt} or not) and we will not incur any loss in the
+  with high probability (for some constant $c>0$). This is often called an 
+  \emph{oracle inequality}. The first term in the above \smash{$\|\bar{f} -
+    f_0\|_n^2$} can be made small by ensuring that $\cS$ is chosen to have good
+  approximation guarantees over $\{ f : [0,1] \to \R \,:\, J(f) < \infty\}$. For
+  example, this is true, with respect to various seminorms $J$, if we choose
+  $\cS$ to be a space of splines with suitably chosen knots. In such cases, the 
+  approximation error term \smash{$\|\bar{f} - f_0\|_n^2$} will be of much
+  smaller order than the second term \smash{$2 \lambda \max\{ J(f_0), J(\bar{f})
+    \}^v$}, which will scale as \smash{$n^{-2/(2+w)}$} when $J(f_0) \asymp 1$
+  (as seen in \eqref{eq:error_bd2}). This is very useful because it means that
+  we can use splines to approximately solve \eqref{eq:variational_opt}
+  (regardless of whether or not splines actually solve
+  \eqref{eq:variational_opt} or not) and we will not incur any loss in the 
   statistical error rate. We will not cover the details, but refer to Theorem 1
-  and Corollary 1 in \citet{sadhanala2019additive} for an example.      
+  and Corollary 1 in \citet{sadhanala2019additive} for an example of such a
+  result.       
 
-  (We'll also derive explicit oracle inequalities in our lecture on analyzing
-  the lasso.) 
+  (We'll also derive explicit oracle inequalities in the next lecture on the
+  lasso.)  
 
 \item The rate in \eqref{eq:error_bd2} is minimax optimal. This can be shown
   using Fano's inequality along with a construction that leverages a concept 
@@ -921,18 +921,18 @@ for any tuning parameter value \smash{$\gamma n^{-2m/(2m+1)} J_0^{-4m/(2m+1)}
 \|\hf - f_0\|_n^2 \leq 2 \lambda J_0^2\quad \text{and} \quad 
 \int_0^1 (D^m \hf)^2(x) \, dx \leq c J_0^2, 
 \]
-with probability at least $1 - \exp(-c_1\gamma) - \exp(-c_2n)$, and
+with probability at least $p_n = 1 - \exp(-c_1\gamma) - \exp(-c_2n)$, and
 \[
-\|\hf - f_0\|_2^2 \leq 4 \lambda J_0^2 + c_3 n^{-2/(2+w)} J_0^2,
+\|\hf - f_0\|_2^2 \leq 4 \lambda J_0^2 + c_3 n^{-2m/(2m+1)} J_0^2,
 \]
-with probability at least \smash{$1 - \exp(-c_1\gamma) - \exp(-c_4
-  n^{2/(2+w)})$}. In particular, the choice of tuning parameter \smash{$\lambda =
-  \gamma n^{-2m/(2m+1)} J_0^{-4m/(2m+1)}$} yields
+with probability at least \smash{$q_n = 1 - \exp(-c_1\gamma) - \exp(-c_4 
+  n^{2m/(2m+1)})$}. In particular, for the choice of tuning parameter
+\smash{$\lambda = \gamma n^{-2m/(2m+1)} J_0^{-4m/(2m+1)}$},
 \begin{gather*}
 \|\hf - f_0\|_n^2 \leq 2 \gamma n^{-2m/(2m+1)} J_0^{2/(2m+1)}, \\
-\|\hf - f_0\|_2^2 \leq (4 \gamma J_0^{2/(2m+1)} + c_3 J_0^2) n^{-2m/(2m+1)}, 
+\|\hf - f_0\|_2^2 \leq n^{-2m/(2m+1)} (4 \gamma J_0^{2/(2m+1)} + c_3 J_0^2), 
 \end{gather*}
-each with the same probability as above.
+with the same probabilities as above: $p_n$ and $q_n$, respectively.
 \end{corollary}
 
 \begin{proof}
