@@ -340,7 +340,7 @@ $\sigma_i^2$, then for all $t>0$,
 \begin{equation}
 \label{eq:sg_average}
 \P(\bar{X}_n \geq t) \leq \exp \bigg( \frac{-nt^2}{
-    \frac{1}{n}\sum_{i=1}^n \sigma_i^2} \bigg),
+    \frac{2}{n}\sum_{i=1}^n \sigma_i^2} \bigg),
 \end{equation}
 where \smash{$\bar{X}_n = \frac{1}{n} \sum_{i=1}^n X_i$}. We can also get a
 two-sided bound where we multiply right-hand side above by 2 (since $X$ is mean
@@ -354,13 +354,13 @@ random variables, which need not be independent, and each $X_i$ has mean zero
 and variance proxy $\sigma^2$, then for all $t>0$,    
 \begin{equation}
 \label{eq:sg_max_prob}
-\P \bigg(\max_{i=1,\dots,n} \, X_i \geq \sigma \sqrt{2 (\log n + t)} \bigg) 
-\leq e^{-t}.  
+\P \Big(\max_{i=1,\dots,n} \, X_i \geq \sigma \sqrt{2 (\log n + t)} \Big) \leq
+e^{-t}.  
 \end{equation}
 It also holds that 
 \begin{equation}
 \label{eq:sg_max_exp}
-\E \bigg[ \max_{i=1,\dots,n} \, X_i \bigg] \leq \sigma \sqrt{2 \log n}.
+\E \Big[ \max_{i=1,\dots,n} \, X_i \Big] \leq \sigma \sqrt{2 \log n}.
 \end{equation}
 
 \subsection{Tail bound for quadratic forms}
@@ -926,8 +926,8 @@ with probability at least $p_n = 1 - \exp(-c_1\gamma) - \exp(-c_2n)$, and
 \|\hf - f_0\|_2^2 \leq 4 \lambda J_0^2 + c_3 n^{-2m/(2m+1)} J_0^2,
 \]
 with probability at least \smash{$q_n = 1 - \exp(-c_1\gamma) - \exp(-c_4 
-  n^{2m/(2m+1)})$}. In particular, for the choice of tuning parameter
-\smash{$\lambda = \gamma n^{-2m/(2m+1)} J_0^{-4m/(2m+1)}$},
+  n^{2m/(2m+1)})$}. For \smash{$\lambda = \gamma n^{-2m/(2m+1)}
+  J_0^{-4m/(2m+1)}$}, it holds that
 \begin{gather*}
 \|\hf - f_0\|_n^2 \leq 2 \gamma n^{-2m/(2m+1)} J_0^{2/(2m+1)}, \\
 \|\hf - f_0\|_2^2 \leq n^{-2m/(2m+1)} (4 \gamma J_0^{2/(2m+1)} + c_3 J_0^2), 
