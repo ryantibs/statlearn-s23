@@ -13,7 +13,7 @@ Due Friday March 3 at 5pm}
 \RaggedRight
 \vspace{-50pt}
 
-\section{Properties of RKHS regression [10 points]}
+\section{Properties of RKHS regression [16 points]}
 
 In this exercise, we will work out some facts about RKHS regression. 
 
@@ -28,7 +28,7 @@ In this exercise, we will work out some facts about RKHS regression.
   Prove that $k$ is positive semidefinite, meaning, it is symmetric, and for any 
   $n \geq 1$ and $x_1,\dots,x_n \in \cX$, if we define a matrix $K \in \R^{n
     \times n}$ to have entries $K_{ij} = k(x_i, x_j)$, then  
-  \marginpar{\small [2 pts]}
+  \marginpar{\small [3 pts]}
   \[
   a^\T K a \geq 0, \quad \text{for all $a \in \R^n$}.
   \]
@@ -55,11 +55,11 @@ In this exercise, we will work out some facts about RKHS regression.
 \item Let $h$ be any function (in $\cH$) that is orthogonal (with respect to
   $\langle \,\cdot\,, \,\cdot\, \rangle_\cH$) to the linear space of functions
   of the form in part (b). Prove that 
-  \marginpar{\small [2 pts]}
+  \marginpar{\small [3 pts]}
   \[
   h(x_i) = 0, \quad i=1,\dots,n,
   \]
-  and \marginpar{\small [2 pts]}
+  and
   \[
   \|h\|_\cH \geq \|f\|_\cH, \quad \text{with equality iff $h=0$}. 
   \]
@@ -120,19 +120,50 @@ In this exercise, we will work out some facts about RKHS regression.
   use these to solve for \smash{$\tilde{y}_i = \hf^{-i}(x_i)$}. 
 \end{enumerate}
 
-\section{Sub-Gaussian maximal inequalities [15 points]}
+\section{Sub-Gaussian maximal inequalities [12 points]}
+
+In this exercise, we will derive tail bounds on maxima of sub-Gaussian random
+variables $X_i$, $i=1,\dots,n$. Suppose each $X_i$ has mean zero and variance
+proxy $\sigma^2$. (We assume nothing about their dependence structure.)
 
 \begin{enumerate}[label=(\alph*)]
-\item Average tail bound 
-\marginpar{\small [5 pts]}
-\item Max tail bound in probability 
-\marginpar{\small [7 pts]}
-\item Max tail bound in expectation
-\marginpar{\small [3 pts]}
+\item Prove that for any $\lambda \in \R$,
+  \marginpar{\small [3 pts]}
+  \[
+  \exp \bigg( \lambda \E\Big[ \max_{i=1,\dots,n} \, X_i \Big] \bigg) \leq n
+  e^{\sigma^2 \lambda^2/2}.   
+  \]
 
-% See ~/Dropbox/teaching/s17-702/homework/homework4.tex
-% Also https://math.stackexchange.com/questions/1676407/tail-bounds-for-maximum-of-sub-gaussian-random-variables
-\end{enumerate}
+\item Rearrange the result in part (a), then choose a suitable value of
+  $\lambda$ to show that   
+  \marginpar{\small [2 pts]}
+  \[
+  \E \Big[ \max_{i=1,\dots,n} \, X_i \Big] \leq \sigma \sqrt{2 \log n}. 
+  \]
+
+\item Prove that for any $\lambda \in \R$,
+  \marginpar{\small [2 pts]}
+  \[
+  \P \Big(\max_{i=1,\dots,n} \, X_i \geq \lambda \Big) \leq e^{-\lambda^2 /
+    (2\sigma^2)}.  
+  \]
+  Hint: use the fact that \smash{$\P(X_i \geq \lambda) \leq e^{-\lambda^2 / 
+    (2\sigma^2)}$}, for any $\lambda \in \R$, which you can view as a
+  consequence of the tail bound for sub-Gaussian averages when $n=1$. 
+
+\item Reparametrize the result in part (c) to show that for any $t>0$,
+  \marginpar{\small [1 pt]}
+  \[
+  \P \Big(\max_{i=1,\dots,n} \, X_i \geq \sigma \sqrt{2 (\log n + t)} \Big) 
+  \leq e^{-t}.   
+  \]
+
+\item Now, we turn the question of the role of dependence: do correlations 
+  between $X_i$, $i=1,\dots,n$ make their maximum stochastically larger or
+  smaller? Conduct (and include the results of) a small simulation in order to
+  inform your answer. 
+  \marginpar{\small [4 pts]}
+ \end{enumerate}
 
 \section{Some lasso question}
 
