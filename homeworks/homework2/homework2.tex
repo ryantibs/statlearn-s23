@@ -1,0 +1,144 @@
+\documentclass{article}
+
+\def\ParSkip{} 
+\input{../../common/ryantibs}
+
+\title{Homework 2 \\ \smallskip
+\large Advanced Topics in Statistical Learning, Spring 2023 \\ \smallskip
+Due Friday March 3 at 5pm}
+\date{}
+
+\begin{document}
+\maketitle
+\RaggedRight
+\vspace{-50pt}
+
+\section{Properties of RKHS regression [10 points]}
+
+In this exercise, we will work out some facts about RKHS regression. 
+
+\begin{enumerate}[label=(\alph*)]
+\item First, let $k : \cX \times \cX \to \R$ be an arbitrary kernel. Recall that
+  this means there exists a feature map $\phi : \cX \to \cH$, and a Hilbert
+  space $\cH$ with inner product $\langle \,\cdot\,, \,\cdot\, \rangle_\cH$,
+  such that for any $x,y \in \cX$,    
+  \[
+  k(x,y) = \langle \phi(x), \phi(y) \rangle_\cH.
+  \]
+  Prove that $k$ is positive semidefinite, meaning, it is symmetric, and for any 
+  $n \geq 1$ and $x_1,\dots,x_n \in \cX$, if we define a matrix $K \in \R^{n
+    \times n}$ to have entries $K_{ij} = k(x_i, x_j)$, then  
+  \marginpar{\small [2 pts]}
+  \[
+  a^\T K a \geq 0, \quad \text{for all $a \in \R^n$}.
+  \]
+  Hint: express $a^\T K a$ in terms of the feature map $\phi$.
+
+\item Henceforth, suppose that $k$ is the reproducing kernel for $\cH$ (and
+  hence $\cH$ is an RKHS). Recall that this means the following two properties
+  are satisfied: 
+  \begin{enumerate}
+  \item for any $x \in \cX$, the function $k(\cdot, x)$ is an element of $\cH$;   
+  \item for any function $f \in \cH$ and $x \in \cX$, it holds that $\langle f,
+    k(\cdot, x) \rangle_\cH = f(x)$. 
+  \end{enumerate}
+  Let $f$ be a function of the form 
+  \[  
+  f(x) = \sum_{i=1}^n \beta_i k(x, x_i),
+  \]
+  for coefficients $\beta_1,\dots,\beta_n \in \R$. Show that 
+  \marginpar{\small [2 pts]}
+  \[
+  \|f\|_\cH^2 = \sum_{i,j=1}^n \beta_i \beta_j k(x_i,x_j).
+  \]
+
+\item Let $h$ be any function (in $\cH$) that is orthogonal (with respect to
+  $\langle \,\cdot\,, \,\cdot\, \rangle_\cH$) to the linear space of functions
+  of the form in part (b). Prove that 
+  \marginpar{\small [2 pts]}
+  \[
+  h(x_i) = 0, \quad i=1,\dots,n,
+  \]
+  and \marginpar{\small [2 pts]}
+  \[
+  \|h\|_\cH \geq \|f\|_\cH, \quad \text{with equality iff $h=0$}. 
+  \]
+
+\item Argue that for any $\lambda > 0$, the infinite-dimensional RKHS
+  optimization problem 
+  \[
+  \minimize_f \; \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda \|f\|_\cH^2
+  \]
+  (where the minimization is implicitly over $f \in \cH$) has a unique solution
+  of the form in part (b), and we can rewrite it as
+  \marginpar{\small [2 pts]}
+  \[
+  \minimize_\beta \; \|Y - K\beta\|_2^2 + \lambda \beta^\T K \beta. 
+  \]
+  for the matrix $K \in \R^{n \times n}$ with entries $K_{ij} = k(x_i, x_j)$. 
+
+  Hint: let $g = f+h$ and use the results in part (c) to argue that $g$ has a
+  larger criterion value, unless $h=0$. Use part (b) to complete the reduction
+  to finite-dimensional form. 
+
+\item Finally, we establish a cool fact about leave-one-out cross-validation
+  (LOOCV) in RKHS regression problems. Recall that in general, the LOOCV error
+  of an estimator \smash{$\hf$} is defined as
+  \[
+  \mathrm{CV}(\hf) = \frac{1}{n} \sum_{i=1}^n (y_i - \hf^{-i}(x_i))^2,
+  \]
+  where \smash{$\hf^{-i}$} is the estimator trained on all but the $i\th$ pair 
+  $(x_i,y_i)$. Prove the following shortcut formula for LOOCV with an RKHS
+  regression estimator \smash{$\hf$}:  
+  \marginpar{\small [6 pts]}
+  \[
+  \frac{1}{n} \sum_{i=1}^n (y_i - \hf^{-i}(x_i))^2 = 
+  \frac{1}{n} \sum_{i=1}^n \bigg(\frac{y_i - \hf(x_i)}{1-S_{ii}}\bigg)^2,
+  \]
+  where $S=(K + \lambda I)^{-1}$ is the smoother matrix for the RKHS estimator
+  (so that the vector of fitted values is given by \smash{$\hat{Y} = SY$}). 
+
+  Hint: prove that for each $i$,
+  \[
+  \hf^{-i}(x_i) = \frac{1}{1-S_{ii}} [\hf(x_i) - S_{ii}y_i].
+  \]
+  The desired result will follow by rearranging, squaring both sides, and
+  summing over $i=1,\dots,n$. There are different ways to establish the above
+  display; one nice way is as follows. Consider solving the RKHS regression
+  problem on 
+  \[
+    (x_1,y_1), \dots, (x_{i-1},y_{i-1}), (x_{i+1},y_{i+1}), \dots, (x_n,y_n), 
+  \]
+  and consider solving it on 
+  \[
+    (x_1,y_1), \dots, (x_{i-1},y_{i-1}), (x_i, \tilde{y}_i), (x_{i+1},y_{i+1}),
+    \dots, (x_n,y_n), 
+  \]
+  where \smash{$\tilde{y}_i = \hf^{-i}(x_i)$}. Argue that these should produce
+  the same solutions. Derive the zero gradient condition for optimality
+  (differentiate the criterion and set it equal to zero) for each problem, and
+  use these to solve for \smash{$\tilde{y}_i = \hf^{-i}(x_i)$}. 
+\end{enumerate}
+
+\section{Sub-Gaussian maximal inequalities [15 points]}
+
+\begin{enumerate}[label=(\alph*)]
+\item Average tail bound 
+\marginpar{\small [5 pts]}
+\item Max tail bound in probability 
+\marginpar{\small [7 pts]}
+\item Max tail bound in expectation
+\marginpar{\small [3 pts]}
+
+% See ~/Dropbox/teaching/s17-702/homework/homework4.tex
+% Also https://math.stackexchange.com/questions/1676407/tail-bounds-for-maximum-of-sub-gaussian-random-variables
+\end{enumerate}
+
+\section{Some lasso question}
+
+\section{Elementary facts about ridge}
+
+\bibliographystyle{plainnat}
+\bibliography{../../common/ryantibs}
+
+\end{document}
