@@ -32,6 +32,7 @@ In this exercise, we will work out some facts about RKHS regression.
   \[
   a^\T K a \geq 0, \quad \text{for all $a \in \R^n$}.
   \]
+
   Hint: express $a^\T K a$ in terms of the feature map $\phi$.
 
 \item Henceforth, suppose that $k$ is the reproducing kernel for $\cH$ (and
@@ -135,7 +136,7 @@ proxy $\sigma^2$. (We assume nothing about their dependence structure.)
   \]
 
 \item Rearrange the result in part (a), then choose a suitable value of
-  $\lambda$ to show that   
+  $\lambda$ to show that     
   \marginpar{\small [2 pts]}
   \[
   \E \Big[ \max_{i=1,\dots,n} \, X_i \Big] \leq \sigma \sqrt{2 \log n}. 
@@ -147,6 +148,7 @@ proxy $\sigma^2$. (We assume nothing about their dependence structure.)
   \P \Big(\max_{i=1,\dots,n} \, X_i \geq \lambda \Big) \leq e^{-\lambda^2 /
     (2\sigma^2)}.  
   \]
+
   Hint: use the fact that \smash{$\P(X_i \geq \lambda) \leq e^{-\lambda^2 / 
     (2\sigma^2)}$}, for any $\lambda \in \R$, which you can view as a
   consequence of the tail bound for sub-Gaussian averages when $n=1$. 
@@ -165,9 +167,108 @@ proxy $\sigma^2$. (We assume nothing about their dependence structure.)
   \marginpar{\small [4 pts]}
  \end{enumerate}
 
-\section{Some lasso question}
+\section{Risk analysis for the constrained lasso [12 points]}
 
-\section{Elementary facts about ridge}
+\def\hSigma{\hat\Sigma}
+
+This exercise explores simple in-sample and out-of-sample risk bounds for the
+lasso. Assume that we observe i.i.d.\ $(x_i,y_i) \in [-M,M]^d \times \R$,
+$i=1,\dots,n$, where each   
+\[
+y_i = x_i^\T \beta_0 + \epsilon_i,
+\]
+and each $\epsilon_i$ is sub-Gaussian with mean zero and variance proxy
+$\sigma^2$. Consider the constrained-form lasso estimator \smash{$\hbeta$}, 
+which solves  
+\[
+\minimize_\beta \; \|Y - X\beta\|_2^2 \;\; \st \;\; \|\beta\|_1 \leq t,    
+\]
+where $Y = (y_1,\dots,y_n) \in \R^n$ is the response vector, $X \in \R^{n \times
+  d}$ is the predictor matrix (whose $i\th$ row is $x_i \in \R^d$), and $t \geq
+0$ is a tuning parameter.
+
+\begin{enumerate}[label=(\alph*)]
+\item Prove that the lasso estimator, with $t=\|\beta_0\|_1$, has in-sample risk
+  satisfying 
+  \marginpar{\small [3 pts]}
+  \[
+  \frac{1}{n} \E \|X\hbeta - X\beta_0\|_2^2 \leq 4M \sigma \|\beta_0\|_1
+  \sqrt{\frac{2 \log(2d)}{n}},  
+  \]
+  where the expectation is taken over the training data $(x_i,y_i)$,
+  $i=1,\dots,n$. 
+
+  Hint: follow the strategy that we used in class to derive the ``slow rate''
+  for the constrained lasso, and apply the result from Q2 part (b). You may use 
+  the fact that for $\epsilon = (\epsilon_1,\dots,\epsilon_n) \in \R^n$, a
+  vector of i.i.d.\ sub-Gaussians with mean zero and variance proxy $\sigma^2$, 
+  and an arbitrary fixed vector $a \in \R^n$, the random variable $a^\T
+  \epsilon$ is mean zero sub-Gaussian with variance proxy $\sigma^2
+  \|a\|_2^2$. Bonus: prove this fact.  
+
+\item For i.i.d.\ mean zero random variables $Z_i$, $i=1,\dots,n$ that lie
+  almost surely in $[a,b]$, prove that for any $t \in \R$, 
+  \marginpar{\small [2 pts]}
+  \[
+  \E \bigg[\exp \bigg(\frac{t}{n} \sum_{i=1}^n Z_i \bigg)\bigg] \leq
+  e^{t^2(b-a)^2/(8n)}.  
+  \]
+
+  Hint: you may use the fact that each $Z_i$ is sub-Gaussian with variance proxy
+  $(b-a)/2$, and the hint about linear combinations of sub-Gaussians from part
+  (a).  
+
+\item Let $\Sigma$ denote the predictor covariance matrix, that is,
+  $\Sigma = \E[x_0x_0^\T]$ for a draw $x_0$ from the predictor distribution. Let
+  \smash{$\hSigma = X^\T X/n$} be the empirical covariance matrix, and let
+  \smash{$V = \hSigma-\Sigma$}. Prove that    
+  \marginpar{\small [2 pts]}
+  \[
+  \E\Big[ \max_{j,k=1,\dots,d} \, |V_{jk}| \Big] \leq 2M^2 \sqrt{\frac{2
+      \log(2d^2)}{n}}.  
+  \]
+
+  Hint: apply part (b) to the entries of $V$.
+
+\item Prove that the lasso estimator, with $t=\|\beta_0\|_1$, has out-of-sample
+  risk satisfying 
+  \marginpar{\small [5 pts]}
+  \[
+  \E[(x_0^\T \hbeta - x_0^\T \beta_0)^2] \leq 4M \sigma \|\beta_0\|_1
+  \sqrt{\frac{2 \log(2d)}{n}} + 8 M^2 \|\beta_0\|_1^2 \sqrt{\frac{2
+      \log(2d^2)}{n}},  
+  \]
+  where the expectation is taken over the training data $(x_i,y_i)$,
+  $i=1,\dots,n$ and an independent draw $x_0$ from the predictor distribution. 
+
+  Hint: first, argue that the in-sample risk and out-of-sample risk can be
+  written as 
+  \[
+  \E\big[ (\hbeta-\beta_0)^\T \hSigma (\hbeta-\beta_0) \big] 
+  \quad \text{and} \quad
+  \E\big[ (\hbeta-\beta_0)^\T \Sigma (\hbeta-\beta_0) \big],
+  \]
+  respectively. (Note that the expectations above are each taken with respect to
+  the training samples $(x_i,y_i)$, $i=1,\dots,n$ only---there is nothing else
+  that is random.) Next, argue that  
+  \[
+  (\hbeta-\beta_0)^\T \Sigma (\hbeta-\beta_0) -
+  (\hbeta-\beta_0)^\T \hSigma (\hbeta-\beta_0) 
+  \leq \sum_{j,k=1}^d (\hbeta-\beta_0)_j (\hbeta-\beta_0)_k |V_{jk}|,
+  \]
+  where recall \smash{$V_{jk} = (\hSigma-\Sigma)_{jk}$}. Then do a little bit
+  more algebra to bound the right-hand side above and apply the previous parts
+  of this question to conclude the result. 
+
+\item The bound derived in this question for the out-of-sample risk is always
+  larger than that for the in-sample risk (by nature of its construction). As a
+  bonus, investigate: can the out-of-sample risk of the lasso be lower than the
+  in-sample risk? Use a simulation, a pointer to an experiment or result in the
+  literature, or any means of answering that you believe provides a convincing 
+  argument.   
+\end{enumerate}
+
+\section{$\Gamma$-minimaxity of ridge regression}
 
 \bibliographystyle{plainnat}
 \bibliography{../../common/ryantibs}
