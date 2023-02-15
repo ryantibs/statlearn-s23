@@ -204,7 +204,7 @@ where $Y = (y_1,\dots,y_n) \in \R^n$ is the response vector, $X \in \R^{n \times
   vector of i.i.d.\ sub-Gaussians with mean zero and variance proxy $\sigma^2$, 
   and an arbitrary fixed vector $a \in \R^n$, the random variable $a^\T
   \epsilon$ is mean zero sub-Gaussian with variance proxy $\sigma^2
-  \|a\|_2^2$. Bonus: prove this fact.  
+  \|a\|_2^2$. 
 
 \item For i.i.d.\ mean zero random variables $Z_i$, $i=1,\dots,n$ that lie
   almost surely in $[a,b]$, prove that for any $t \in \R$, 
@@ -268,7 +268,116 @@ where $Y = (y_1,\dots,y_n) \in \R^n$ is the response vector, $X \in \R^{n \times
   argument.   
 \end{enumerate}
 
-\section{$\Gamma$-minimaxity of ridge regression}
+\section{$\Gamma$-minimaxity of ridge regression [10 points]} 
+
+\def\Risk{\mathrm{Risk}}
+
+This exercise will explore a (strong, finite-sample) notion of minimax
+optimality of ridge regression. Assume that $X \in \R^{n \times d}$ is a fixed,
+arbitrary predictor matrix, and consider the following model:  
+\begin{equation}
+\label{eq:model}
+\begin{gathered}
+(\epsilon, \beta_0) \sim F^n \times G^d, \\
+Y = X\beta_0 + \epsilon.
+\end{gathered}
+\end{equation}
+Here, $F$ and $G$ are distributions on $\R$ that have mean zero and variance
+$\sigma^2 > 0$ and $r^2 \geq 0$, respectively. Abbreviate $\gamma = (F,G)$, and 
+let $\Gamma$ denote the set of all such pairs of distributions $(F,G)$ that
+satisfy these moment conditions. 
+
+We can think of $F$ and $G$ as describing a noise and prior distribution,
+respectively: the components of $\epsilon$ are i.i.d.\ from $F$, and those of  
+$\beta_0$ are i.i.d.\ from $G$. We measure risk according to:
+\[
+\Risk(\hbeta; \gamma) = \E \|\hbeta - \beta_0\|_2^2,
+\]
+where the expectation is over all that is random: $\epsilon, \beta_0, Y$ drawn 
+from \eqref{eq:model}. To be specific, this is the \emph{Bayes} risk of an
+estimator \smash{$\hbeta$}, though we'll often just call it risk for short. The
+notation \smash{$\Risk(\hbeta; \gamma)$} emphasizes the dependence of the risk
+on $\gamma$.    
+
+\begin{enumerate}[label=(\alph*)]
+\item Prove that the ridge regression estimator,
+  \[
+  \hbeta = \argmin_\beta \; \frac{1}{n} \|Y - X\beta\|_2^2 + \lambda
+  \|\beta\|_2^2, 
+  \]
+  for any fixed tuning parameter value $\lambda > 0$, has risk 
+  \marginpar{\small [4 pts]}
+  \[
+  \Risk(\hbeta; \gamma) = \frac{\sigma^2}{n} \tr \big[ \lambda^2 \alpha (\hSigma
+  + \lambda I)^{-2} + \hSigma ( \hSigma + \lambda I)^{-2} \big],
+  \]
+  where \smash{$\hSigma = (X^\T X)/n$} and $\alpha = r^2n / (\sigma^2 d)$. Hint:
+  use a bias-variance decomposition.
+
+\item In general, consider estimation of a functional $\theta(P)$, given i.i.d.\ 
+  draws from $P$, with respect to some metric $d$. Let $\Gamma$ let be class of 
+  distributions $\gamma$, where each $\gamma = (P,\pi)$, with $P$ specifying the 
+  distribution of the data, and $\pi$ specifying the distribution of the
+  functional $\theta(P)$. We can think of $P$ as the likelihood and $\pi$ as the 
+  prior. Then the $\Gamma$-minimax risk is defined as:    
+  \[
+  \inf_{\htheta} \, \sup_{\gamma \in \Gamma} \, \E_\gamma \big[ d(\theta(P),
+  \htheta) \big]. 
+  \]
+  The expectation here is with respect to $\gamma$, and hence is a Bayes
+  risk. Note that if for each $\gamma = (P,\pi)$, the prior is a point mass at a
+  single value of $\theta(P)$, then $\Gamma$-minimax risk reduces to the usual
+  notion of minimax risk defined in lecture.      
+
+  Let \smash{$\htheta^B$} be the Bayes estimator with respect to some
+  likelihood-prior pair $\gamma_0 = (P_0,\pi_0)$, where $\gamma_0 \in
+  \Gamma$. Prove that if its Bayes risk is constant as we vary $\gamma \in
+  \Gamma$, then it is $\Gamma$-minimax optimal,  
+  \marginpar{\small [3 pts]}
+  \[
+  \sup_{\gamma \in \Gamma} \, \E_\gamma \big[ d(\theta(P), \htheta^B) \big]
+  = \inf_{\htheta} \, \sup_{\gamma \in \Gamma} \, \E_\gamma \big[ d(\theta(P), 
+  \htheta) \big].
+  \]
+
+  Hint: suppose not, and obtain a contradiction to the fact that
+  \smash{$\htheta^B$} is Bayes. 
+
+\item Returning to our regression problem setting, prove that ridge regression
+  is the Bayes estimator with respect to a particular instantiation of $\gamma = 
+  (F,G)$, and use the previous parts to establish that it is $\Gamma$-minimax
+  for the class $\Gamma$ defined in part (a).  
+  \marginpar{\small [3 pts]}
+
+\item As a bonus: extend the previous result to the case of out-of-sample Bayes
+  prediction risk. That is, instead of \eqref{eq:model}, consider
+  \begin{equation}
+  \label{eq:model_x0}
+  \begin{gathered}
+  (\epsilon, \beta_0,  x_0) \sim F^n \times G^d \times Q, \\
+  Y = X\beta_0 + \epsilon,
+  \end{gathered}
+  \end{equation}
+  where $F,G$ are as before, and now $Q$ is a distribution on $\R^d$ with mean
+  zero and covariance $\Sigma \succ 0$. Abbreviate $\gamma = (F,G,Q)$, and let
+  $\Gamma$ denote the set of all such triplets of distributions $(F,G,Q)$ that
+  meet the specified moment conditions. While the training predictors $X$ are
+  still fixed, $Q$ specifies the distribution of the test predictor $x_0$ used
+  to measure risk, defined as: 
+  \[
+  \Risk(\hbeta; \gamma) = \E[ (x_0^\T \hbeta - x_0^\T \beta_0)^2 ], 
+  \]
+  where the expectation is over everything that is random: $\epsilon, \beta_0,
+  x_0, Y$ drawn from \eqref{eq:model_x0}. For this model and new definition of
+  risk, prove that ridge regression is still $\Gamma$-minimax optimal. Along the
+  way, you will find it useful to prove that the out-of-sample Bayes prediction 
+  risk of ridge is  
+  \[
+  \Risk(\hbeta; \gamma) = \frac{\sigma^2}{n} \tr \big[ \lambda^2 \alpha (\hSigma
+  + \lambda I)^{-2} \Sigma + \hSigma ( \hSigma + \lambda I)^{-2} \Sigma \big].
+  \]
+\end{enumerate}
+
 
 \bibliographystyle{plainnat}
 \bibliography{../../common/ryantibs}
