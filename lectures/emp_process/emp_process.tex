@@ -305,7 +305,16 @@ variance proxy $\sigma^2>0$ if
   \R$}. 
 \]
 This says that the moment generating function of $X$ is dominated by the moment
-generating function of $N(\mu, \sigma^2)$ random variable.
+generating function of $N(\mu, \sigma^2)$ random variable. It turns out that an
+equivalent characterization of sub-Gaussianity is that
+\[
+\P(|X-\mu| \geq t) \leq c \, \P(|Z| \geq t), \quad \text{for all $t \in \R$},
+\]
+for some constant $c>0$, where $Z \sim N(0,1)$. This is perhaps more intuitive
+and explains the name ``sub-Gaussian'': the tails must decay at least as fast as
+that of the Gaussian distribution. 
+
+% Theorem 2.16 (II) in Section 2.1 of Wainwright (2019)
 
 Here are some examples of sub-Gaussian random variables.
 
