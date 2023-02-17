@@ -97,7 +97,7 @@ In this exercise, we will work out some facts about RKHS regression.
   \frac{1}{n} \sum_{i=1}^n \bigg(\frac{y_i - \hf(x_i)}{1-S_{ii}}\bigg)^2,
   \]
   where $S=(K + \lambda I)^{-1}$ is the smoother matrix for the RKHS estimator
-  (so that the vector of fitted values is given by \smash{$\hat{Y} = SY$}). 
+  (so that the vector of fitted values is given by \smash{$\hat{Y} = KSY$}). 
 
   Hint: prove that for each $i$,
   \[
