@@ -437,7 +437,7 @@ uniformly over all $f \in \cF$ with $\|f\|_n \leq \rho$, we have
 {\sqrt n}, 
 \]
 with high probability. Now think about what a simple application of
-Cauchy-Schwartz would give us: 
+Cauchy-Schwarz would give us: 
 \[
 |\langle \epsilon, f \rangle_n| \leq \|\epsilon\|_n \|f\|_n \leq c \|f\|_n, 
 \]
@@ -449,7 +449,7 @@ the second-to-last display is better than the last display when
 \frac{\|f\|_n^{-w/2}}{\sqrt n} \leq 1 \iff \|f\|_n \geq n^{-1/w}.
 \]
 That is, except for functions $f$ of really small empirical norm, we improve on
-Cauchy-Schwartz, and dramatically so when $f$ is of larger empirical norm. For
+Cauchy-Schwarz, and dramatically so when $f$ is of larger empirical norm. For
 example, when \smash{$\|f\|_n = n^{-1/(2+w)}$} (this is not an arbitrarily
 chosen rate, you'll see why we're interested in this a bit later, when we do the
 error analyis), then the ``speedup'' we get from \eqref{eq:sg_complexity} is:   
@@ -587,7 +587,7 @@ $m$ times weakly differentiable functions, and assume that the following
 conditions hold for an integer $k \geq 0$, and constants $0<w<2$ and $M,C>0$: 
 \begin{enumerate}[label=A\arabic*.]
 \item the null space of $J$ consists of $k\th$ order polynomials;
-\item $\sup_{x \in [0,1]} D^k f (x) - \inf_{x \in [0,1]} D^k f(t) \leq M$ for
+\item $\sup_{x \in [0,1]} D^m f (x) - \inf_{x \in [0,1]} D^m f(t) \leq M$ for
   all functions $f \in B_J(1)$;
 \item $\cF = B_J(1) \cap B_\infty(1)$ satisfies the entropy bound
   \eqref{eq:entropy_bd}, for small enough $\delta>0$ and all $x_1,\dots,x_n$.     
@@ -598,21 +598,23 @@ regression function satisfies $1 \leq J(f_0) < \infty$.
 
 Then there exists constants $c_0,c_1,c_2,c,n_0>0$ that depend only on   
 $\sigma,k,M,C,w$ such that for all $n \geq n_0$ and $\gamma \geq c_0$, the 
-following holds. Any solution \smash{$\hf$} to the variational problem 
+following holds. Fix any fixed exponent $v > 2w/(2+w)$. Any solution
+\smash{$\hf$} to the problem  
 \begin{equation}
 \label{eq:variational_opt_v}
 \minimize_f \; \frac{1}{n} \sum_{i=1}^n (y_i - f(x_i))^2 + \lambda J^v(f), 
 \end{equation}
-for any fixed exponent $v > 2w/(2+w)$, and any tuning parameter value 
-\smash{$\gamma n^{-2/(2+w)} J(f_0)^{2w/(2+w) - v} \leq \lambda \leq \sigma^2$},
-satisfies     
+with tuning parameter value \smash{$\gamma n^{-2/(2+w)} J(f_0)^{2w/(2+w) - v}
+  \leq \lambda \leq \sigma^2 J(f_0)^{2-v}$}, satisfies     
 \begin{equation}
 \label{eq:error_bd1}
 \|\hf - f_0\|_n^2 \leq 2 \lambda J^v(f_0) \quad \text{and} \quad J(\hf) \leq c
 J(f_0), 
 \end{equation}
-with probability at least $1 - \exp(-c_1\gamma) - \exp(-c_2n)$. In particular,  
-for \smash{$\lambda = \gamma n^{-2/(2+w)} J(f_0)^{2w/(2+w) - v}$}, it holds that 
+with probability at least $1 - \exp(-c_1\gamma) - \exp(-c_2n)$. 
+
+In particular, for \smash{$\lambda = \gamma n^{-2/(2+w)} J(f_0)^{2w/(2+w) -
+    v}$}, it holds that  
 \begin{equation}
 \label{eq:error_bd2}
 \|\hf - f_0\|_n^2 \leq 2 \gamma n^{-2/(2+w)} J(f_0)^{2w/(2+w)},
@@ -712,12 +714,13 @@ important because it will be enable us to apply Lemma
 \[
 \|\epsilon\|_n^2 \leq 5\sigma^2,
 \]
-on an event $\Omega_1$ with probability at least $1-\exp(-n)$. Thus returning to 
-\eqref{eq:basic_ineq_v1}, using Cauchy-Schwartz and the above bound, we have on
-$\Omega_1$, 
+on an event $\Omega_1$ with probability at least $1-\exp(-n)$. Hence, returning
+to  \eqref{eq:basic_ineq_v1}, using Cauchy-Schwarz and the above bound, we have
+on $\Omega_1$, 
 \begin{align*}
-\|\hf-f_0\|_n^2 &\leq 10\sigma^2 \|\hf-f_0\|_n + \lambda (J_0^v - {\hat J}^v) \\ 
-&\leq 10 \sigma^2 \|\hf-f_0\|_n + \lambda J_0^v.
+\|\hf-f_0\|_n^2 &\leq 2{\sqrt 5}\sigma \|\hf-f_0\|_n + 
+  \lambda (J_0^v - {\hat  J}^v) \\  
+&\leq 2{\sqrt 5}\sigma \|\hf-f_0\|_n + \lambda J_0^v.
 \end{align*}
 This is a quadratic inequality of the form $x^2 \leq bx + c$ in \smash{$x=\|\hf
   - f_0\|_n$}, so we can upper bound $x$ by the larger of the two roots,
@@ -725,23 +728,23 @@ This is a quadratic inequality of the form $x^2 \leq bx + c$ in \smash{$x=\|\hf
 $\Omega_1$, 
 \begin{align}
 \nonumber
-\|\hf-f_0\|_n &\leq 10\sigma^2 + \lambda J_0^v \\
+\|\hf-f_0\|_n &\leq 2{\sqrt 5}\sigma + \sqrt{\lambda J_0^v} \\
 \label{eq:localization}
-&\leq 11 \sigma^2 J_0^v.
+&\leq (2{\sqrt 5} + 1) \sigma J_0,
 \end{align}
-In the second line we use $J_0\geq 1$ and $\lambda \leq \sigma^2$. This
-completes the desired ``localization'' step.    
+where in the second line we use $J_0\geq 1$ and $\lambda \leq \sigma^2 
+J_0^{2-v}$. This completes the desired ``localization'' step.     
 
 \subsubsection{Bounding the sub-Gaussian complexity}
 
-In this part, we focus on bounding the first-term on the right-hand in
+In this part, we focus on bounding the first-term on the right-hand side in 
 \eqref{eq:basic_ineq_v1} using a sub-Gaussian complexity argument. The idea is
 the same as what we described in the introduction. Let
 \[
 g = \frac{\hf-f_0}{({\hat J} + J_0)}.
 \]
 By construction, we have $J(g) \leq 1$. Further, from \eqref{eq:localization},
-we have $\|g\|_n \leq 11\sigma^2$ on $\Omega_1$.  
+we have $\|g\|_n \leq (2{\sqrt 5} + 1) \sigma$ on $\Omega_1$.  
 
 We would like to apply Lemma \ref{lem:sg_complexity} in order to bound $\langle 
 \epsilon, g \rangle_n$, but we need one more step first. Assumption A3 in the
@@ -759,13 +762,13 @@ on an event $\Omega_2$ with probability at least $1-\exp(-c_2 n)$. See Lemma 7
 that this leverages Assumptions A1 and A2, and as the assumption that the input  
 distribution $Q$ is continous.   
 
-Now, rescaling the definition of $g$ by a constant $c>0$ as needed, 
+Thus, rescaling the definition of $g$ by a constant $c>0$ as needed, 
 \[
 g = \frac{\hf-f_0}{c({\hat J} + J_0)},
 \]
-note that we have $J(g) \leq 1$ and $\|g\|_\infty \leq 1$ on $\Omega_1 \cap
-\Omega_2$. Thus by Lemma \ref{lem:sg_complexity}, for constants $c_0,c_1>0$ and 
-all $\gamma \geq c_0$ and sufficiently large $n$,  
+we have $J(g) \leq 1$ and $\|g\|_\infty \leq 1$ on $\Omega_1 \cap
+\Omega_2$. Lemma \ref{lem:sg_complexity} then says that for constants
+$c_0,c_1>0$ and all $\gamma \geq c_0$ and sufficiently large $n$,     
 \[
 \langle \epsilon, g \rangle_n \leq \frac{\gamma \|g\|_n^{1-w/2}}{\sqrt n} 
 \]
@@ -800,15 +803,18 @@ yields
 \|\hf - f_0\|_n^2 \leq 2c \gamma r_n ({\hat J} + J_0)^{w/(2+w)} \|\hf-f_0\|_n +
 2c \gamma r_n^2 ({\hat J} + J_0)^{2w/(2+w)} + \lambda (J_0^v - {\hat J}^v), 
 \]
-on $\Omega$. Second, we apply $2ab \leq a^2+b^2$ to the first term above on the
-right-hand side of the above display, with \smash{$a = \sqrt{2}c \gamma r_n
-  ({\hat J} +  J_0)^{w/(2+w)}$} and\smash{$b = \|\hf-f_0\|_n/\sqrt{2}$}, which 
-yields       
+on $\Omega$. At this point, we could recognize the above as a quadratic
+of the form $x^2 \leq bx + c$ in \smash{$x = \|\hf-f_0\|_n$}, and proceed as we
+did in the localization step, but we take a different approach that leads to a
+slightly sharper dependence on various problem parameters. We apply $2ab \leq
+a^2+b^2$ to the first term on the right-hand side of the above display, with
+\smash{$a = \sqrt{2}c \gamma r_n ({\hat J} +  J_0)^{w/(2+w)}$} and \smash{$b =
+  \|\hf-f_0\|_n/\sqrt{2}$}, which yields          
 \[
 \|\hf - f_0\|_n^2 \leq \frac{1}{2}\|\hf - f_0\|_n^2 + \gamma r_n^2 ({\hat J} +
 J_0)^{2w/(2+w)} + \lambda (J_0^v - {\hat J}^v),   
 \]
-on $\Omega$, where we have redefined $\gamma$ as needed. We have been careful to
+on $\Omega$, where we have redefined $\gamma$ as needed. We have been careful to 
 end up with a factor of the squared empirical norm on the right-hand side with a
 leading constant less than 1. Subtracting this term \smash{$\frac{1}{2}
 \|\hf-f_0\|_n^2$} to the left-hand side gives
@@ -817,7 +823,7 @@ leading constant less than 1. Subtracting this term \smash{$\frac{1}{2}
 \frac{1}{2} \|\hf - f_0\|_n^2 \leq \gamma r_n^2 ({\hat J} + J_0)^{2w/(2+w)} +
 \lambda (J_0^v - {\hat J}^v),   
 \end{equation}
-on $\Omega$.
+on $\Omega$. 
 
 \subsubsection{Bounding the achieved penalty term}
 
@@ -934,10 +940,13 @@ with probability at least $p_n = 1 - \exp(-c_1\gamma) - \exp(-c_2n)$, and
 \|\hf - f_0\|_2^2 \leq 4 \lambda J_0^2 + c_3 n^{-2m/(2m+1)} J_0^2,
 \]
 with probability at least \smash{$q_n = 1 - \exp(-c_1\gamma) - \exp(-c_4 
-  n^{2m/(2m+1)})$}. For \smash{$\lambda = \gamma n^{-2m/(2m+1)}
-  J_0^{-4m/(2m+1)}$}, it holds that
+  n^{2m/(2m+1)})$}. 
+
+In particular, for \smash{$\lambda = \gamma n^{-2m/(2m+1)} J_0^{-4m/(2m+1)}$},
+it holds that 
 \begin{gather*}
-\|\hf - f_0\|_n^2 \leq 2 \gamma n^{-2m/(2m+1)} J_0^{2/(2m+1)}, \\
+\|\hf - f_0\|_n^2 \leq 2 \gamma n^{-2m/(2m+1)} J_0^{2/(2m+1)}, 
+\quad \text{and} \\ 
 \|\hf - f_0\|_2^2 \leq n^{-2m/(2m+1)} (4 \gamma J_0^{2/(2m+1)} + c_3 J_0^2), 
 \end{gather*}
 with the same probabilities as above: $p_n$ and $q_n$, respectively.
