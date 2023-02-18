@@ -526,11 +526,12 @@ adding and subtracting $f(x_0)$, and expanding):
 \underbrace{\E\big[ (f(x_0) - \hf(x_0))^2 \big]}_{\Risk(\hf)} +\, \sigma^2,
 \]
 where $\sigma^2 = \Var[\epsilon_0]$ is the noise variance (also known as the 
-\emph{Bayes error} or \emph{irreducible error} in the current context). We'll 
-call the first term on the right-hand side the \emph{out-of-sample risk}, and
-denote it by \smash{$\Risk(\hf)$}. Admittedly, this is somewhat nonstandard
-terminology as many authors use ``risk'' and ``error'' interchangeably, and do
-not use it to distinguish whether the target is $f(x_0)$ or $y_0$.
+\emph{Bayes error} or \emph{irreducible error} in the current context). In this 
+lecture, we'll call the first term on the right-hand side the
+\emph{out-of-sample risk}, and denote it by \smash{$\Risk(\hf)$}. (Admittedly,
+this is somewhat nonstandard terminology; many authors use ``risk'' and
+``error'' interchangeably, and do not use it to distinguish whether the target
+is $f(x_0)$ or $y_0$.)   
 % \footnote{Yet another convention is to call $\E[ (f(x_0) - \hf(x_0))^2]$ the
 % \emph{excess risk}, since it equals \smash{$\E[ (y_0 - \hf(x_0))^2] - \inf_g
 % \E[ (y_0 - g(x_0))^2]$}, where the infimum is achieved at $g=f$, the
@@ -793,11 +794,11 @@ perspectives.
 
 \subsection{Regularization}
 
-As we just saw, the risk of least squares regression degrades as $p$ grows close
+As we just saw, the risk of least squares regression degrades as $d$ grows close
 to $n$---in the case of Gaussian features or ``RMT features'' (which we use to
 mean feature models compatible with the standard assumptions in random matrix
-theory), the out-of-sample risk actually diverges when $p = n$. Meanwhile, the 
-least squares estimator is not even well-defined when $p > n$, in that the
+theory), the out-of-sample risk actually diverges when $d = n$. Meanwhile, the 
+least squares estimator is not even well-defined when $d > n$, in that the
 optimization problem  
 \[
 \minimize_\beta \; \|Y - X\beta\|_2^2 
@@ -832,9 +833,9 @@ We'll focus on the penalized form since it is generally more commonly studied.
 In regression, arguably the three canonical choices are the $\ell_0$, $\ell_1$,
 and $\ell_2$ norms: 
 \[
-\|\beta\|_0 = \sum_{j=1}^p 1\{\beta_j \not= 0\}, \;\;\;
-\|\beta\|_1 = \sum_{j=1}^p |\beta_j|, \;\;\;
-\|\beta\|_2 = \bigg(\sum_{j=1}^p \beta_j^2 \bigg)^{1/2}.
+\|\beta\|_0 = \sum_{j=1}^d 1\{\beta_j \not= 0\}, \;\;\;
+\|\beta\|_1 = \sum_{j=1}^d |\beta_j|, \;\;\;
+\|\beta\|_2 = \bigg(\sum_{j=1}^d \beta_j^2 \bigg)^{1/2}.
 \]
 This gives rise to the problems: 
 \begin{alignat}{3}
@@ -877,7 +878,7 @@ will have
 \]
 Larger $\lambda$ typically means sparser solutions. This is not true of the
 ridge regression estimator, which will be generically dense (all nonzero
-components), for any $\lambda \geq0$. Note that sparsity may be desirable, for
+components), for any $\lambda \geq 0$. Note that sparsity may be desirable, for 
 two reasons: (i) it corresponds to performing variable selection in the fitted
 linear model, and (ii) it provides a level of interpretability (beyond sheer
 accuracy).   
