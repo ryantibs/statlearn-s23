@@ -412,8 +412,8 @@ controls this quantity, uniformly over all $x_1,\dots,x_n$.
 \label{lem:sg_complexity}
 Let $\epsilon_i$, $i=1,\ldots,n$ denote independent sub-Gaussian random
 variables, each having mean zero variance proxy $\sigma^2$. Assume that there
-exist constants $0<w<2$ and $C>0$ such that uniformly over all $x_1,\dots,x_n$,
-it holds that  
+exist constants $0<w<2$ and $C>0$ such that for some fixed $x_1,\dots,x_n$
+(which define the empirical norm $\|\cdot\|_n$), 
 \begin{equation}
 \label{eq:entropy_bd}
 \log N\big(\delta, \cF, \|\cdot\|_n \big) \leq C \delta^{-w},
@@ -423,8 +423,8 @@ constants $n_0,c_0,c_1>0$, depending only on $\sigma,\rho,C,w$, such that for
 all $n \geq n_0$ and $\gamma \geq c_0$,  
 \begin{equation}
 \label{eq:sg_complexity}
-\sup_{x_1,\dots,x_n} \, \sup_{f \in \cF \cap B_n(\rho)} \, \frac{|\langle
-  \epsilon, f \rangle_n|}{\|f\|_n^{1-w/2}} \leq \frac{\gamma}{\sqrt n}, 
+\sup_{f \in \cF \cap B_n(\rho)} \, \frac{|\langle \epsilon, f
+  \rangle_n|}{\|f\|_n^{1-w/2}} \leq \frac{\gamma}{\sqrt n},  
 \end{equation}
 with probability at least $1 - \exp(-c_1\gamma^2)$.
 \end{lemma}
@@ -589,8 +589,9 @@ conditions hold for an integer $k \geq 0$, and constants $0<w<2$ and $M,C>0$:
 \item the null space of $J$ consists of $k\th$ order polynomials;
 \item $\sup_{x \in [0,1]} D^m f (x) - \inf_{x \in [0,1]} D^m f(t) \leq M$ for
   all functions $f \in B_J(1)$;
-\item $\cF = B_J(1) \cap B_\infty(1)$ satisfies the entropy bound
-  \eqref{eq:entropy_bd}, for small enough $\delta>0$ and all $x_1,\dots,x_n$.     
+\item $\cF = B_J(1) \cap B_\infty(1)$ satisfies the entropy bound $\log
+  N(\delta, \cF, \|\cdot\|_\infty) \leq C \delta^{-w}$, for small enough
+  $\delta>0$. 
 \end{enumerate}
 To be clear, here we denote by $B_J(1)$ the unit ball in $J$, and by
 $B_\infty(1)$ the unit ball in sup norm. Finally, assume that the underlying
@@ -748,19 +749,19 @@ we have $\|g\|_n \leq (2{\sqrt 5} + 1) \sigma$ on $\Omega_1$.
 
 We would like to apply Lemma \ref{lem:sg_complexity} in order to bound $\langle 
 \epsilon, g \rangle_n$, but we need one more step first. Assumption A3 in the
-theorem statement is about an entropy condition \eqref{eq:entropy_bd} for the
-class $\cF = B_J(1) \cap B_\infty(1)$. But at present, we do not know that $g$
-is bounded in sup norm, only in empirical norm. An argument (whose details we do
-not give) involving orthogonalization with respect to functions in the null
-space of $J$, polynomials of degree $k$, can be used to show that for constants
-$q_1,q_2,c_2>0$,
+theorem statement is about an entropy condition for the class $\cF = B_J(1) \cap
+B_\infty(1)$. But at present, we do not know that $g$ is bounded in sup norm,
+only in empirical norm. An argument (whose details we do not give) involving
+orthogonalization with respect to functions in the null space of $J$, which
+recall are polynomials of degree $k$, can be used to show that for constants
+$q_1,q_2,c_2>0$, 
 \[
 \|g\|_\infty \leq q_1 J(g) + q_2 \|g\|_n,
 \]
 on an event $\Omega_2$ with probability at least $1-\exp(-c_2 n)$. See Lemma 7
-(and Lemmas 4, 5, 6 leading up to it) in \citet{sadhanala2019additive}. Note
-that this leverages Assumptions A1 and A2, and as the assumption that the input  
-distribution $Q$ is continous.   
+(and Lemmas 4, 5, and 6 leading up to it) in \citet{sadhanala2019additive}. We
+note that this is why we need Assumptions A1 and A2, and the assumption that the 
+input distribution $Q$ is continous.   
 
 Thus, rescaling the definition of $g$ by a constant $c>0$ as needed, 
 \[
