@@ -805,39 +805,17 @@ optimization problem
 \] 
 does not have a unique solution.  
 
-How do we deal with such issues? The short answer is \emph{regularization}. In
-our present setting, we would modify the least squares estimator in one of two
-forms: 
-\begin{alignat*}{3}
-&\text{Constrained form}: \quad 
-&&\minimize_\beta \; \|Y - X\beta\|_2^2 \;\; \st \;\; \beta \in C \\
-&\text{Penalized form}: \quad 
-&&\minimize_\beta \; \|Y - X\beta\|_2^2 + h(\beta),
-\end{alignat*}
-where $C$ is some (typically convex) set, and $h$ is some (typically convex)
-penalty function.
-
-At its core, regularization provides us with a way to navigate the
-bias-variance tradeoff: we (ideally greatly) reduce the variance at the expense
-of introducing some bias. 
-
-We typically choose the constraint set to be a sublevel set of a norm, $C =
-\{\beta : \|\beta\| \leq t\}$, and the penalty function $h$ to be a nonnegative
-multiple of a norm, $h(\beta) = \lambda \|\beta\|$. Here, the constrained and
-penalized forms can be seen to equivalent, via convex duality.\footnote{By this,
-  we mean that for any $t \geq 0$ and solution \smash{$\hbeta$} in the
-  constrained problem, there is a value of $\lambda \geq 0$ such that
-  \smash{$\hbeta$} also solves the penalized problem, and vice versa.} 
-We'll focus on the penalized form since it is generally more commonly studied.  
-
-In regression, arguably the three canonical choices are the $\ell_0$, $\ell_1$,
-and $\ell_2$ norms: 
+How do we deal with such issues? The short answer is \emph{regularization}. At
+its core, regularization provides us with a way to navigate the bias-variance
+tradeoff: we (ideally greatly) reduce the variance at the expense of introducing
+bias. In regression, canonical choices of regularizers are the $\ell_0$,
+$\ell_1$, and $\ell_2$ norms:    
 \[
 \|\beta\|_0 = \sum_{j=1}^d 1\{\beta_j \not= 0\}, \;\;\;
 \|\beta\|_1 = \sum_{j=1}^d |\beta_j|, \;\;\;
 \|\beta\|_2 = \bigg(\sum_{j=1}^d \beta_j^2 \bigg)^{1/2}.
 \]
-This gives rise to the problems: 
+This gives rise to the regularized least squares problems: 
 \begin{alignat}{3}
 \label{eq:subset}
 &\text{Best subset selection}: \quad
@@ -852,15 +830,10 @@ This gives rise to the problems:
 where $\lambda \geq 0$ is called the tuning parameter (typically chosen by
 cross-validation or similar techniques.)  
 
-\subsubsection{One of these is not like the other: convexity}
+\paragraph{One of these is not like the other: convexity.}
 
 Calling $\|\cdot\|_0$ the ``$\ell_0$ norm'' is a misnomer, since it is not a
-norm: it does not satisfy positive homogeneity, i.e., $\|a\beta\|_0 =
-a\|\beta\|_0$ for all $a > 0$. (As such, it would be more accurate to call it
-the ``$\ell_0$ pseudonorm'', but in keeping with common convention, we'll simply
-use ``norm''.)   
-
-Critically, $\|\cdot\|_0$ is \emph{not convex}, while $\|\cdot\|_1$ and
+norm. Critically, $\|\cdot\|_0$ is \emph{not convex}, while $\|\cdot\|_1$ and
 $\|\cdot\|_2$ are (indeed, any norm is a convex function). This makes
 \eqref{eq:subset} a nonconvex problem, and one that is generally very hard to
 solve in practice except for very small $d$ (e.g., its constrained form is known
@@ -868,20 +841,15 @@ to be NP-hard). On the other hand, problems \eqref{eq:lasso} and
 \eqref{eq:ridge} are convex optimization problems, and many efficient
 algorithms exist for them.   
 
-\subsubsection{One of these is not like the other: sparsity}
+\paragraph{One of these is not like the other: sparsity.}
 
-The best subset selection and the lasso estimators have a special and useful 
-property: their solutions are \emph{sparse}: at a solution \smash{$\hbeta$}, we
-will have 
-\[
-\hbeta_j = 0, \; \text{for many $j$}.
-\]
-Larger $\lambda$ typically means sparser solutions. This is not true of the
-ridge regression estimator, which will be generically dense (all nonzero
-components), for any $\lambda \geq 0$. Note that sparsity may be desirable, for 
-two reasons: (i) it corresponds to performing variable selection in the fitted
-linear model, and (ii) it provides a level of interpretability (beyond sheer
-accuracy).   
+Meanwhile, best subset selection and the lasso have a special and useful
+property: their solutions \smash{$\hbeta$} are \emph{sparse}, which means
+\smash{$\hbeta_j = 0$}, for many $j$. Larger $\lambda$ typically means sparser
+solutions. This is not true of the ridge regression estimator, which will be
+generically dense (all nonzero components), for any $\lambda \geq 0$. Sparsity
+is often desirable because it corresponds to performing variable selection in
+the fitted linear model.
 
 \section{Classification}
 
