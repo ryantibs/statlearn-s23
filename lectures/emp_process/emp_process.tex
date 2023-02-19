@@ -122,9 +122,7 @@ where $Y = (y_1,\dots,y_n) \in \R^n$ is the response vector. Rearranging,
 \[
 \|Y - \hf\|_n^2 - \|Y - f\|_n^2 \leq \lambda (J(f) - J(\hf)).
 \]
-Using the identity \smash{$\|a\|^2-\|b\|^2=\|b-a\|^2 - 2 \langle b,b-a \rangle$}
-(for any inner product $\langle \,\cdot\,,  \,\cdot\, \rangle$ and its norm
-$\|\cdot\|$), with \smash{$a = Y-\hf$} and $b = Y - f$, we get
+Adding and subtracting $f$ in the leftmost term, and expanding, we get 
 \[
 \|\hf - f\|_n^2 \leq 2 \langle Y-f, \hf-f \rangle_n + \lambda (J(f) - J(\hf))
 \]
