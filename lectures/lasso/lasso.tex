@@ -105,10 +105,14 @@ study this later, in the overparametrization lecture.
 But if we additionally care about the estimated coefficients themselves, then it
 really is the end of the road for least squares. This is because, for any
 \smash{$\hbeta$} of the form \eqref{eq:ls_eta} with \smash{$\hbeta_j > 0$} for
-some component $j$, we can find another \smash{$\tilde\beta$} of the form
-\eqref{eq:ls_eta} with \smash{$\tilde\beta_j < 0$}. So we cannot even
-consistently interpret the sign of any estimated coefficient (let alone its 
-magnitude). 
+some component $j$, we can always find\footnote{Technically, this is only true
+  if $\nul(X) \not\perp e_j$, where $e_j$ is the $j\th$ standard basis
+  vector. Note that the latter condition must hold for at least one $j$, as
+  $\nul(X) = \{0\}$. And for random features, under very weak conditions, it
+  will be true almost surely for any $j$.} 
+another \smash{$\tilde\beta$} of the form \eqref{eq:ls_eta} with
+\smash{$\tilde\beta_j < 0$}. So we cannot even consistently interpret the sign
+of any estimated coefficient (let alone its magnitude). 
 
 \subsection{Recap: regularization to the rescue}
 
