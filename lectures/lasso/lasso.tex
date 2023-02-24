@@ -199,13 +199,13 @@ In constrast, the \emph{ridge regression} estimator,
 \label{eq:ridge}
 \minimize_\beta \; \|Y - X\beta\|_2^2 + \lambda \|\beta\|_2^2, 
 \end{equation}
-has a generically dense solution (all nonzero components), for any $\lambda \geq
+has a generically dense solution (all nonzero components), for any $\lambda >
 0$. The fact that sparsity arises in \eqref{eq:lasso} but not \eqref{eq:ridge}
 is often explained using the ``classic'' picture, in Figure
 \ref{fig:lasso_ridge} (which illustrates the problems in constrained form). We
 can also see a clear difference in how they behave in the case of an orthogonal
 predictor matrix $X$ (meaning $X^\T X = I$); in this case, the solutions in
-\eqref{eq:lasso}, \eqref{eq:ridge} are 
+\eqref{eq:lasso}, \eqref{eq:ridge} are  
 \begin{align*}
 \hbeta^{\text{lasso}} &= S_\lambda(X^\T Y), \\
 \hbeta^{\text{ridge}} &= (X^\T Y) / (1+\lambda),
@@ -850,6 +850,245 @@ column rank, which couldn't happen when $d>n$), but instead in
 \eqref{eq:restricted_eigen} we assume that this inequality holds for all vectors
 $v$ that are ``mostly'' supported on small subsets $J$ of variables, with
 $|J|=s_0$.    
+
+% \section{Support recovery}
+
+% \begin{itemize}
+% \item Here we discuss results on support recovery of the lasso
+%   estimator.  There are a few versions of support recovery results and 
+%   again \citet{statshd} is a good place to look for a thorough
+%   coverage.  Here we describe a result due to \citet{sharp}, who
+%   introduced a proof technique called the {\it primal-dual witness
+%     method}
+
+% \item Again we assume a standard linear model \eqref{eq:data_model_2},
+%   with $X$ fixed, subject to the scaling $\|X_j\|_2^2 \leq n$, for
+%   $j=1,\ldots,p$, and $\epsilon \sim N(0,\sigma^2)$.  Denote by 
+%   $S=\supp(\beta_0)$ the true support set, and $s_0=|S|$.  Assume that
+%   $X_S$ has full column rank
+
+% \item We aim to show that, at some value of $\lambda$, the  
+% lasso solution \smash{$\hbeta$} in \eqref{eq:lasso2} has an active set
+% that exactly equals the true support set, 
+% $$
+% A=\supp(\hbeta)=S,
+% $$
+% with high probability.  We actually aim to show that the signs also
+% match, 
+% $$
+% \sign(\hbeta_S)=\sign(\beta_{0,S}),
+% $$ 
+% with high probability. The primal-dual witness method basically
+% plugs in the true support $S$ into the KKT conditions for the
+% lasso \eqref{eq:kkt}, \eqref{eq:subgrad}, and checks when they can be
+% verified 
+
+% \item We start by breaking up \eqref{eq:kkt} into two blocks, over $S$
+%   and $S^c$.  Suppose that \smash{$\supp(\hbeta)=S$} at a
+%   solution \smash{$\hbeta$}. Then the KKT conditions become  
+% \begin{align}
+% \label{eq:kkt_S}
+% X_S^T (y-X_S\hbeta_S) &= \lambda s_S \\
+% \label{eq:kkt_Sc}
+% X_{-S}^T (y - X_S\hbeta_S) &= \lambda s_{-S}.
+% \end{align}
+
+% Hence, if we can satisfy the two conditions \eqref{eq:kkt_S},
+% \eqref{eq:kkt_Sc} with a proper subgradient $s$, such that 
+% $$
+% s_S = \sign(\beta_{0,S}) \;\;\; \text{and} \;\;\; 
+% \|s_{-S}\|_\infty = \max_{j \notin S} |s_j| < 1,
+% $$ 
+% then we have met our goal: we have recovered a (unique) lasso 
+% solution whose active set is $S$, and whose active signs are
+% $\sign(\beta_{0,S})$
+% % (Note that uniqueness follows from the fact
+% % that if $s$ satisfies the above properties, then we have an
+% % equicorrelation set $E=S$, and $X_E=X_S$ has full column rank by  
+% % assumption) 
+
+% So, let's solve for \smash{$\hbeta_S$} in the first block
+% \eqref{eq:kkt_S}.  Just as we did in the work on basic properties of  
+% the lasso estimator, this yields
+% \begin{equation}
+% \label{eq:lasso_sol_S}
+% \hbeta_S = (X_S^T X_S)^{-1}
+% \big(X_S^T y - \lambda \sign(\beta_{0,S})\big),
+% \end{equation}
+% where we have substituted $s_S=\sign(\beta_{0,S})$.  
+% From \eqref{eq:kkt_Sc}, this implies that $s_{-S}$ must satisfy 
+% \begin{equation}
+% \label{eq:sg_sol_Sc}
+% s_{-S} = \frac{1}{\lambda} 
+% X_{-S}^T \big(I-X_S(X_S^T X_S)^{-1} X_S^T\big) y 
+% + X_{-S}^T X_S (X_S^T X_S)^{-1} \sign(\beta_{0,S}).
+% \end{equation}
+% To lay it out, for concreteness, the primal-dual witness
+% method proceeds as follows:   
+% % If the signs of the proposed solution in
+% % \eqref{eq:lasso_sol_S} match those of $\beta_{0,S}$, and the
+% % components 
+% % of the proposed subgradient in \eqref{eq:sgsol_Sc} are all $<1$ in
+% % absolute value, then we have verified the
+% % existence of a unique lasso solution with exact support and sign
+% % recovery, via the KKT conditions.
+% \begin{enumerate}
+% \item Solve for the lasso solution over the $S$ components,
+%   \smash{$\hbeta_S$}, as in \eqref{eq:lasso_sol_S}, and set
+%   \smash{$\hbeta_{-S}=0$}
+% \item Solve for the subgradient over the $S^c$ components, $s_{-S}$,   
+%   as in \eqref{eq:sg_sol_Sc}
+% \item Check that \smash{$\sign(\hbeta_S)=\sign(\beta_{0,S})$}, and 
+% that $\|s_{-S}\|_\infty < 1$.  If these two checks pass, then we have
+% certified there is a (unique) lasso solution that exactly recovers the
+% true support and signs 
+% \end{enumerate}
+% The success of the primal-dual witness method hinges on Step 3.
+% We can plug in $y=X\beta_0+\epsilon$, and rewrite the required 
+% conditions, \smash{$\sign(\hbeta_S)=\sign(\beta_{0,S})$} and  
+% $\|s_{-S}\|_\infty < 1$, as
+% \begin{multline}
+% \label{eq:sign_cond}
+% \sign(\beta_{0,j}+\Delta_j) = \sign(\beta_{0,j}), 
+% \;\, \text{where} \\
+% \Delta_j = e_j^T (X_S^T X_S)^{-1} \big(X_S^T \epsilon - \lambda
+% \sign(\beta_{0,S}) \big), \;\, \text{for all}\;\, j \in S , 
+% \end{multline}
+% and
+% \begin{equation}
+% \label{eq:sg_cond}
+% \Big\| \frac{1}{\lambda} 
+% X_{-S}^T \big(I-X_S(X_S^T X_S)^{-1} X_S^T\big) \epsilon 
+% + X_{-S}^T X_S (X_S^T X_S)^{-1} \sign(\beta_{0,S}) \Big\|_\infty < 1. 
+% \end{equation}
+% As $\epsilon \sim N(0,\sigma^2 I)$, we see that the two
+% required conditions have been reduced to statements about Gaussian
+% random variables.  The arguments we need to check these conditions
+% actually are quite simply, but we will need to make assumptions on $X$
+% and $\beta_0$.  These are:  
+% \begin{itemize}
+% \item {\it Mutual incoherence:} for some $\gamma>0$, we have
+% $$
+% \| (X_S^T X_S)^{-1} X_S^T X_j\|_1 \leq 1-\gamma, \;\;\; \text{for}\;\,
+% j \notin S, 
+% $$
+% \item {\it Minimum eigenvalue:} for some $C>0$, we have 
+% $$
+% \Lambda_{\min}\bigg(\frac{1}{n} X_S^T X_S\bigg) \geq C, 
+% $$
+% where $\Lambda_{\min}(A)$ denotes the minimum eigenvalue of a
+% matrix $A$
+
+% \item {\it Minimum signal:} 
+% $$
+% \beta_{0,\min} = \min_{j \in S} \; |\beta_{0,j}| \geq 
+% \lambda\|(X_S^T X_S)^{-1}\|_\infty + \frac{4\gamma\lambda}{\sqrt{C}},  
+% $$
+% where $\|A\|_\infty = \max_{i=1,\ldots,m} \sum_{j=1}^q |A_{ij}|$
+% denotes the $\ell_\infty$ norm of an $m\times q$ matrix $A$
+% \end{itemize}
+% With these assumptions in place on $X$ and $\beta_0$, let's first
+% consider verifying \eqref{eq:sign_cond}, and examine   
+% $\Delta_S$, whose components $\Delta_j$, $j \in S$ are as 
+% defined in \eqref{eq:sign_cond}.  We have
+% $$
+% \|\Delta_S\|_\infty \leq \|(X_S^T X_S)^{-1} X_S^T \epsilon\|_\infty
+% + \lambda \|(X_S^T X_S)^{-1} \|_\infty.
+% $$
+% Note that $w=(X_S^T X_S)^{-1} X_S^T \epsilon$ is Gaussian with mean 
+% zero and covariance $\sigma^2 (X_S^T X_S)^{-1}$, so the variances
+% of components of $w$ are bounded by 
+% $$
+% \sigma^2 \Lambda_{\max}\Big((X_S^T X_S)^{-1}\Big) \leq 
+% \frac{\sigma^2n}{C},
+% $$
+% where we have used the minimum eigenvalue assumption. 
+% By a standard result on the maximum of Gaussians, for
+% any $\delta>0$, it holds with probability at least $1-\delta$ that
+% \begin{align*}
+% \|\Delta_S\|_\infty &\leq \frac{\sigma}{\sqrt{C}}
+% \sqrt{2n \log{(e s_0 /\delta)}} + \lambda \|(X_S^T X_S)^{-1}\|_\infty \\
+% &\leq \beta_{0,\min} + 
+% \frac{\gamma}{\sqrt{C}} 
+% \underbrace{\bigg(\frac{\sigma}{\gamma}\sqrt{2n \log{(e s_0 /\delta)}}
+%   - 4\lambda\bigg)}_{a}. 
+% \end{align*} 
+% where in the second line we used the minimum signal condition.  As
+% long as $a<0$, we can see that the sign condition \eqref{eq:sign_cond}
+% is verified
+
+% Now, let's consider verifying \eqref{eq:sg_cond}.  Using the mutual
+% incoherence condition, we have
+% $$
+% \Big\| \frac{1}{\lambda} 
+% X_{-S}^T \big(I-X_S(X_S^T X_S)^{-1} X_S^T\big) \epsilon 
+% + X_{-S}^T X_S (X_S^T X_S)^{-1} \sign(\beta_{0,S}) \Big\|_\infty  
+% \leq \|z\|_\infty + (1-\gamma),
+% $$ 
+% where \smash{$z=(1/\lambda) X_{-S}^T (I-X_S (X_S^T 
+%   X_S)^{-1} X_S^T) \epsilon = (1/\lambda) X_{-S}^T P_{X_S} \epsilon$},
+% with \smash{$P_{X_S}$} the projection matrix onto the column 
+% space of $X_S$. Notice that $z$ is Gaussian with mean zero and
+% covariance \smash{$(\sigma^2/\lambda^2) X_{-S}^T P_{X_S} X_{-S}$}, so
+% the components of $z$ have variances bounded by
+% $$
+% \frac{\sigma^2n}{\lambda^2} \Lambda_{\max}(P_{X_S}) \leq 
+% \frac{\sigma^2n}{\lambda^2}.
+% $$
+% Therefore, again by the maximal Gaussian inequality, for any
+% $\delta>0$, it holds with probability at least $1-\delta$ that
+% \begin{align*}
+% \Big\| \frac{1}{\lambda} 
+% X_{-S}^T \big(I-X_S(X_S^T X_S)^{-1} X_S^T\big) \epsilon 
+% + X_{-S}^T X_S (X_S^T X_S)^{-1} &\sign(\beta_{0,S}) \Big\|_\infty \\
+% &\leq \frac{\sigma}{\lambda} \sqrt{2n \log{(e(p-s_0)/\delta)}} 
+% + (1-\gamma) \\
+% &= 1 + \underbrace{\bigg(\frac{\sigma}{\lambda} \sqrt{2n   
+%   \log{(e(p-s_0)/\delta)}} - \gamma \bigg)}_{b},
+% \end{align*}
+% Thus as long as $b<0$, we can see that the subgradient condition
+% \eqref{eq:sg_cond} is verified
+
+% So it remains to choose $\lambda$ so that $a,b<0$.  For 
+% \smash{$\lambda \geq (2\sigma/\gamma) \sqrt{2n\log(ep/\delta)}$}, we
+% can see that 
+% $$
+% a \leq 2\lambda - 4\lambda < 0, \;\;\; 
+% b \leq \gamma/2 - \gamma < 0, 
+% $$
+% so \eqref{eq:sign_cond}, \eqref{eq:sg_cond} are verified---and
+% hence lasso estimator recovers the correct support and
+% signs---with probability at least $1-2\delta$
+% \end{itemize}
+
+% \subsection{A note on the conditions}
+
+% \begin{itemize}
+% \item As we moved from the slow rates, to fast
+%   rates, to support recovery, the assumptions we used just got
+%   stronger and stronger.  For the slow rates, we essentially assumed
+%   nothing about the predictor matrix 
+%   $X$ except for column normalization.  For the fast rates, we had to 
+%   additionally assume a compatibility or restricted  
+%   eigenvalue condition, which roughly speaking, limited the
+%   correlations of the predictor variables (particularly concentrated
+%   over the underlying support $S$).  For support recovery, we still 
+%   needed whole lot more.  The minimum eigenvalue condition on
+%   \smash{$(1/n)(X_S^T X_S)^{-1}$} is somewhat like the restricted
+%   eigenvalue condition on $X$.  But the mutual incoherence condition
+%   is even stronger; it requires the regression coefficients
+%   $$
+%   \eta_j(S) = (X_S^T X_S)^{-1} X_S^T X_j,
+%   $$
+%   given by regressing each $X_j$ on the truly active variables $X_S$,
+%   to be small (in $\ell_1$ norm) for all $j \notin S$.  In other
+%   words, no truly inactive variables can be highly correlated (or
+%   well-explained, in a linear projection sense) by any of the truly
+%   active variables.  Finally, this minimum signal condition ensures
+%   that the nonzero entries of the true coefficient vector $\beta_0$
+%   are big enough to detect. This is quite restrictive and is not
+%   needed for risk bounds, but it is crucial to support recovery 
+% \end{itemize}
 
 \bibliographystyle{plainnat}
 \bibliography{../../common/ryantibs}
