@@ -339,9 +339,9 @@ thus $\rank(X_E) < |E|$, and will prove that this means the columns of $X$ are
 not in general position. Since $\rank(X_E) < |E|$, there exists some $i \in E$
 such that 
 \[
-X_i = \sum_{j \in E\setminus\{i\}} c_j X_j,
+X_i = \sum_{j \in E\setminus\{i\}} c_j X_j.
 \]
-where $c_j$, $j \in E\setminus\{i\}$ are not all zero. Hence
+Hence
 \[
 s_i X_i = \sum_{j \in E\setminus\{i\}} (s_i s_j c_j) \cdot (s_j X_j).
 \]
@@ -771,21 +771,21 @@ point the following key inequality, which is a consequence of
 To bound the in-sample prediction risk, we upper bound the right-hand side in
 \eqref{eq:basic_ineq_fast2} using \eqref{eq:compatibility},  
 \[
-\|X\hbeta - X\beta_0\|_2^2 \leq 3 \lambda \sqrt{\frac{s_0}{n\phi_0^2}} 
+\|X\hbeta - X\beta_0\|_2^2 \leq 3 \lambda \sqrt{\frac{s_0}{\phi_0^2 n}} 
 \|X\hbeta - X\beta_0\|_2.  
 \]
 Dividing through both sides by \smash{$\|X\hbeta - X\beta_0\|_2$}, then squaring
 both sides, and dividing by $n$, 
 \[
 \frac{1}{n} \|X\hbeta - X\beta_0\|_2^2 \leq \frac{9 s_0 \lambda^2}
-  {n^2 \phi_0^2}.
+  {\phi_0^2 n^2}.
 \]
 Plugging in \smash{$\lambda = 4 \sigma \sqrt{2n (\log(2d) + u)}$}, we have 
 shown that 
 \begin{equation}
 \label{eq:risk_lasso_fast1}
 \frac{1}{n} \|X\hbeta-X\beta_0\|_2^2 \leq \frac{144 \sigma^2 s_0 \sqrt{2
-    (\log(2d) + u)}}{n \phi_0^2},   
+    (\log(2d) + u)}}{\phi_0^2 n},   
 \end{equation}
 with probability at least $1-e^{-u}$. As desired, we have achieved a ``fast''
 rate for the lasso estimator: the in-sample prediction risk scales as $s_0(\log
@@ -805,7 +805,7 @@ recalling \smash{$\|\hbeta_{-S}\|_1 \leq 3 \|\hbeta_S-\beta_{0,S}\|_1$}, which
 implies by the triangle inequality that \smash{$\|\hbeta - \beta_0\|_1 \leq 4
   \|\hbeta_S - \beta_{0,S}\|_1$}, we get
 \[
-\|\hbeta-\beta_0\|_1 \leq \frac{12 s_0 \lambda}{n \phi_0^2}.
+\|\hbeta-\beta_0\|_1 \leq \frac{12 s_0 \lambda}{\phi_0^2 n}.
 \]
 Plugging in \smash{$\lambda = 4 \sigma \sqrt{2n (\log(2d) + u)}$}, we have 
 shown that 
@@ -855,4 +855,3 @@ $|J|=s_0$.
 \bibliography{../../common/ryantibs}
 
 \end{document}
-xs
