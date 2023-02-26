@@ -89,24 +89,20 @@ incurred by an estimator \smash{$\hf$} of $f_0$, which are, respectively,
 \|\hf - f_0\|_n^2 \quad \text{and} \quad \|\hf - f_0\|_2^2.
 \]
 In either case, this is a random quantity (since \smash{$\hf$} is itself
-random). We will study bounds in probability or in expectation,\footnote{In the 
+random). In general, in nonparametric regression, we study error\footnote{In the
   review lecture, we were more precise about using ``error'' and ``risk'' to
-  mean separate things; and defined the risk via the expectations 
-  \smash{$\E\|\hf - f_0\|_n^2$} and \smash{$\E\|\hf - f_0\|_2^2$}, with respect  
+  mean separate things; and defined the risk via the expectations
+  \smash{$\E\|\hf - f_0\|_n^2$} and \smash{$\E\|\hf - f_0\|_2^2$}, with respect
   to appropriate randomness in the training set that is used to define
-  \smash{$\hf$}. In this lecture, we'll take the liberty of being more flexible
-  with our nomenclature.}     
-depending on what is more convenient in the given analysis. In this vein, when
-we write 
-\[
-\E\|\hf - f_0\|_n^2 \lesssim b_n \quad \text{or} \quad \E\|\hf - f_0\|_2^2
-\lesssim b_n \quad \text{in probability},
-\]
-the expectations are to be generally interpreted as being over all that is
-random \emph{except} for the inputs $x_i$, $i=1,\dots,n$, whose distribution
-governs the ``in probability'' statement. When we write expectation bounds
-without the ``in probability'' qualifier, the expectations are over all that is
-random.
+  \smash{$\hf$}. In this and future lectures, we'll take the liberty of being
+  more flexible with our nomenclature.}    
+bounds in probability or in expectation, depending on what is more convenient in
+the given analysis. Upper bounds on the risk (as we will see in this lecture and
+the next) are usually easier to derive in probability, and lower bounds (as we
+will see in the minimax theory lecture) are typically easier to derive in
+expectation. We tend not to fuss about this discrepancy, particularly because
+upper bounds in probability can be translated into upper bounds in expectation
+whenever the probability control is sharp enough (as you saw on the homework).  
 
 \subsection{What does ``nonparametric'' mean?}
 
@@ -258,9 +254,11 @@ conditions, the $k$-nearest neighbors estimator with \smash{$k \asymp
   n^{2/(2+d)}$} satisfies   
 \begin{equation}
 \label{eq:knn_rate}
-\E\|\hf - f_0\|_2^2 \lesssim n^{-2/(2+d)} \quad \text{in probability},
+\E\big[ \|\hf - f_0\|_2^2 \,\big|\, x_{1:n} \big] \lesssim n^{-2/(2+d)} \quad  
+\text{in probability}, 
 \end{equation}
-with respect to the randomness over draws of $x_i$, $i=1,\dots,n$.
+with respect to the randomness over draws of the input points $x_{1:n} =
+\{x_1,\dots,x_n\}$.  
 
 Proof sketch: denote $\sigma^2 = \Var(\epsilon_0)$, and fix the input points
 (technically, we condition on them, but for simplicity we hide this
@@ -514,10 +512,11 @@ estimator with a spherical kernel and bandwidth \smash{$h \asymp n^{-1/(2+d)}$}
 satisfies     
 \begin{equation}
 \label{eq:kernel_rate}
-\E\|\hf - f_0\|_2^2 \lesssim n^{-2/(2+d)} \quad \text{in probability},
+\E\big[ \|\hf - f_0\|_2^2 \,\big|\, x_{1:n} \big] \lesssim n^{-2/(2+d)} \quad 
+\text{in probability}, 
 \end{equation}
-with respect to draws of $x_i$, $i=1,\dots,n$, just like kNN regression. Similar
-results hold for more general compactly supported kernels. 
+just like kNN regression. Similar results hold for more general compactly
+supported kernels.    
 
 Proof sketch: as usual, denote $\sigma^2 = \Var(\epsilon_0)$, fix the input
 points (condition on them), and condition on $x_0$. We'll compute the bias and
@@ -641,10 +640,11 @@ linear regression estimator with bandwidth \smash{$h \asymp n^{-1/(4+d)}$}
 satisfies      
 \begin{equation}
 \label{eq:kernel_rate}
-\E\|\hf - f_0\|_2^2 \lesssim n^{-4/(4+d)} \quad \text{in probability},
+\E\big[ \|\hf - f_0\|_2^2 \,\big|\, x_{1:n} \big] \lesssim n^{-4/(4+d)} \quad 
+\text{in probability}, 
 \end{equation}
-with respect to draws of $x_i$, $i=1,\dots,n$, for general compactly supported
-kernels. We can see this matches the rate in \eqref{eq:holder_lbd} for $s=2$.  
+for general compactly supported kernels. We can see this matches the rate in
+\eqref{eq:holder_lbd} for $s=2$.   
 
 \subsection{Local polynomials and higher-order kernels}
 

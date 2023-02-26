@@ -684,7 +684,7 @@ variables. \emph{Least squares regression} of $Y$ on $X$ is given by
 \]
 where 
 \[
-\hbeta = \argmin_\beta \big\{ \|Y - X\beta\|_2^2 \big\} = (X^\T X)^{-1} X^\T Y.  
+\hbeta = \argmin_\beta \; \|Y - X\beta\|_2^2 = (X^\T X)^{-1} X^\T Y.  
 \]
 Critically, here we are assuming that $\rank(X) = d$, which necessarily requires
 that $d \leq n$, which makes the least squares criterion admit a unique
