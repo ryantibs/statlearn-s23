@@ -77,6 +77,10 @@ In this exercise, we will work out some facts about RKHS regression.
   \minimize_\beta \; \|Y - K\beta\|_2^2 + \lambda \beta^\T K \beta. 
   \]
   for the matrix $K \in \R^{n \times n}$ with entries $K_{ij} = k(x_i, x_j)$. 
+  
+  For the uniqueness part, you may assume may assume that $k$ is a positive
+  definite kernel (strictly), so that $K$ is positive definite matrix
+  (strictly). 
 
   Hint: let $g = f+h$ and use the results in part (c) to argue that $g$ has a
   larger criterion value, unless $h=0$. Use part (b) to complete the reduction
