@@ -547,53 +547,53 @@ lasso problem \eqref{eq:lasso_constrained}, and any coefficient vector
 &= 2 \langle f_0(X) - X\bar\beta, X\hbeta - X\bar\beta \rangle + 
 2 \langle \epsilon, X\hbeta - X\bar\beta \rangle.
 \end{align*}
-Now we use the polarization identity $\|a\|_2^2+\|b\|_2^2-\|a-b\|_2^2 = 4\langle   
-a,b\rangle$ on the first term on the right-hand side above, and then follow
-familiar arguments, yielding  
-\begin{align}
-\nonumber
-\frac{1}{2} \|X\hbeta - f_0(X)\|_2^2 + \frac{1}{2} \|X\hbeta - X\bar\beta\|_2^2
-&\leq \frac{1}{2} \|X\bar\beta - f_0(X)\|_2^2 + 2 \langle X^\T \epsilon, \hbeta 
-- \bar\beta \rangle \\
-\nonumber
-&\leq \frac{1}{2} \|X\bar\beta - f_0(X)\|_2^2 + 4t \ X^\T\epsilon\|_\infty \\
-\label{eq:oracle_ineq1}
-&\leq \frac{1}{2} \|X\bar\beta - f_0(X)\|_2^2 + 4 \sigma t \sqrt{\frac{2
-   (\log(2d) + u)}{n}},   
-\end{align}
+Now we use the polarization identity $\|a\|_2^2+\|b\|_2^2-\|a-b\|_2^2 = 2\langle   
+a,b\rangle$ on the first term on the right-hand side above, yielding
+\[
+\|X\hbeta - X\bar\beta\|_2^2 \leq \|X\bar\beta - f_0(X)\|_2^2 + \|X\hbeta -
+X\bar\beta\|_2^2 - \|X\hbeta - f_0(X)\|_2^2 + 2 \langle X^\T \epsilon, \hbeta -
+\bar\beta \rangle. 
+\]
+Cancelling the common term of \smash{$\|X\hbeta - X\bar\beta\|_2^2$} from each 
+side, then rearranging, and following familiar arguments, 
+\begin{align*}
+\|X\hbeta - f_0(X)\|_2^2 
+&\leq \|X\bar\beta - f_0(X)\|_2^2 + 2 \langle X^\T \epsilon, \hbeta - \bar\beta
+  \rangle \\ 
+&\leq \|X\bar\beta - f_0(X)\|_2^2 + 4t \| X^\T\epsilon\|_\infty \\
+&\leq \|X\bar\beta - f_0(X)\|_2^2 + 4 \sigma t \sqrt{\frac{2 (\log(2d) +
+  u)}{n}},    
+\end{align*}
 where the last line holds with probability at least $1-e^{-u}$. To be clear, the
 above statement holds simultaneously over all \smash{$\bar\beta$} such that 
-\smash{$\|\bar\beta\|_1 \leq t$}, with probability at least $1-e^{-u}$.
-
-From \eqref{eq:oracle_ineq1} we learn two things. First, by dropping the term
-\smash{$\frac{1}{2} \|X\hbeta - X\bar\beta\|_2^2$} on the left-hand side, 
+\smash{$\|\bar\beta\|_1 \leq t$}, with probability at least $1-e^{-u}$. Thus we
+can take an infimum over all such \smash{$\bar\beta$} on the right-hand side,
+yielding 
 \begin{equation}
-\label{eq:oracle_ineq2}
+\label{eq:oracle_ineq1}
 \frac{1}{n} \|X\hbeta - f_0(X)\|_2^2 \leq \inf_{\|\bar\beta\|_1 \leq t} \bigg(
 \frac{1}{n} \|X\bar\beta - f_0(X)\|_2^2 \bigg) + 4 \sigma t \sqrt{\frac{2
     (\log(2d) + u)}{n}},  
 \end{equation}
-with probability at least $1-e^{-u}$. The bound in \eqref{eq:oracle_ineq2} is
+with probability at least $1-e^{-u}$. The bound in \eqref{eq:oracle_ineq1} is
 called an \emph{oracle inequality} for the constrained lasso estimator. It says,
 in terms of in-sample risk, that we can expect the lasso to perform close as
 well as the best $\ell_1$-sparse linear predictor to $f_0$.
 
-Second, let \smash{$\bar\beta^{\text{best}}$} achieve the infimum of
+Further, let \smash{$\bar\beta^{\text{best}}$} achieve the infimum of
 \smash{$\frac{1}{n} \|X\bar\beta - f_0(X)\|_2^2$} over \smash{$\|\bar\beta\|_1
   \leq t$} (we are minimizing a continuous function over a compact set, hence
-its infimum is achieved). Plugging this into \eqref{eq:oracle_ineq1},
-subtracting the term \smash{$\frac{1}{n} \|X\bar\beta^{\text{best}} -
-  f_0(X)\|_2^2$} to the left-hand side, and realizing that \smash{$\frac{1}{n}
-  \|X\hbeta - f_0(X)\|_2^2 - \frac{1}{n} \|X\bar\beta^{\text{best}} -
-  f_0(X)\|_2^2 \geq 0$}, we are left with    
+its infimum is achieved). A slight variation on the above argument (actually it
+comes from a sharpening of the basic inequality itself, where we remove the 
+factor 2 that multiplies the sub-Gaussian process term) can be used to show that 
 \begin{equation}
-\label{eq:oracle_ineq3}
-\frac{1}{2} \|X\hbeta - X\bar\beta^{\text{best}}\|_2^2 \leq 4 \sigma t
+\label{eq:oracle_ineq2}
+\frac{1}{n} \|X\hbeta - X\bar\beta^{\text{best}}\|_2^2 \leq 4 \sigma t
 \sqrt{\frac{2 (\log(2d) + u)}{n}},    
 \end{equation}
-with probability at least $1-e^{-u}$. The bound in \eqref{eq:oracle_ineq3} says
+with probability at least $1-e^{-u}$. The bound in \eqref{eq:oracle_ineq2} says
 something interesting, above and beyond the oracle inequality in
-\eqref{eq:oracle_ineq2}: it says the in-sample predictions from the lasso are 
+\eqref{eq:oracle_ineq1}: it says the in-sample predictions from the lasso are 
 close to those from the best $\ell_1$-sparse linear predictor, \emph{even when
   this best $\ell_1$-sparse linear predictor is far from $f_0$}.    
 
