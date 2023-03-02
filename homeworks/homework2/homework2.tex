@@ -258,7 +258,7 @@ where $Y = (y_1,\dots,y_n) \in \R^n$ is the response vector, $X \in \R^{n \times
   \[
   (\hbeta-\beta_0)^\T \Sigma (\hbeta-\beta_0) -
   (\hbeta-\beta_0)^\T \hSigma (\hbeta-\beta_0) 
-  \leq \sum_{j,k=1}^d (\hbeta-\beta_0)_j (\hbeta-\beta_0)_k |V_{jk}|,
+  \leq \sum_{j,k=1}^d |(\hbeta-\beta_0)_j| |(\hbeta-\beta_0)_k| |V_{jk}|,
   \]
   where recall \smash{$V_{jk} = (\hSigma-\Sigma)_{jk}$}. Then do a little bit
   more algebra to bound the right-hand side above and apply the previous parts
