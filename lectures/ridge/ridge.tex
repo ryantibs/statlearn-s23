@@ -385,7 +385,7 @@ Several remarks are in order. First, the object $v_F$ defined in
 \eqref{eq:companion} is called the \emph{companion Stieltjes transform}, and is
 actually quite a natural object. Though the relationship in \eqref{eq:companion}
 may look obscure, you can just think of it through the lens of the following
-fact: the companion Stieltjes transform of the spectral distribution of $X^T 
+fact: the companion Stieltjes transform of the spectral distribution of $X^\T 
 X/n$ is the name that we give to the Stieltjes transform of the spectral
 distribution of $XX^\T/d$, that is,  
 \[
@@ -429,7 +429,7 @@ spectral distribution of \smash{$\hSigma$}. This limit only depends on $\gamma$
 and $H$. So for example, in the isotropic case, we learn that if we populate the
 entries of $X$ with i.i.d.\ standardized (mean zero, unit variance) random
 variables, whether they be Gaussian, Bernoulli, Poisson, t, etc., and plot a
-histogram of the eigenvalues of $X^T X/n$ for large $n$, then it is ``very
+histogram of the eigenvalues of $X^\T X/n$ for large $n$, then it is ``very
 likely'' that they will look like they follow \eqref{eq:mp_law}. See again
 Figure \ref{fig:mp}.  
 
@@ -554,8 +554,8 @@ Now let $x_0 = \Sigma^{1/2} z_0$ be i.i.d.\ to the rows of $X$, and consider the
 out-of-sample risk of least squares, conditional on $X$,
 \begin{equation}
 \label{eq:risk}
-\Risk_X(\hbeta; \beta_0) = \E \big[ ( x_0^T \hbeta - x_0^T \beta_0 )^2 \,\big|\,
-X \big].
+\Risk_X(\hbeta; \beta_0) = \E \big[ ( x_0^\T \hbeta - x_0^\T \beta_0 )^2
+\,\big|\, X \big].
 \end{equation}
 By standard calculations, as covered previously, we can decompose the risk
 \eqref{eq:risk} of the least squares estimator \eqref{eq:ls_rescaled} into bias
@@ -840,7 +840,7 @@ Note this implies $\E \|\beta_0\|_2^2 = r^2$. Our measure of risk is now a kind
 of \emph{Bayes} out-of-sample prediction risk,  
 \begin{equation}
 \label{eq:ridge_risk_bayes}
-\Risk_X(\hbeta) = \E \big[ ( x_0^T \hbeta - x_0^T \beta_0 )^2 \,\big|\,
+\Risk_X(\hbeta) = \E \big[ ( x_0^\T \hbeta - x_0^\T \beta_0 )^2 \,\big|\,
 X \big],
 \end{equation}
 where to be clear the expectation is over $\epsilon, x_0$, and $\beta_0$ (all
