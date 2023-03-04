@@ -687,20 +687,16 @@ Henceforth for convenience we will reparameterize the ridge estimator as
 \end{equation}
 which can either be seen as the original ridge estimator in \eqref{eq:ridge_sol}
 with tuning parameter $n\lambda$, or as the solution in the original ridge
-problem \eqref{eq:ridge} after rescaling the loss term by $1/n$. 
-
-As in the least squares analysis, we will assume the linear model
-\eqref{eq:model}, and place the same assumptions on $\epsilon, X, \Sigma$, and
-$Z$. Actually, we will further assume that the entries of $Z$ have $8+\eta$  
-moments, for some $\eta>0$, so that we may apply Theorem
-\ref{thm:rubio}. Lastly, we will assume that $\|\beta_0\|_2 = r$ for the true
-signal vector. 
+problem \eqref{eq:ridge} after rescaling the loss term by $1/n$. As in the least
+squares analysis, we will assume the linear model \eqref{eq:model}, and place
+the same assumptions on $\epsilon, X, \Sigma$, and $Z$, and further assume that
+the entries of $Z$ have $8+\eta$ moments, for some $\eta>0$.
 
 We will consider proportional asymptotics, where $n,d \to \infty$, with $d/n \to
 \gamma \in (0,\infty)$ (notice that we allow $\gamma \geq 1$), and analyze the
 limit of the out-of-sample risk conditional on $X$, as in \eqref{eq:risk}, of
-ridge. At the outset, we will record the following facts, which will verify on
-the homework. The bias and variance components of the risk \eqref{eq:risk} of
+ridge. At the outset, we will record the following facts, which you'll verify
+on the homework. The bias and variance components of the risk \eqref{eq:risk} of 
 the ridge estimator \eqref{eq:ridge_rescaled} are:  
 \begin{align}
 \label{eq:ridge_bias}
@@ -715,8 +711,9 @@ the variance does not depend on $\beta_0$.
 
 \subsection{Isotropic $\Sigma$, fixed $\beta_0$}
 
-We consider the isotropic case, $\Sigma = I$. Below we analyze the bias and 
-variance each in turn.    
+We consider the isotropic case, $\Sigma = I$. We will assume that $\|\beta_0\|_2
+= r$ (which is a constant that does not vary with $n,d$), for the true signal
+vector in \eqref{eq:model}. Below we analyze the bias and variance each in turn.      
 
 \paragraph{Bias analysis.}
 
@@ -726,16 +723,16 @@ When $\Sigma = I$, the bias \eqref{eq:ridge_bias} becomes
 \Bias_X(\hbeta; \beta_0) = \lambda^2 \beta_0^\T (\hSigma + \lambda I)^{-2}
 \beta_0.  
 \end{equation}
-The key is to recognize this as the derivative with respect to $\lambda$ of
-a quantity that involves only one power of the matrix resolvent,
+The key is to recognize this as the derivative with respect to $\lambda$ of a
+certain functional,
 \begin{equation}
 \label{eq:deriv_trick_iso}
 \beta_0^\T (\hSigma + \lambda I)^{-2} \beta_0 = - \frac{d}{d\lambda} \Big \{
-\beta_0^\T (\hSigma + \lambda I)^{-1} \beta_0 \Big\}.  
+\beta_0^\T (\hSigma + \lambda I)^{-1} \beta_0 \Big\}.
 \end{equation}
 By the deterministic equivalence in \eqref{eq:rubio} from Theorem
-\ref{thm:rubio}, we know (just take $\Theta_n = \beta_0\beta_0^\T$ in the
-definition of deterministic equivalence) that  
+\ref{thm:rubio}, we know (just take $\Theta_n = \beta_0\beta_0^\T$ in the 
+definition of deterministic equivalence) that   
 \[
 \beta_0^\T (\hSigma + \lambda I)^{-1} \beta_0 \quad \text{and} \quad 
 \beta_0^\T (a_n I + \lambda I)^{-1} \beta_0 = \frac{r^2}{a_n + \lambda} \quad
@@ -829,8 +826,8 @@ Regularization has saved the day!
 We consider the general $\Sigma$ case. We follow the general approach in
 \citet{dobriban2018high}, but adopt the perspective of deterministic equivalents
 as suggested by \citet{dobriban2021distributed}. In order to keep the
-calculation of the bias tractable, we will additionally assume a spherical prior  
-on $\beta_0$, such that      
+calculation of the bias tractable, we will place a spherical prior on $\beta_0$,
+such that       
 \begin{equation}
 \label{eq:prior}
 \E[\beta_0 \beta_0^\T] = \frac{r^2}{d} I.
