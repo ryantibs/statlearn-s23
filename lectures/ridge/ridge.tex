@@ -233,12 +233,10 @@ foundational---results seem to be still emerging right now.
 We'll be working in what is known as a \emph{proportional asymptotics} model,
 where the dimension $d$ and number of samples $n$ diverge proportionally. That 
 is,
-\begin{equation}
-\label{eq:aspect_ratio}
+\[
 \frac{d}{n} \to \gamma \in (0,\infty), \quad \text{as $n,d \to \infty$}. 
-\end{equation}
-The quantity $\gamma$ in \eqref{eq:aspect_ratio} is often called the aspect
-ratio.
+\]
+The quantity $\gamma$ is often called the aspect ratio.
 
 We assume that the rows of our predictor matrix $X \in \R^{n \times d}$, denoted 
 $x_i \in \R^d$, $i=1,\dots,n$, are i.i.d., and importantly, each one is a
@@ -475,16 +473,16 @@ MP theorem.
 \label{thm:rubio}
 Let $X = Z \Sigma^{1/2} \in \R^{n \times d}$, where the entries of $Z$ are
 i.i.d.\ from a distribution with mean zero, unit variance, and finite $8+\eta$
-moment, for some $\eta > 0$. Assume that as $n,d \to \infty$, the aspect ratio
+moment, for some $\eta>0$. Assume that as $n,d \to \infty$, the aspect ratio 
 $\gamma_n = d/n$ remains bounded away from $0$ and $\infty$, as do the
 eigenvalues of $\Sigma$. Then the resolvent of \smash{$\hSigma = X^\T X/n$} is
-asymptotically equivalent to a deterministic matrix, namely  
+asymptotically equivalent to a deterministic matrix, namely:
 \begin{equation}
 \label{eq:rubio}
 (\hSigma - zI)^{-1} \asymp (a_n \Sigma - zI)^{-1}, \quad \text{for $z \in \C  
   \setminus \R_+$},
 \end{equation}
-where $a_n$ is the unique solution of the fixed-point equation
+where $a_n$ is the unique solution of the fixed-point equation:
 \begin{equation}
 \label{eq:fixed_point}
 \frac{1}{\gamma_n} \bigg( \frac{1}{a_n} - 1 \bigg) = \frac{1}{d} \tr \big[
@@ -530,34 +528,19 @@ We consider the linear model
 Y = X\beta_0 + \epsilon,
 \end{equation}
 assuming as usual that $\epsilon \in \R^n$ has i.i.d.\ entries with mean zero
-and variance $\sigma^2$, and $X \in \R^{n \times d}$ has independent rows with a 
-distribution specified below. 
-
-where $X \in \R^{n \times d}$ has independent rows, $\epsilon$ has i.i.d.\
-entries with mean zero and variance $\sigma^2$, and $\epsilon \indep X$. As a
-base set of assumptions, we use the standard ones in random matrix theory (with
-$x_i$ denoting the $i\th$ row of $X$):
+and variance $\sigma^2$, and $\epsilon \indep X$. To clearly lay out the
+conditions on the features $X \in \R^{n \times d}$, we assume the following: 
 \begin{itemize}
-\item each $x_i = \Sigma^{1/2} z_i$, for a covariance matrix $\Sigma$ and random
-  vector $z_i$ that has i.i.d.\ entries with mean zero, unit variance, and
-  $8+\eta$ moments, for some $\eta>0$;    
-\item the eigenvalues of $\Sigma$ are bounded away from $0$ and $\infty$; 
-\item as $n,d \to \infty$, we have $d/n \to \gamma \in (0,\infty)$, and
-  \smash{$F_\Sigma \dto H$}, where $H$ is a measure supported on $[0,\infty)$. 
+\item[(A1)] $X = Z \Sigma^{1/2}$, where the entries of $Z \in \R^{n \times d}$
+  are i.i.d.\ with mean zero and unit variance;
+\item[(A2)] the covariance matrix $\Sigma \in \R^{d \times d}$ has eigenvalues
+  bounded away from $0$ and $\infty$;  
+\item[(A3)] $d/n \to \gamma \in (0,1)$ as $n,d \to \infty$,
 \end{itemize}
 
-
-
-$\epsilon \indep X$, where $X = Z \Sigma^{1/2}$ for a 
-covariance matrix $\Sigma$ whose eigenvalues are bounded away from $0$ and
-$\infty$, and for a matrix $Z$ having i.i.d.\ entries with mean zero and unit
-variance.  
-
-We will consider proportional asymptotics, where $n,d \to \infty$, but now with
-$d/n \to \gamma \in (0,1)$. To emphasize, we are placing the restriction here
-that $\gamma < 1$, called the \emph{underparametrized} regime. In this regime,
-we will study the limiting risk of the least squares estimator \smash{$\hbeta =
-  (X^\T X)^{-1} X^\T Y$}, which we can rewrite as   
+To emphasize, we are placing the restriction here that $\gamma < 1$, called the
+\emph{underparametrized} regime. We will analyze the asymptotic risk of the
+standard least squares estimator, which we can rewrite as      
 \begin{equation}
 \label{eq:ls_rescaled}
 \hbeta = (X^\T X/n)^{-1} X^\T Y/n.
@@ -698,24 +681,33 @@ will simplify the bias calculation by taking underlying signal $\beta_0$ to be
 random, i.e., by imposing a prior on $\beta_0$. We will discuss briefly what
 happens for general $\Sigma$ and fixed $\beta_0$ at the end.          
 
-Henceforth for convenience we will reparameterize the ridge estimator as 
+As in the least squares analysis, we will assume the linear model
+\eqref{eq:model}, using similar assumptions to (A1)--(A3) for the feature 
+model, but will allow $\gamma \geq 1$. To be specfic, we assume:  
+\begin{itemize}
+\item[(B1)] $X = Z \Sigma^{1/2}$, where the entries of $Z \in \R^{n \times d}$
+  are i.i.d.\ with mean zero, unit variance, and finite $8+\eta$ moment, for
+  some $\eta>0$; 
+\item[(B2)] the covariance matrix $\Sigma \in \R^{d \times d}$ has eigenvalues
+  bounded away from $0$ and $\infty$, and satisfies \smash{$F_\Sigma \dto H$},
+  as $n,d \to \infty$; 
+\item[(B3)] $d/n \to \gamma \in (0,\infty)$ as $n,d \to \infty$.
+\end{itemize}
+
+We will analyze the asymptotic out-of-sample risk of the ridge estimator,
+conditional on $X$, as in \eqref{eq:risk}. For convenience we will
+reparameterize the ridge estimator as   
 \begin{equation}
 \label{eq:ridge_rescaled}
 \hbeta = (X^\T X/n + \lambda I)^{-1} X^\T Y/n,
 \end{equation}
-which can either be seen as the original ridge estimator in \eqref{eq:ridge_sol}
+which can either be seen as the original ridge estimator in \eqref{eq:ridge_sol} 
 with tuning parameter $n\lambda$, or as the solution in the original ridge
-problem \eqref{eq:ridge} after rescaling the loss term by $1/n$. As in the least
-squares analysis, we will assume the linear model \eqref{eq:model}, and place
-the same assumptions on $\epsilon, X, \Sigma$, and $Z$, and further assume that
-the entries of $Z$ have $8+\eta$ moments, for some $\eta>0$.
+problem \eqref{eq:ridge} after rescaling the loss term by $1/n$.  
 
-We will consider proportional asymptotics, where $n,d \to \infty$, with $d/n \to
-\gamma \in (0,\infty)$ (notice that we allow $\gamma \geq 1$), and analyze the
-limit of the out-of-sample risk conditional on $X$, as in \eqref{eq:risk}, of
-ridge. At the outset, we will record the following facts, which you'll verify
-on the homework. The bias and variance components of the risk \eqref{eq:risk} of 
-the ridge estimator \eqref{eq:ridge_rescaled} are:  
+At the outset, we will record the following facts, which you'll verify on the
+homework. The bias and variance components of the risk \eqref{eq:risk} of the
+ridge estimator \eqref{eq:ridge_rescaled} are:     
 \begin{align}
 \label{eq:ridge_bias}
 \Bias_X(\hbeta; \beta_0) &= \lambda^2 \beta_0^\T (\hSigma + \lambda I)^{-1}
@@ -843,8 +835,7 @@ Regularization has saved the day!
 
 We consider the general $\Sigma$ case. We follow the general approach in
 \citet{dobriban2018high}, but adopt the perspective of deterministic equivalents
-as suggested by \citet{dobriban2021distributed}. In order to keep the
-calculation of the bias tractable, we will place a spherical prior on $\beta_0$,
+as suggested by \citet{dobriban2021distributed}. We will place a spherical prior on $\beta_0$,
 such that       
 \begin{equation}
 \label{eq:prior}
@@ -858,8 +849,7 @@ of \emph{Bayes} out-of-sample prediction risk,
 X \big],
 \end{equation}
 where to be clear the expectation is over $\epsilon, x_0$, and $\beta_0$ (all
-independent), and conditional on $X$. Additionally, we will assume that the
-spectral distribution of $\Sigma$ converges weakly, \smash{$F_\Sigma \dto H$} .
+independent), and conditional on $X$. 
 
 \paragraph{Bias analysis.}
 
