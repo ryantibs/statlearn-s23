@@ -715,8 +715,6 @@ the variance does not depend on $\beta_0$.
 
 \subsection{Isotropic $\Sigma$, fixed $\beta_0$}
 
-\def\SNR{\mathrm{SNR}}
-
 We consider the isotropic case, $\Sigma = I$. Below we analyze the bias and 
 variance each in turn.    
 
@@ -806,9 +804,10 @@ Adding the bias \eqref{eq:ridge_bias_iso_limit} and variance results
 \Big( m_F(-\lambda) - \lambda (1 - \alpha \lambda) m'_F(-\lambda) \Big), 
 \end{equation}
 where we have introduced $\alpha = r^2 / (\sigma^2 \gamma)$. Note that we can
-think of this as $\alpha = \SNR / \gamma$, where $\SNR = r^2 / \sigma^2$ can be 
-thought of the signal-to-noise ratio for our problem. Recall that $m_F$ is the
-Stieltjes transform \eqref{eq:mp_stieltjes} of the MP law \eqref{eq:mp_law}.
+think of this as $\alpha = \mathrm{SNR} / \gamma$, where $\mathrm{SNR} = r^2 /
+\sigma^2$ can be thought of the signal-to-noise ratio for our problem. Recall
+that $m_F$ is the Stieltjes transform \eqref{eq:mp_stieltjes} of the MP law
+\eqref{eq:mp_law}. 
 
 It can be shown that the asymptotically optimal tuning parameter value---the one
 minimizing the asymptotic risk in \eqref{eq:ridge_risk_iso_limit}, is $\lambda^*
@@ -988,16 +987,16 @@ in the limit.
 
 \subsection{General $\Sigma$, fixed $\beta_0$?}
 
-The behavior of ridge regression along an arbitrary sequence of signal vectors
-$\beta_0$ can actually be surprisingly exotic. First, it is no longer true that
-the optimal limiting tuning parameter value $\lambda^*$ is simply $1/\alpha$,
-and furthermore, it is no longer true that it is even positive (it may be
-zero). The reason for this exotic behavior is the bias term
-\eqref{eq:ridge_bias}, specifically the way that it depends on the joint
-geometry of $\beta_0$ and $\Sigma$.
+For a general $\Sigma$, the behavior of ridge regression along an arbitrary
+sequence of fixed signal vectors $\beta_0$ can actually be surprisingly
+exotic. First, it is no longer true that the optimal limiting tuning parameter
+value $\lambda^*$ is simply $1/\alpha$, and furthermore, it is no longer true
+that it is even positive (it may be zero). The reason for this exotic behavior
+is the bias term \eqref{eq:ridge_bias}, specifically the way that it depends on
+the joint geometry of $\beta_0$ and $\Sigma$.
 
 The results describing the asymptotic risk here are very recent, and relate to
-the study of overparametrization, so we will cover them in the next lecture.
+the study of overparametrization, so we will touch on them in the next lecture. 
 
 \bibliographystyle{plainnat}
 \bibliography{../../common/ryantibs}
