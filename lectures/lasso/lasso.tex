@@ -158,18 +158,18 @@ This gives rise to what we call best subset selection, the lasso, and ridge
 regression. In the current lecture we'll focus on the lasso, and in the next
 we'll focus on ridge regression.
 
-Calling $\|\cdot\|_0$ the ``$\ell_0$ norm'' is a misnomer, since it is not
-actually a norm: it does not satisfy positive homogeneity, i.e., $\|a\beta\|_0 = 
-a\|\beta\|_0$ for all $a>0$. (As such, it would be more accurate to call it the
+Calling $\|\cdot\|_0$ the ``$\ell_0$ norm'' is a misnomer, as it is not actually
+a norm: it does not satisfy positive homogeneity, i.e., $\|a\beta\|_0 =
+a\|\beta\|_0$ for all $a>0$. (It would be more accurate to call it the
 ``$\ell_0$ pseudonorm'', but in keeping with common convention, we'll simply use
-``norm''.)    
+``norm''.)     
 
 Critically, $\|\cdot\|_0$ is \emph{not convex}, while $\|\cdot\|_1$ and
-$\|\cdot\|_2$ are (indeed, any norm is a convex function). This makes best
+$\|\cdot\|_2$ are convex (note any norm is a convex function). This makes best
 subset selection a nonconvex problem, and one that is generally very hard to
 solve in practice except for very small $d$. On the other hand, the lasso and
 ridge regression problems are convex, and many efficient algorithms exist for
-them.    
+them.      
 
 \section{Lasso basics}
 
@@ -422,9 +422,9 @@ tools that are needed, the analysis here will be much simpler.
 
 We assume the linear model \eqref{eq:model}, where the noise vector $\epsilon
 \in \R^n$ has i.i.d.\ sub-Gaussian entries with mean zero and variance proxy  
-$\sigma^2$. We will take $X$ to be fixed (equivalently, we condition on it) and
-assume that each \smash{$\max_{j=1,\dots,d} \|X_j\|_2 \leq \sqrt n$}. (Note that
-we can always rescale to make this true.)
+$\sigma^2$. We will take $X \in \R^{n \times d}$ to be fixed (or equivalently,
+we condition on it), and assume that each \smash{$\max_{j=1,\dots,d} \|X_j\|_2 
+  \leq \sqrt n$}. (Note that we can always rescale to make this true.)
 
 \subsection{Penalized form}
 

@@ -529,8 +529,26 @@ We consider the linear model
 \label{eq:model}
 Y = X\beta_0 + \epsilon,
 \end{equation}
-assuming as usual that $\epsilon$ has i.i.d.\ entries with mean zero and
-variance $\sigma^2$, and $\epsilon \indep X$, where $X = Z \Sigma^{1/2}$ for a 
+assuming as usual that $\epsilon \in \R^n$ has i.i.d.\ entries with mean zero
+and variance $\sigma^2$, and $X \in \R^{n \times d}$ has independent rows with a 
+distribution specified below. 
+
+where $X \in \R^{n \times d}$ has independent rows, $\epsilon$ has i.i.d.\
+entries with mean zero and variance $\sigma^2$, and $\epsilon \indep X$. As a
+base set of assumptions, we use the standard ones in random matrix theory (with
+$x_i$ denoting the $i\th$ row of $X$):
+\begin{itemize}
+\item each $x_i = \Sigma^{1/2} z_i$, for a covariance matrix $\Sigma$ and random
+  vector $z_i$ that has i.i.d.\ entries with mean zero, unit variance, and
+  $8+\eta$ moments, for some $\eta>0$;    
+\item the eigenvalues of $\Sigma$ are bounded away from $0$ and $\infty$; 
+\item as $n,d \to \infty$, we have $d/n \to \gamma \in (0,\infty)$, and
+  \smash{$F_\Sigma \dto H$}, where $H$ is a measure supported on $[0,\infty)$. 
+\end{itemize}
+
+
+
+$\epsilon \indep X$, where $X = Z \Sigma^{1/2}$ for a 
 covariance matrix $\Sigma$ whose eigenvalues are bounded away from $0$ and
 $\infty$, and for a matrix $Z$ having i.i.d.\ entries with mean zero and unit
 variance.  
