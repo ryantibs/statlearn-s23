@@ -704,7 +704,7 @@ for our current problem \eqref{eq:variational_opt_v} the basic inequality
 We break down the rest of the proof into parts, henceforth abbreviating
 \smash{${\hat J} = J(\hf)$} and $J_0 = J(f_0)$.     
 
-\subsubsection{Localization}
+\paragraph{Localization.}
 
 In this part, we prove that \smash{$\|\hf - f_0\|_n$} is bounded. This is
 important because it will be enable us to apply Lemma
@@ -734,7 +734,7 @@ $\Omega_1$,
 where in the second line we use $J_0\geq 1$ and $\lambda \leq \sigma^2 
 J_0^{2-v}$. This completes the desired ``localization'' step.     
 
-\subsubsection{Bounding the sub-Gaussian complexity}
+\paragraph{Bounding the sub-Gaussian complexity.}
 
 In this part, we focus on bounding the first-term on the right-hand side in 
 \eqref{eq:basic_ineq_v1} using a sub-Gaussian complexity argument. The idea is
@@ -785,7 +785,7 @@ into the right-hand side of \eqref{eq:basic_ineq_v1} gives
 on the event $\Omega = \Omega_1 \cap \Omega_2 \cap \Omega_3$, where we have
 redefined the constant $c$ as needed.
 
-\subsubsection{Transforming to squared empirical norm} 
+\paragraph{Transforming to squared empirical norm.} 
 
 The next part is to transform \eqref{eq:basic_ineq_v2} so that we remove the
 fractional exponent on the empirical norm error term \smash{$\|\hf-f_0\|_n$},
@@ -816,15 +816,14 @@ J_0)^{2w/(2+w)} + \lambda (J_0^v - {\hat J}^v),
 on $\Omega$, where we have redefined $\gamma$ as needed. We have been careful to 
 end up with a factor of the squared empirical norm on the right-hand side with a
 leading constant less than 1. Subtracting this term \smash{$\frac{1}{2}
-\|\hf-f_0\|_n^2$} to the left-hand side gives
+\|\hf-f_0\|_n^2$} to the left-hand side gives, on $\Omega$,
 \begin{equation}
 \label{eq:basic_ineq_v3}
 \frac{1}{2} \|\hf - f_0\|_n^2 \leq \gamma r_n^2 ({\hat J} + J_0)^{2w/(2+w)} +
-\lambda (J_0^v - {\hat J}^v),   
+\lambda (J_0^v - {\hat J}^v).
 \end{equation}
-on $\Omega$. 
 
-\subsubsection{Bounding the achieved penalty term}
+\paragraph{Bounding the achieved penalty term.}
 
 The next part is to bound the achieved penalty term \smash{$\hat J$}. Starting
 from \eqref{eq:basic_ineq_v3}, we can simply lower bound the left-hand side by
@@ -842,24 +841,25 @@ on right-hand side above,
 on $\Omega$, for a constant $c>0$. Subtracting \smash{$\frac{1}{2}{\hat J}^v$}
 to the left-hand side, we learn that provided \smash{$\lambda \geq \gamma
   r_n^2$},  
-\[
+\begin{equation}
+\label{eq:penalty_bd}
 \frac{1}{2}{\hat J}^v \leq c {\hat J}^{2w/(2+w)},
-\]
+\end{equation}
 on $\Omega$. Since $v > 2w/(2+w)$, this means that \smash{$\hat J \leq c$} on
 $\Omega$, where we redefine the constant $c$ as necessary. Recall that this was
 established in the case \smash{$\hat J > 2J_0$}.  Hence, altogether, we learn
 that \smash{$\hat J \leq 2J_0+c \leq cJ_0$} on $\Omega$, redefining $c$ once
 again as needed.     
 
-\subsubsection{The home stretch: choosing $\lambda$}
+\paragraph{The home stretch: choosing $\lambda$.}
 
-Returning to \eqref{eq:basic_ineq_v3}, and using our penalty bound, we have 
+Returning to \eqref{eq:basic_ineq_v3}, and using our penalty bound from
+\eqref{eq:penalty_bd}, we have 
 \[
 \|\hf - f_0\|_n^2 \leq \gamma r_n^2 J_0^{2w/(2+w)} + \lambda J_0^v,
 \]
-on $\Omega$, redefining $\gamma$ as needed. Choosing $\lambda \geq \gamma r_n^2  
-J_0^{2w/(2+w) - v}$ establishes the claimed result in \eqref{eq:error_bd1} on
-$\Omega$, and completes the proof.    
+on $\Omega$, redefining $\gamma$ as needed. Choosing $\lambda \geq \gamma r_n^2
+J_0^{2w/(2+w)   - v}$ establishes \eqref{eq:error_bd1}, and completes the proof.          
 
 \subsection{Corollary: population error}
 
@@ -939,15 +939,13 @@ with probability at least $p_n = 1 - \exp(-c_1\gamma) - \exp(-c_2n)$, and
 \|\hf - f_0\|_2^2 \leq 4 \lambda J_0^2 + c_3 n^{-2m/(2m+1)} J_0^2,
 \]
 with probability at least \smash{$q_n = 1 - \exp(-c_1\gamma) - \exp(-c_4 
-  n^{2m/(2m+1)})$}. 
-
-In particular, for \smash{$\lambda = \gamma n^{-2m/(2m+1)} J_0^{-4m/(2m+1)}$},
-it holds that 
-\begin{gather*}
-\|\hf - f_0\|_n^2 \leq 2 \gamma n^{-2m/(2m+1)} J_0^{2/(2m+1)}, 
-\quad \text{and} \\ 
+  n^{2m/(2m+1)})$}. In particular, for a choice of tuning parameter
+\smash{$\lambda = \gamma n^{-2m/(2m+1)} J_0^{-4m/(2m+1)}$}, it holds that  
+\[
+\|\hf - f_0\|_n^2 \leq 2 \gamma n^{-2m/(2m+1)} J_0^{2/(2m+1)},  
+\quad \text{and}  \quad
 \|\hf - f_0\|_2^2 \leq n^{-2m/(2m+1)} (4 \gamma J_0^{2/(2m+1)} + c_3 J_0^2), 
-\end{gather*}
+\]
 with the same probabilities as above: $p_n$ and $q_n$, respectively.
 \end{corollary}
 
