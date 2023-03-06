@@ -20,24 +20,24 @@ networks that are massively overparametrized, and train them without explicit
 regularization until they interpolate the training data and thus have zero
 training error. Surprisingly, these models can still have good prediction error.     
 
-You might say: so what ... just regularize and the models will stop
-interpolating and they'll also perform better. However, in some overparametrized
-settings, it can actually be that tuning over the regularization strength in an
-estimator like ridge regression can even suggest that vanshing regularization is 
-optimal.
+You might say: so what? We should regularize and the models will stop
+interpolating and they'll also perform better! However, in some overparametrized  
+settings, it can actually be that tuning over the regularization strength (in an 
+estimator like ridge regression) can suggest that a vanshing amount of
+regularization is optimal. 
 
-There's some influential and thought-provoking experimental work in support of
-these phenomena. See Figure \ref{fig:experiments} for a few examples. How can we 
-understand this through the lens of statistical theory?  We can start by
-understanding what happens in linear models. Even though linear models are ``as 
-old as statistics itself'', we may learn something new.   
+There has been some influential and thought-provoking experimental work in
+support of these phenomena. See Figure \ref{fig:experiments} for a few
+examples. How can we understand this through the lens of statistical theory?
+We can start by understanding what happens in linear models. Even though linear
+models are ``as old as statistics itself'', we may learn something new.    
 
 \begin{figure}[p]
 \centering
 \hspace{-20pt}
 \includegraphics[height=0.39\textwidth]{belkin1.png}
 \includegraphics[height=0.39\textwidth]{belkin2.png} 
-\bigskip\bigskip \\
+\bigskip\medskip \\
 \includegraphics[width=0.69\textwidth]{liang.png} 
 \bigskip \\
 \includegraphics[width=0.98\textwidth]{kobak.png}
@@ -52,11 +52,12 @@ old as statistics itself'', we may learn something new.
 \label{fig:experiments}
 \end{figure}
 
-\paragraph{What's new here?}
+\subsection{What's new here?}
 
 Statisticians have been interested in high-dimensional models for a long
-time. So what's new here? Don't the terms ``high-dimensional'' (in use for many
-decades) and ``overparametrized'' (popularized recently) refer the same thing?  
+time. So what's new here? Don't the terms ``high-dimensional'' (in use for
+several decades) and ``overparametrized'' (popularized recently) refer the same
+thing?    
 
 In a sense, the answer is both ``yes'' and ``no''. While traditional
 high-dimensional analyses (like those we studied for the lasso) and newer
@@ -69,13 +70,13 @@ some key ways. In the study of overparametrized models:
   afterthought);  
 \item we care about how the risk landscape behaves as we vary the regularization  
   strength, and particularly what happens for vanishing explicit
-  regularization---unlike many traditional analyses which operate in regimes
-  where optimal performance is given by strong explicit regularization.  
+  regularization---unlike many traditional analyses which study regimes where
+  optimal performance is given by strong explicit regularization.   
 \end{itemize}
 There are arguably other differences, but those are two of the most salient ones 
 for our discussion.
 
-\paragraph{Ridgeless least squares.}
+\subsection{Ridgeless least squares}
 
 Given a response vector $Y \in \R^n$ and predictor matrix $X \in \R^{n \times
   d}$, as usual, we consider the \emph{minimum $\ell_2$ norm least squares} 
@@ -102,10 +103,10 @@ for vanishing regularization:
 \]
 When $X$ has rank $d$, the min-norm least squares estimator reduces to
 \smash{$\hbeta = (X^\T X)^{-1} X^\T Y$}, the usual least squares estimator.
-When $X$ has rank $n$, importantly, this estimator interpolates the training
-data: \smash{$y_i = x_i^\T \hbeta$}, for $i=1,\dots,n$.  
+Importantly, when $X$ has rank $n$, this estimator interpolates the training 
+data: \smash{$y_i = x_i^\T \hbeta$}, for $i=1,\dots,n$.   
 
-\paragraph{Connection to gradient descent.}
+\subsection{Connection to gradient descent}
 
 There is an interesting connection between gradient descent and the min-norm
 least squares estimator. Initialize $\beta^{(0)} = 0$, and consider running
@@ -123,6 +124,13 @@ Why? It's quite simple: the updates \smash{$\beta^{(k)}$}, $k=1,2,3,\dots$
 always lie in the row space of $X$; hence their limit (guaranteed to exist for
 small enough $t>0$) must also lie in the row space of $X$; and the min-norm
 least squares solution is the unique least squares solution with this property.    
+
+The same result (and proof) carries over to stochastic gradient descent, and any 
+other variants of gradient descent whose updates remain in the row space of $X$.  
+Since these algorithms comprise the defacto standard for training neural
+networks, one can argue that that minimum $\ell_2$ norm solutions arise
+naturally as interesting objects of study based on practical conventions (and
+successes) in machine learning.  
 
 \section{Problem setup}
 
@@ -160,16 +168,15 @@ in the out-of-sample prediction risk, conditional on $X$,
 where $x_0 = \Sigma^{1/2} z_0$ is i.i.d.\ to the rows of $X$. We will study the
 risk of min-norm least squares in \eqref{eq:ls_min}. 
 
-\paragraph{Summary.}
+\subsection{Summary}
 
 Here is a summary of what will happen in linear models, based roughly on the
 development of results  in \citet{hastie2022surprises}. At the outset, we should
 note that there are a lot of other interesting results from other recent papers
 that we will not be covering. This includes some work that goes beyond linear
 feature models and budges closer what actually happens in neural networks. For
-nice surveys on the recent explosion of work on the theory of
-overparametrization, see \citet{bartlett2021deep, belkin2021fit,
-  dar2021farewell}.      
+nice surveys on the recent explosion of work on overparametrization theory, see 
+\citet{bartlett2021deep, belkin2021fit, dar2021farewell}.      
 
 \begin{enumerate}
 \item[0.]
@@ -204,8 +211,8 @@ regression in this isotropic case is always be positive.
 In the case of general $\Sigma$, we can derive an explicit formula for the
 asymptotic variance. As in the ridge analysis, this is no longer closed-form,
 but still we can learn various things. For example, in specific covariance
-structures, we can study how the variance behaves as we vary the strength of 
-correlation.  
+structures, we can study the variance term as a function of correlation
+strength.    
 
 The behavior of the bias is much more complex. With a prior on $\beta_0$, we can 
 get back an explicit asymptotic formula (as in the ridge lecture), but this
@@ -226,7 +233,7 @@ of the lessons from linear feature models are preserved. You'll explore this
 (numerically) on the homework.  
 \end{enumerate}
 
-\paragraph{Plan-of-attack?}
+\subsection{Plan-of-attack?}
 
 In general, there are two ways to proceed to derive the risk of the ridgeless
 regression estimator \eqref{eq:ls_min}. The first is to take asymptotic results
@@ -238,10 +245,8 @@ The second is to start with the bias and variance expressions for min-norm
 least squares, and then carry out asymptotic calculations directly. Often, these
 calculations require us to ``ridge-ify'' some of the matrix functionals
 that involve pseudoinverses, and then let the auxiliary ridge parameter tend to
-zero. 
-
-Curiously, the ``ridge-ified'' functionals in the second approach not exactly
-the same as those that appear in the asymptotic calculations for ridge
+zero. Curiously, the ``ridge-ified'' functionals in the second approach not
+exactly the same as those that appear in the asymptotic calculations for ridge 
 regression, and the former can sometimes be easier to analyze in the ridgeless
 limit (of course we must end up with the same answers at the end with either
 approach).  
@@ -249,13 +254,9 @@ approach).
 We will generally follow the second plan-of-attack, if only to give you more
 exposure to the elegant and powerful nature of random matrix theory. (Though to
 be frank in what follows we will only really cover proof details for the
-isotropic case.) To set this up, it will be helpful to rewrite the ridgeless
-regression estimator   
-\eqref{eq:ls_min} as   
-\[
-\hbeta = (X^\T X/n)^+ X^\T Y/n,
-\]
-and it will be helpful to record the bias and variance components of its risk: 
+isotropic case.) In preparation for this, it is helpful to rewrite the ridgeless
+estimator  \eqref{eq:ls_min} as \smash{$\hbeta = (X^\T X/n)^+ X^\T Y/n$}, and
+helpful to record the bias and variance components of its risk:  
 \begin{align}
 \label{eq:ls_min_bias}
 \Bias_X(\hbeta; \beta_0) &= \beta_0^\T (I - \hSigma^+ \hSigma) \Sigma 
@@ -375,7 +376,7 @@ risk profile over $\gamma$.
 
 \begin{figure}[htb]
 \centering
-\includegraphics[width=0.65\textwidth]{risk_iso.pdf}
+\includegraphics[width=0.6\textwidth]{risk_iso.pdf}
 \caption{\it The asymptotic risk of least squares \eqref{eq:ls_risk_limit} for
   $\gamma<1$ and min-norm least squares \eqref{eq:ls_min_risk_iso_limit} for
   $\gamma>1$, where the latter assumes $\Sigma = I$, the isotropic
@@ -419,7 +420,7 @@ interested in risk defined as:
 where $(x_0,w_0,y_0)$ is an i.i.d.\ draw from the same joint distribution as in 
 \eqref{eq:model_mis}. 
 
-\paragraph{Risk decomposition.} 
+\subsection{Risk decomposition} 
 
 We can always write 
 \begin{equation}
@@ -447,7 +448,7 @@ apart $\E[y_0|x_0]$ and $\E[y_0|x_0,w_0]$ are. We call the latter term the
 \emph{misspecification bias} (note that it does not depend at all on $X$ or
 \smash{$\hbeta$}).   
 
-\paragraph{Simplest analysis.}
+\subsection{Simplest analysis}
 
 In the simplest case, we can take the distribution of the unobserved features
 $W$ to be independent of $X$ (and $\epsilon$), with the covariances of $X,W$
@@ -457,14 +458,16 @@ studied. This allows to rewrite \eqref{eq:risk_mis} as
 Y = X\beta_0 + \delta,
 \]
 where the entries of $\delta = W\theta_0 + \epsilon$ are still i.i.d.\ with mean
-zero, and their variance is $\|\theta_0\|_2^2 + \sigma^2$. 
-
-Denote the total signal energy by $r^2=\|\beta_0\|_2^2+\|\theta_0\|_2^2$, and
-the fraction of the signal energy captured by the observed features by
-$\kappa=\|\beta_0\|_2^2 / r^2$. Then \smash{$L_X(\hbeta; \beta_0, \theta_0)$}
-behaves exactly as we computed previously, in \eqref{eq:ls_risk_limit} for
-$\gamma<1$ and \eqref{eq:ls_min_risk_iso_limit} for $\gamma>1$, after we make
-the substitutions:    
+zero, and their variance is $\|\theta_0\|_2^2 + \sigma^2$. Denote 
+\[
+r^2=\|\beta_0\|_2^2+\|\theta_0\|_2^2 \quad \text{and} \quad 
+\kappa=\|\beta_0\|_2^2 / r^2,
+\]
+which represents the total signal energy and the the fraction of the signal
+energy captured by the observed features, respectively. Then \smash{$L_X(\hbeta;
+  \beta_0, \theta_0)$} behaves exactly as we computed previously, in
+\eqref{eq:ls_risk_limit} for $\gamma<1$ and \eqref{eq:ls_min_risk_iso_limit} for
+$\gamma>1$, after we make the substitutions:     
 \[
 r^2 \mapsto r^2 \kappa \quad \text{and} \quad
 \sigma^2 \mapsto \sigma^2 + r^2 (1-\kappa).
@@ -486,7 +489,7 @@ r^2(1-\kappa) + r^2 \kappa \big(1-\frac{1}{\gamma}\big)
 \end{cases}
 \end{equation}
 
-\paragraph{Interpretation.}
+\subsection{Interpretation}
 
 To interpret the risk profiles \eqref{eq:ls_min_risk_iso_mis_limit} in the
 misspecified setting, we will need to specify a relationship between $\kappa$
@@ -500,7 +503,7 @@ $\gamma > 1$.
 
 \begin{figure}[htb]
 \centering
-\includegraphics[width=0.65\textwidth]{risk_iso_mis.pdf}
+\includegraphics[width=0.6\textwidth]{risk_iso_mis.pdf}
 \caption{\it The asymptotic risk of min-norm least squares in the misspecified
   setting \eqref{eq:ls_min_risk_iso_mis_limit}, with isotropic observed and
   unobserved feature covariances, and $1-\kappa(\gamma) = (1+\gamma)^{-a}$. We
@@ -528,7 +531,8 @@ progress by placing a spherical prior on $\beta_0$, such that
 \label{eq:prior}
 \E[\beta_0 \beta_0^\T] = \frac{r^2}{d} I.
 \end{equation}
-Note this implies $\E \|\beta_0\|_2^2 = r^2$. 
+
+\paragraph{Bias analysis.}
 
 By similar arguments to those in the isotropic case above and the ridge lecture,
 whose details we omit, one can show that for the Bayes bias, given by
@@ -540,6 +544,8 @@ integrating \eqref{eq:ls_min_bias} over $\beta_0$,
 where $v_F$ is the companion Stieltjes transform of the limiting spectral
 distribution $F = F(H, \gamma)$ from the Marchenko-Pastur theorem (and
 \smash{$v_F(0) = \lim_{z \to 0} \, v_F(z)$} exists under our assumptions).  
+
+\paragraph{Variance analysis.}
 
 Again by similar arguments to those in the isotropic case and the ridge lecture,
 whose details we also omit, one can show that for the variance in
@@ -555,17 +561,18 @@ assumptions). We emphasize that the variance calculation in
 \eqref{eq:ls_min_var_limit} does not depend on the prior \eqref{eq:prior} and is
 fully general.    
 
+\paragraph{Investigation of asymptotics.}
+
 We note that the some of the key dependence of
 \eqref{eq:ls_min_bias_bayes_limit}, \eqref{eq:ls_min_var_limit} on $\gamma$ is
 hidden in the Stieltjes transform terms $v_F(0)$, $v'_F(0)$, which themselves
-depends on $\gamma$ (since $F$ does). While these limits cannot be computed in
-closed-form for general covariance models (general $H$), they can be computed
-numerically by solving the Silverstein equation.  
-
-This is done in \citet{hastie2022surprises}, in order to probe the asymptotic
-limits, and better understand how they behave. This reveals some interesting
-phenomenon, such as the fact that stronger correlations can increase the
-variance, but decrease the Bayes bias. See Figure \ref{fig:risk_ec_ar}.
+depends on $\gamma$ (since $F$ does). While these asymptotic limit cannot be
+computed in closed-form for general covariance models (general $H$), they can be
+computed numerically by solving the Silverstein equation. This is done in
+\citet{hastie2022surprises}, in order to probe the asymptotic limits, and better
+understand how they behave. This reveals some interesting phenomenon, such as
+the fact that stronger correlations can increase the variance, but decrease the
+Bayes bias. See Figure \ref{fig:risk_ec_ar}. 
 
 \begin{figure}[p]
 \centering
@@ -586,16 +593,17 @@ variance, but decrease the Bayes bias. See Figure \ref{fig:risk_ec_ar}.
 \label{fig:risk_ec_ar}
 \end{figure}
 
-But the Bayes model studied here falls short in one key way. It does not explain
-why ridgeless regression can be interesting above and beyond ridge
-regression. In the Bayes model here, recall, the optimal ridge tuning parameter 
-is $\lambda^* = \sigma^2 \gamma / r^2$, regardless of the feature covariance
-model. This is always positive, and depends only on the SNR.  
+\paragraph{Where this fall short.}
 
-Thus in order to really understand how ridgeless regression can and should
-arise as a natural object of study, i.e., how the ridge risk landscape can be
-minimized at $\lambda = 0$, we must tackle the beast: calculate the ridge bias
-for general $\Sigma$ and fixed $\beta_0$.   
+The Bayes model studied here falls short in one key way. It does not explain why
+ridgeless regression is statistically interesting above and beyond ridge
+regression. In the Bayes model studied here, recall (from the last lecture), we
+know that the asymptotically optimal ridge tuning parameter is $\lambda^* =
+\sigma^2 \gamma / r^2$, regardless of the feature covariance model. This is
+always positive, and depends only on the SNR. Thus in order to really understand
+the phenomena in Figure \ref{fig:experiments}, i.e., to understand when and how
+the ridge risk landscape can be minimized at $\lambda = 0$, we must tackle the
+beast: calculate the ridge bias for general $\Sigma$ and fixed $\beta_0$.     
 
 \section{General $\Sigma$, fixed $\beta_0$}
 
