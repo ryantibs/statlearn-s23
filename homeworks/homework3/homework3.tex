@@ -177,7 +177,70 @@ this homework problem. Attach your code as an appendix to this homework.
   the asymptotic variance curves. 
 \end{enumerate}
 
+\section{Implicit regularization buffet: choose your dish [15 points]} 
 
+In this exercise, you get to choose between multiple options for studying
+implicit regularization. To be clear, each par (a), (b), and (c) below are worth
+equal points, and you only have to choose one (bonus points for doing more than
+one). 
+
+\begin{enumerate}[label=(\alph*)]
+\item Given any response vector $Y \in \R^n$ and feature matrix $X \in \R^{n
+    \times d}$, let \smash{$\hbeta^{\mathrm{rg}}(\lambda)$} denote the ridge
+  estimator, which solves  
+  \[
+  \minimize_\beta \; \frac{1}{2} \|Y - X\beta\|_2^2 + \lambda \|\beta\|_2^2,
+  \]
+  for a tuning parameter $\lambda \geq 0$, and \smash{$\hbeta^{\mathrm{gf}}_t$}
+  denote the gradient flow estimator, which solves 
+  \[
+  \dot\beta(t) = X^\T (Y - X\beta(t)),
+  \]
+  over time $t \geq 0$, subject to the initial condition $\beta(0)=0$. Prove
+  that these two satisfy the relationship, for any $\lambda \geq 0$:
+  \[
+  \hbeta^{\mathrm{rg}}(\lambda) = \E[ \hbeta^{\mathrm{gf}}(T_\lambda) ], \quad 
+  \text{$T_\lambda \sim \mathrm{Exp}(1/\lambda)$},
+  \]
+  where $\mathrm{Exp}(\mu)$ denotes the exponential distribution with mean
+  $\mu$. In other words, if we stop gradient flow at a random time that
+  fluctuates around $1/\lambda$, then on average it will look like ridge with 
+  tuning parameter $\lambda$.
+
+  Hint: there are two ways to prove this. Either way starts by having you make
+  the observation that for a function $g$, its Laplace transform evaluated at a
+  $\lambda$, denoted $\cL\{g\}(\lambda)$, can be written in terms of an
+  expectation of $g$ with respect to the $\mathrm{Exp}(1/\lambda)$ distribution.
+  Then you have two paths you can pursue. The first path is to write down the 
+  explicit forms for the ridge and gradient flow solutions, and relate them
+  using Laplace transforms. The second path is to start with the differential
+  equation that defines gradient flow and take Laplace transforms, then relate
+  this to the optimality conditions for ridge. Either way you will have to read
+  up a little bit on Laplace transforms if you don't know much about them
+  already. 
+
+\item We saw in the ridge regression lecture that we can view the ridge
+  estimator in terms of the min-norm least squares estimator on an augmented
+  feature set, where we append a growing number of random features (independent
+  of the response and given features) with suitably shrinking variance. Conduct
+  a comprehensive simulation suite to (i) validate that this fact appears to be
+  true for a very large number of auxiliary features, and (ii) investigate the
+  speed of convergence: what happens as you vary the number of auxiliary
+  features, down to a moderate or even small number? 
+
+  Then, extend your simulations study to examine what happens when you use an
+  augmented feature set (by appending random features) in other interpolating
+  estimators, like the minimum $\ell_1$ norm least squares estimator, or a
+  neural network. Describe what you find. Does anything interesting come out?     
+
+\item Conduct a literature search to identify an interesting example of implicit
+  regularization in statistics or machine learning that is new---new just
+  meaning that we did not cover it in class. This could be an example that is
+  studied theoretically, or one that arises from methods or algorithms that are
+  popular in practice. Describe in reasonable detail (1-2 pages) what is known
+  about this example of implicit regularization.    
+
+\end{enumerate}
 
 \bibliographystyle{plainnat}
 \bibliography{../../common/ryantibs}
