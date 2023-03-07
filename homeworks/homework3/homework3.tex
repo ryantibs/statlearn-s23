@@ -1,0 +1,102 @@
+\documentclass{article}
+
+\def\ParSkip{} 
+\input{../../common/ryantibs}
+
+\title{Homework 3 \\ \smallskip
+\large Advanced Topics in Statistical Learning, Spring 2023 \\ \smallskip
+Due Friday March 24 at 5pm}
+\date{}
+
+\begin{document}
+\maketitle
+\RaggedRight
+\vspace{-50pt}
+
+\section{Carath\'{e}odory's view on sparsity of lasso solutions [10 points]} 
+
+In this exercise, we will prove the fact we cited in lecture about sparsity of
+lasso solutions, by invoking Caratheodory's theorem. Let $Y \in \R^n$ be a
+response vector, $X \in \R^{n \times d}$ be a predictor matrix, and consider
+the lasso estimator defined by solving
+\[
+\minimize_\beta \; \frac{1}{2} \|Y - X\beta\|_2^2 + \lambda \|\beta\|_1,
+\]
+for a tuning parameter $\lambda > 0$.
+
+\begin{enumerate}[label=(\alph*)]
+\item Let \smash{$\hbeta$} be any solution to the lasso problem. Let
+  \smash{$\hat\alpha = \hbeta / \|\hbeta\|_1$}. Prove that \smash{$X
+    \hat\alpha$} lies in the convex hull of the vectors 
+  \marginpar{\small [2 pts]}
+  \[
+  \{ \pm X_j \}_{j=1}^d.
+  \]
+  Note: here $X_j \in \R^n$ denotes the $j\th$ column of $X$.
+
+\item Recall that Carath\'{e}odory's theorem states the following: given any set 
+  $C \subseteq \R^k$, every element in its convex hull $\conv(C)$ can be 
+  represented as a convex combination of $k+1$ elements of $C$. 
+
+  Use this theorem and part (a) to prove that there exists a lasso solution
+  \smash{$\tilde\beta$} with at most $n+1$ nonzero coefficients.  
+  \marginpar{\small [2 pts]}
+
+  Hint: start with a generic solution \smash{$\hbeta$}, and use
+  Carath\'{e}odory's theorem to construct a coefficient vector
+  \smash{$\tilde\beta$} such that (i) the fit is the same, \smash{$X\tilde\beta
+    = X\hbeta$}; (ii) the penalty is at worst the same,
+  \smash{$\|\tilde\beta\|_1 \leq \|\hbeta\|_1$}; and (iii) \smash{$\tilde\beta$}
+  is a nonnegative linear combination of at most $n+1$ of $\pm X_j$,
+  $j=1,\dots,d$.  
+ 
+\item Now, assuming $\lambda>0$, use the subgradient optimality condition for 
+  the lasso problem to prove that the solution \smash{$\tilde\beta$} from part
+  (b) is supported on a subset of 
+  \marginpar{\small [3 pts]}
+  \[
+  \{ \pm X_j \}_{j=1}^d
+  \]
+  that has affine dimension at most $n-1$.
+
+  Hint: this is similar to the proof of Proposition 1 in the lasso lecture
+  notes. Assume that \smash{$\tilde\beta$} is a nonnegative combination of
+  exactly $n+1$ of $\pm X_j$, $j=1,\dots,d$. Then one of these $n+1$ vectors, 
+  denote it by $s_i X_i$ (where \smash{$s_i = \sign(\tilde\beta_i)$}) can be
+  written as a linear combination of the others. Take an inner product with the
+  lasso residual and use the subgradient optimality condition to prove that the
+  coefficients in this linear combination must sum to 1, and therefore, $s_i
+  X_i$ is actually an affine combination of the others. This shows that the 
+  affine span of the $n+1$ vectors in question $(n-1)$-dimensional.  
+
+\item A refinement of Carath\'{e}odory's is as follows: given a set $C \subseteq
+  \R^k$, every element in its convex hull $\conv(C)$ can be represented as a
+  convex combination of $r+1$ elements of $C$, where $r$ is the affine dimension
+  of $\conv(C)$. 
+
+ Use this theorem and part (c) to prove that there exists a lasso solution
+  \smash{$\check\beta$} with at most $n$ nonzero coefficients.  
+  \marginpar{\small [2 pts]}
+\end{enumerate}
+
+\section{Variance of least squares in nonlinear feature models [15 points]} 
+
+\def\hSigma{\hat\Sigma}
+
+In this exercise, we will examine the variance of least squares (in the
+underparametrized regime) and min-norm least squares (in the overparametrized 
+regime) in nonlinear feature models. Recall that for a response vector $Y \in
+\R^n$ and feature matrix $X \in \R^{n \times d}$, the min-norm least squares
+\smash{$\hbeta = (X^\T X/n)^+ X^\T Y/n$} has variance (conditional on $X$): 
+\begin{equation}
+\label{eq:ls_min_var}
+\Var_X(\hbeta) = \frac{\sigma^2}{n} \tr (\hSigma^+ \Sigma),
+\end{equation}
+where \smash{$\hSigma = X^\T X/n$}, and $\sigma^2 = \Var(y_i | x_i)$. 
+
+Conduct the following simulations
+
+\bibliographystyle{plainnat}
+\bibliography{../../common/ryantibs}
+
+\end{document}
