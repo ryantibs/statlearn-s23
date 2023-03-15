@@ -123,10 +123,11 @@ can consider a nonlinear feature model of the form
 \label{eq:nonlinear_features}
 X = \varphi(Z \Sigma^{1/2} W^\T),
 \end{equation}
-where $W \in \R^{d \times k}$ is a matrix of i.i.d.\ $N(0,1/k)$ entries, and
-$\varphi : \R \to \R$ is a nonlinear function---called the activation function
-in a neural network context---that we interpret to act elementwise on $Z
-W^\T$. 
+where $\Sigma \in \R^{k \times k}$ and $Z \in \R^{n \times k}$ are as before
+(except with $k$ in place of $d$), and now $W \in \R^{d \times k}$ is a matrix
+of i.i.d.\ $N(0,1/k)$ entries, and $\varphi : \R \to \R$ is a nonlinear
+function---called the activation function in a neural network context---that we
+interpret to act elementwise on its input.
 
 There turns to be an uncanny connection between the asymptotic variance in
 linear and nonlinear feature models, which will you uncover via simulation in
