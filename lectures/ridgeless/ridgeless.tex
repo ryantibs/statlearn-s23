@@ -150,7 +150,7 @@ $\sigma^2$, and $\epsilon \indep X$. The conditions we will assume on the
 features $X \in \R^{n \times d}$ are as follows:
 \begin{itemize}
 \item[(A1)] $X = Z \Sigma^{1/2}$, where the entries of $Z \in \R^{n \times d}$
-  are i.i.d.\ with mean zero, unit variance, and finite $8+\eta$ moment, for
+  are i.i.d.\ with zero mean, unit variance, and finite $8+\eta$ moment, for
   some $\eta>0$; 
 \item[(A2)] the covariance matrix $\Sigma \in \R^{d \times d}$ has eigenvalues
   bounded away from $0$ and $\infty$, and satisfies \smash{$F_\Sigma \dto H$},
@@ -245,15 +245,15 @@ The second is to start with the bias and variance expressions for min-norm
 least squares, and then carry out asymptotic calculations directly. Often, these
 calculations require us to ``ridge-ify'' some of the matrix functionals
 that involve pseudoinverses, and then let the auxiliary ridge parameter tend to
-zero. Curiously, the ``ridge-ified'' functionals in the second approach not
-exactly the same as those that appear in the asymptotic calculations for ridge 
-regression, and the former can sometimes be easier to analyze in the ridgeless
-limit (of course we must end up with the same answers at the end with either
-approach).  
+zero. Curiously, the ``ridge-ified'' functionals in the second approach are not
+always exactly the same as those that appear in the asymptotic calculations for
+ridge regression, and the former can sometimes be easier to analyze in the
+ridgeless limit (of course we must end up with the same answers at the end with
+either approach).   
 
 We will generally follow the second plan-of-attack, if only to give you more
 exposure to the elegant and powerful nature of random matrix theory. (Though to
-be frank in what follows we will only really cover proof details for the
+be frank in what follows we will only really cover the proof details for the 
 isotropic case.) In preparation for this, it is helpful to rewrite the ridgeless
 estimator  \eqref{eq:ls_min} as \smash{$\hbeta = (X^\T X/n)^+ X^\T Y/n$}, and
 helpful to record the bias and variance components of its risk:  
@@ -281,47 +281,47 @@ When $\Sigma = I$, the bias \eqref{eq:ls_min_bias} becomes
 \Bias_X(\hbeta; \beta_0) 
 &= \beta_0^\T (I - \hSigma^+ \hSigma) \beta_0 \\ 
 \nonumber
-&= \lim_{z \to 0} \, \beta_0^\T \big[ I - (\hSigma + zI)^{-1} \hSigma \big]
-  \beta_0 \\   
+&= \lim_{\rho \to 0} \, \beta_0^\T \big[ I - (\hSigma + \rho I)^{-1} \hSigma  
+  \big] \beta_0 \\   
 \label{eq:ls_min_bias_iso}
-&= \lim_{z \to 0} \, z \beta_0^\T (\hSigma + zI)^{-1} \beta_0, 
+&= \lim_{\rho \to 0} \, \rho \beta_0^\T (\hSigma + \rho I)^{-1} \beta_0,  
 \end{align}
-where in the second line we used the general fact \smash{$(A^\T A)^+ A^\T = 
-  \lim_{z \to 0} \, (A^\T A + zI)^{-1} A^\T$}, to \smash{$A = X/\sqrt{n}$}, and 
-in the third line we added and subtracted $zI$ to trailing \smash{$\hSigma$} in
-the matrix product. (All limits $z \to 0$ here and henceforth are to be
-interpreted as from above.)
+where in the second line we used the general fact \smash{$(A^\T A)^+ A^\T =
+  \lim_{\rho \to 0} \, (A^\T A + \rho I)^{-1} A^\T$}, to \smash{$A =
+  X/\sqrt{n}$}, and in the third line we added and subtracted $\rho I$ to
+trailing \smash{$\hSigma$} in the matrix product. (All limits $\rho \to 0$ here  
+and henceforth are to be interpreted as from above.) 
 
 By the generalized MP theorem from \citet{rubio2011spectral} (transcribed in
 Theorem 2 in the ridge lecture notes using the language of deterministic
 equivalents), we know that  
 \[
-\beta_0^\T (\hSigma + zI)^{-1} \beta_0 \quad \text{and} \quad 
-\beta_0^\T (a_n I + zI)^{-1} \beta_0 = \frac{r^2}{a_n + z} \quad
+\beta_0^\T (\hSigma + \rho I)^{-1} \beta_0 \quad \text{and} \quad 
+\beta_0^\T (a_n I + \rho I)^{-1} \beta_0 = \frac{r^2}{a_n + \rho} \quad
 \text{have the same asymptotic limit},
 \]
 where $a_n$ satisfies a certain fixed-point equation. To compute the limit of
 $a_n$, we note that also
 \[
-\frac{1}{d} \tr \big[ (\hSigma + zI)^{-1} \big] \quad \text{and} \quad 
-\frac{1}{d} \tr \big[ (a_n I + zI)^{-1} \big] = \frac{1}{a_n + z}
+\frac{1}{d} \tr \big[ (\hSigma + \rho I)^{-1} \big] \quad \text{and} \quad  
+\frac{1}{d} \tr \big[ (a_n I + \rho I)^{-1} \big] = \frac{1}{a_n + \rho}
 \quad \text{have the same asymptotic limit},  
 \]
 and by the standard MP asymptotics, the left-hand side converges almost surely
-to $m_F(-z)$, the Stieltjes transform of the MP law, evaluated at $-z$. Thus we
-have $1/(a_n + z) \to m_F(-z)$, and   
+to $m_F(-\rho)$, the Stieltjes transform of the MP law, evaluated at
+$-\rho$. Thus we have $1/(a_n + \rho) \to m_F(-\rho)$, and    
 \[
-\beta_0^\T (\hSigma + zI)^{-1} \beta_0 \asto r^2 m_F(-z).
+\beta_0^\T (\hSigma + \rho I)^{-1} \beta_0 \asto r^2 m_F(-\rho). 
 \]
 Returning to \eqref{eq:ls_min_bias_iso}, some calculations involving the
 Moore-Osgood theorem (whose details we omit) allow us to switch the order of the
-limits as $n,d \to \infty$ and $z \to 0$, yielding
+limits as $n,d \to \infty$ and $\rho \to 0$, yielding
 \begin{align}
 \nonumber
-\Bias_X(\hbeta; \beta_0) &\asto r^2 \lim_{z \to 0} \, z m_F(-z) \\
+\Bias_X(\hbeta; \beta_0) &\asto r^2 \lim_{\rho \to 0} \, \rho \, m_F(-\rho) \\
 \nonumber
-&= r^2 \lim_{z \to 0} \, \frac{-(1 - \gamma + z) + \sqrt{(1 - \gamma + z)^2 +
-  4 \gamma z}}{2 \gamma} \\
+&= r^2 \lim_{\rho \to 0} \, \frac{-(1 - \gamma + \rho) + \sqrt{(1 - \gamma +
+  \rho)^2 + 4 \gamma \rho}}{2 \gamma} \\
 \nonumber
 &= r^2 \frac{-(1-\gamma) + (\gamma-1)}{2 \gamma} \\
 \label{eq:ls_min_bias_iso_limit}
@@ -337,7 +337,7 @@ speaking). From \eqref{eq:ls_min_var}, we have
 \[
 V_X(\hbeta; \beta_0) = \sigma^2 \sum_{i=1}^n \frac{1}{s_i(X^\T X)},
 \]
-where $s_i(X^\T X/n)$, $i=1,\dots,n$ denote the nonzero eigenvalues of $X^\T 
+where $s_i(X^\T X/n)$, $i=1,\dots,n$ denote the nonzero eigenvalues of $X^\T  
 X/n$. Then because $X^\T X$ and $XX^\T$ always have the same nonzero
 eigenvalues, we may write this as
 \[
@@ -544,7 +544,8 @@ integrating \eqref{eq:ls_min_bias} over $\beta_0$,
 \end{equation}
 where $v_F$ is the companion Stieltjes transform of the limiting spectral
 distribution $F = F(H, \gamma)$ from the Marchenko-Pastur theorem (and
-\smash{$v_F(0) = \lim_{z \to 0} \, v_F(z)$} exists under our assumptions).  
+\smash{$v_F(0) = \lim_{\rho \to 0} \, v_F(-\rho)$} exists under our
+assumptions).   
 
 \paragraph{Variance analysis.}
 
@@ -557,12 +558,12 @@ whose details we also omit, one can show that for the variance in
 \end{equation}
 where again $v_F$ is the companion Stieltjes transform of the limiting spectral 
 distribution $F = F(H, \gamma)$ from the MP theorem (and
-\smash{$v'_F(0)/v_F(0)^2 = \lim_{z \to 0} \, v'_F(z)/v_F(z)^2$} exists under our
-assumptions). We emphasize that the variance calculation in
+\smash{$v'_F(0)/v_F(0)^2 = \lim_{\rho \to 0} \, v'_F(-\rho)/v_F(-\rho)^2$}
+exists under our assumptions). We emphasize that the variance calculation in 
 \eqref{eq:ls_min_var_limit} does not depend on the prior \eqref{eq:prior} and is
 fully general.    
 
-\paragraph{Investigation of asymptotics.}
+\paragraph{Inspecting the asymptotics.}
 
 We note that the some of the key dependence of
 \eqref{eq:ls_min_bias_bayes_limit}, \eqref{eq:ls_min_var_limit} on $\gamma$ is
@@ -571,7 +572,7 @@ depends on $\gamma$ (since $F$ does). While these asymptotic limit cannot be
 computed in closed-form for general covariance models (general $H$), they can be
 computed numerically by solving the Silverstein equation. This is done in
 \citet{hastie2022surprises}, in order to probe the asymptotic limits, and better
-understand how they behave. This reveals some interesting phenomenon, such as
+understand how they behave. This reveals some interesting phenomena, such as 
 the fact that stronger correlations can increase the variance, but decrease the
 Bayes bias. See Figure \ref{fig:risk_ec_ar}. 
 
@@ -608,7 +609,216 @@ beast: calculate the ridge bias for general $\Sigma$ and fixed $\beta_0$.
 
 \section{General $\Sigma$, fixed $\beta_0$}
 
-Todo. Following Sections 4 and 6 of \citet{hastie2022surprises}.
+For general $\Sigma$, and a fixed $\beta_0$, the ridge bias where (recall)
+\smash{$\hbeta_\lambda = (X^\T X + n \lambda I)^{-1} X^\T Y$} for $\lambda>0$,
+and  
+\begin{equation}
+\label{eq:ridge_bias}
+\Bias_X(\hbeta_\lambda; \beta_0) = \lambda^2 \beta_0^\T (\hSigma + \lambda
+I)^{-1} \Sigma (\hSigma + \lambda I)^{-1} \beta_0,
+\end{equation}
+and especially the ridgeless bias \eqref{eq:ls_min_bias}, are formidable
+calculations.   
+
+The variance calculations in the ridge or ridgeless risk expansions that we
+computed in the previous general $\Sigma$ analyses (in the ridge lecture, and in
+the last section) were done under the guise of a prior assumption on $\beta_0$,
+but this assumption did not actually matter for the variance terms, so they were
+already carried out in full generality anyway.     
+
+For the ridge bias, the main challenge is that the functional \smash{$(\hSigma + 
+  \lambda I)^{-1} \Sigma (\hSigma + \lambda I)^{-1}$} does not has a transparent
+deterministic equivalent; and similarly for the ridgeless bias. Only recently
+have results started to appear on the asymptotics of the ridge and ridgeless
+bias terms for general $\Sigma$ and $\beta_0$, see, e.g., \citet{wu2020optimal, 
+  richards2021asymptotics, hastie2022surprises}. We mainly follow the
+calculations in the latter paper (as they are, in a sense, the most general
+anyway), but in keeping with our style in these lectures thus far, we translate
+them to the language of deterministic equivalents. We only give some part of the
+details; for the remainder, see the supplementary notes posted on the course
+website.   
+
+\paragraph{Ridge bias analysis.}
+
+We start with the ridge bias calculation. We seek to use the generalized
+Marchenko-Pastur theorem from \citet{rubio2011spectral} (Theorem 2 in the ridge
+lecture notes), but it is not as of yet clearly applicable. There is one key
+trick: we rewrite \eqref{eq:ridge_bias} as
+\begin{equation}
+\label{eq:deriv_trick}
+\lambda^2 (\hSigma + \lambda I)^{-1} \Sigma (\hSigma + \lambda I)^{-1} = 
+-\frac{d}{d\rho} \bigg\{ \lambda (\hSigma + \lambda I + \rho \lambda 
+\Sigma)^{-1} \bigg\} \bigg|_{\rho=0}.  
+\end{equation}
+Note that this is similar in spirit to the way we have ``ridge-ified'' various
+functionals above that involve pseudoinverses, but it is technically different:
+the auxiliary parameter $\rho$ now multiplies $\lambda \Sigma$ (instead of simply
+multiplying the identity matrix, as above). Checking \eqref{eq:deriv_trick} can
+be done using the following general fact from matrix calculus: 
+\begin{equation}
+\label{eq:matrix_inv_deriv}
+\frac{dA^{-1}}{d\rho} = - A^{-1} \frac{dA}{d\rho} A^{-1},
+\end{equation}
+for an invertible matrix $A$ (where $dA/d\rho$ is to be understood
+elementwise). We can thus seek to compute a deterministic equivalent for the
+functional inside the derivative on the right-hand side in
+\eqref{eq:deriv_trick}, then differentiate with respect to $\rho$ and setting 
+$\rho=0$. 
+
+Towards this end, we rewrite it once more
+\begin{align}
+\nonumber
+\lambda (\hSigma + \lambda I + \rho \lambda \Sigma)^{-1} 
+&= \lambda \bigg( \Sigma^{1/2} \frac{Z^\T Z}{n} \Sigma^{1/2} + 
+  \lambda (I + \rho \Sigma) \bigg)^{-1} \\
+\label{eq:ridge_bias_wip1} 
+&= (I + \rho \Sigma)^{-1/2} \lambda (\hSigma_\rho + \lambda I)^{-1} 
+  (I + \rho \Sigma)^{-1/2},
+\end{align}
+where we define
+\[
+\hSigma_\rho = \Sigma_\rho^{1/2} \frac{Z^\T Z}{n} \Sigma_\rho^{1/2} 
+\quad \text{and} \quad 
+\Sigma_\rho = (I + \rho \Sigma)^{-1/2} \Sigma (I + \rho \Sigma)^{-1/2}. 
+\]
+Now the middle term in \eqref{eq:ridge_bias_wip1} has a deterministic equivalent 
+by the generalized MP theorem,  
+\begin{equation}
+\label{eq:ridge_bias_wip2}
+\lambda (\hSigma_\rho + \lambda I)^{-1} \asymp (c_n\Sigma_\rho + I)^{-1},
+\end{equation}
+where $c_n$ solves a particular fixed-point equation. Some calculations
+(detailed in the supplementary notes) show that, after differentiating
+\eqref{eq:ridge_bias_wip2} with respect to $\rho$ and taking $\rho=0$, we get 
+the following conclusion: assuming $\|\beta_0\|_2$ remains bounded, the ridge
+bias in \eqref{eq:ridge_bias} satisfies
+\begin{equation}
+\label{eq:ridge_bias_limit}
+\big| \Bias_X(\hbeta_\lambda; \beta_0) - (1+c_n) \beta_0^\T \Sigma (b_n \Sigma + 
+I)^{-2} \beta_0 \big| \asto 0, 
+\end{equation}
+where $b_n,c_n$ solve (recalling $\gamma_n = d/n$): 
+\begin{align}
+\label{eq:ridge_bn}
+\frac{1}{b_n} &= \lambda + \frac{\gamma_n}{d} \tr \big[ \Sigma (b_n \Sigma +
+  I)^{-1} \big]\\  
+\label{eq:ridge_cn}
+c_n &= \frac{\gamma_n \tr [ \Sigma^2 (b_n \Sigma + I)^{-2} ] / d}
+{b_n^{-2} - \gamma_n \tr [ \Sigma^2 (b_n \Sigma + I)^{-2} ] / d}.
+\end{align}
+There are different parametrizations available for these fixed-point equations
+(more later) but we choose to use the one above because it allows to send
+$\lambda \to 0$ in a graceful way, which we do next.
+
+\paragraph{Ridgeless bias analysis.}
+
+To derive ridgeless asymptotics, we let $\lambda \to 0$ in
+\eqref{eq:ridge_bias_limit}, \eqref{eq:ridge_bn}, \eqref{eq:ridge_cn} and defer
+the details (on why this is valid) to the supplement. This yields for the
+ridgeless estimator \smash{$\hbeta = (X^\T X)^+ X^\T Y$},
+\begin{equation}
+\label{eq:ridgeless_bias_limit}
+\big| \Bias_X(\hbeta; \beta_0) - (1+\tilde{c}_n) \beta_0^\T \Sigma (\tilde{b}_n
+\Sigma + I)^{-2} \beta_0 \big| \asto 0,  
+\end{equation}
+where \smash{$\tilde{b}_n, \tilde{c}_n$} solve
+\begin{align}
+\label{eq:ridgeless_bn}
+\frac{1}{\tilde{b}_n} &= \frac{\gamma_n}{d} \tr \big[ \Sigma (\tilde{b}_n \Sigma
+  + I)^{-1} \big]\\  
+\label{eq:ridgeless_cn}
+\tilde{c}_n &= \frac{\gamma_n \tr [ \Sigma^2 (\tilde{b}_n \Sigma + I)^{-2} ] /
+  d}{\tilde{b}_n^{-2} - \gamma_n \tr [ \Sigma^2 (\tilde{b}_n \Sigma + I)^{-2} ]
+  / d}. 
+\end{align}
+
+\paragraph{Companion Stieltjes formulation.} 
+
+The fixed-point equations above can understood from an asymptotic point of view
+as follows. Recall the Silverstein equation, which the uniquely defines the
+companion Stieltjes transform $v_F$ of the limiting spectral measure $F$ in the
+Marchenko-Pastur theorem,  
+\begin{equation}
+\label{eq:silverstein}
+\frac{1}{v_F(-\lambda)} = \lambda + \gamma \int \frac{s}{s v_F(-\lambda) + 1} \,
+dH(s).  
+\end{equation}
+Writing $b$ for the limit of $b_n$, we can see that as $n,d \to \infty$, the the
+fixed-point equation \eqref{eq:ridge_bn} converges to the Silverstein equation,
+with the relationship $b = v_F(-\lambda)$. (Note that we used a similar argument
+in ridge calculations in the last lecture, where we encountered a
+reparametrization of the fixed-point equation \eqref{eq:ridge_bn} with $a_n =
+\lambda b_n$.) In other words, to be clear, we have learned that $b_n \to
+v_F(-\lambda)$.
+
+What of the limit of $c_n$? First write
+\begin{equation}
+\label{eq:ridge_cn2}
+1 + c_n = \frac{b_n^{-2}}{b_n^{-2} - \gamma_n \tr [ \Sigma^2 (b_n \Sigma +
+  I)^{-2} ] / d}. 
+\end{equation}
+Now go back and differentiate \eqref{eq:silverstein} with respect to $\lambda$; 
+this gives, using the matrix calculus fact \eqref{eq:matrix_inv_deriv} once
+again for the right-hand side,
+\[
+\frac{v'_F(-\lambda)}{v_F(-\lambda)^2} = 1 + \gamma v'_F(-\lambda) \int
+\frac{s^2}{(s v_F(-\lambda) + 1)^2} \, dH(s).
+\]
+Simply solving for $v'_F(-\lambda)$, we get 
+\[
+v'_F(-\lambda) = \frac{1}{\frac{1}{v_F(-\lambda)^2} - \gamma \int \frac{s^2}{(s 
+    v_F(-\lambda) + 1)^2} \, dH(s)}. 
+\]
+Therefore we can see from \eqref{eq:ridge_cn2} (and the fact that $b_n \to
+v_F(-\lambda)$) that $1+c_n \to v'_F(-\lambda) / v_F(-\lambda)^2$. 
+
+Putting this together,\eqref{eq:ridge_bias_limit}, we can write the
+ridge bias result in ``semi-asymptotic'' form (where we reduce $b_n,c_n$ to
+their asymptotic limits) as:    
+\begin{equation}
+\label{eq:ridge_bias_limit2}
+\bigg| \Bias_X(\hbeta_\lambda; \beta_0) - \frac{v'_F(-\lambda)}{v_F(-\lambda)^2}
+\beta_0^\T \Sigma \big( v_F(-\lambda) \Sigma + I \big)^{-2} \beta_0 \bigg| \asto
+0.
+\end{equation}
+By analogous reasoning, instead of \eqref{eq:ridgeless_bias_limit}, we can write
+the ridgeless bias result in ``semi-asymptotic'' form as:
+\begin{equation}
+\label{eq:ridgeless_bias_limit2}
+\bigg| \Bias_X(\hbeta_\lambda; \beta_0) - \frac{v'_F(0)}{v_F(0)^2} \beta_0^\T
+\Sigma \big( v_F(0) \Sigma + I \big)^{-2} \beta_0 \bigg| \asto 0.
+\end{equation}
+
+\paragraph{Inspecting the asymptotics.}
+
+The formulae in \eqref{eq:ridge_bias_limit2} and
+\eqref{eq:ridgeless_bias_limit2} are the most general ones that we have seen
+thus far for the ridge and ridgeless bias terms, respectively. Combined with our
+previous general variance calculations, they ``complete the picture'' for the
+asymptotic risk of ridge and ridgeless regression. However, they are not really
+closed-form, since they rely on the alignment of true signal vector $\beta_0$  
+with the population covariance matrix $\Sigma$, in a complex way.
+
+Nonetheless, we can inspect what happens for particular feature models. For
+example, an interesting finding, as studied empirically in
+\citet{kobak2020optimal}, occurs in an equicorrelated feature model, where
+$\Sigma_{ij} = 1$ if $i=j$ and $\rho$ otherwise. When $\beta_0$ is aligned with  
+the top eigenvector of $\Sigma$, then one will find that for a large enough SNR 
+and a large enough aspect ratio $\gamma_n = d/n$, the optimal ridge tuning
+parameter will be zero. This phenomenon should mathematically verifiable from  
+\eqref{eq:ridge_bias_limit2}, \eqref{eq:ridgeless_bias_limit2} and the
+corresponding variance results, and I will add the details to these notes at a
+later point.   
+
+(This relates to, but is simpler than, an asymptotic calculation from
+\citet{hastie2022surprises} for a latent feature model.) 
+
+\paragraph{Degrees of freedom perspective.}
+
+Very recently, \citet{bach2023high} provided a nice re-interpretation of
+\eqref{eq:ridge_bias_limit2}, \eqref{eq:ridgeless_bias_limit2} and the
+corresponding variance results from the perspective of (effective) degrees of
+freedom. I will also add the details to these notes at a later point. 
 
 \bibliographystyle{plainnat}
 \bibliography{../../common/ryantibs}
