@@ -52,7 +52,7 @@ for a tuning parameter $\lambda > 0$.
  
 \item Now, assuming $\lambda>0$, use the subgradient optimality condition for 
   the lasso problem to prove that the solution \smash{$\tilde\beta$} from part
-  (b) is supported on a subset of 
+  (b) has fit \smash{$X \tilde\beta$} is supported on a subset of 
   \marginpar{\small [3 pts]}
   \[
   \{ \pm X_j \}_{j=1}^d
@@ -60,7 +60,7 @@ for a tuning parameter $\lambda > 0$.
   that has affine dimension at most $n-1$.
 
   Hint: this is similar to the proof of Proposition 1 in the lasso lecture
-  notes. Assume that \smash{$\tilde\beta$} is a nonnegative combination of
+  notes. Assume that \smash{$X\tilde\beta$} is a nonnegative combination of
   exactly $n+1$ of $\pm X_j$, $j=1,\dots,d$. Then one of these $n+1$ vectors, 
   denote it by $s_i X_i$ (where \smash{$s_i = \sign(\tilde\beta_i)$}) can be
   written as a linear combination of the others. Take an inner product with the
@@ -114,7 +114,7 @@ random matrix theory conditions, as $n,d \to \infty$ and $d/n \to \gamma \in
 \Var_X(\hbeta) \asto 
 \begin{cases}
 \sigma^2 \frac{\gamma}{1-\gamma} & \text{for $\gamma < 1$} \\ 
-\sigma^2 \frac{1}{\gamma-1} & \text{for $\gamma < 1$}.
+\sigma^2 \frac{1}{\gamma-1} & \text{for $\gamma \geq 1$}.
 \end{cases}
 \end{equation}
 (The result for $\gamma < 1$ actually holds regardless of $\Sigma$.) Instead, we
