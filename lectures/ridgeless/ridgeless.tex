@@ -82,7 +82,7 @@ Given a response vector $Y \in \R^n$ and predictor matrix $X \in \R^{n \times
   d}$, as usual, we consider the \emph{minimum $\ell_2$ norm least squares} 
 (or simply min-norm least squares) estimator,
 \begin{equation}
-\label{eq:ls_min}
+\label{eq:ridgeless}
 \hbeta = (X^\T X)^+ X^\T Y,
 \end{equation}
 where $(X^\T X)^+$ denotes the Moore-Penrose pseudoinverse of $X^\T X$.
@@ -93,7 +93,7 @@ Equivalently, we can write this as
 \]
 which explains its name.  
 
-An alternative name for \eqref{eq:ls_min} is the ``ridgeless'' least squares
+An alternative name for \eqref{eq:ridgeless} is the ``ridgeless'' least squares 
 estimator. This is because it can be written as the limit of the ridge estimator
 for vanishing regularization:  
 \[
@@ -116,7 +116,7 @@ gradient descent on the least squares loss, yielding iterates
 \quad k=1,2,3,\dots,
 \]
 where we take the step size $t>0$ to be small enough. Then gradient descent
-converges to the min-norm least squares solution in \eqref{eq:ls_min}:
+converges to the min-norm least squares solution in \eqref{eq:ridgeless}: 
 \[
 \lim_{k \to \infty} \, \beta^{(k)} = \hbeta.
 \]
@@ -166,7 +166,7 @@ in the out-of-sample prediction risk, conditional on $X$,
 \,\big|\, X \big],
 \end{equation}
 where $x_0 = \Sigma^{1/2} z_0$ is i.i.d.\ to the rows of $X$. We will study the
-risk of min-norm least squares in \eqref{eq:ls_min}. 
+risk of min-norm least squares in \eqref{eq:ridgeless}.  
 
 \subsection{Summary}
 
@@ -236,32 +236,32 @@ of the lessons from linear feature models are preserved. You'll explore this
 \subsection{Plan-of-attack?}
 
 In general, there are two ways to proceed to derive the risk of the ridgeless
-regression estimator \eqref{eq:ls_min}. The first is to take asymptotic results
-for ridge regression (such as those we derived in the previous lecture) and then
-let $\lambda \to 0$, which typically requires us to be careful about how to
-resolve indeterminate limits. 
+regression estimator \eqref{eq:ridgeless}. The first is to take asymptotic
+results for ridge regression (such as those we derived in the previous lecture)
+and then let $\lambda \to 0$, which typically requires us to be careful about
+how to resolve indeterminate limits. 
 
 The second is to start with the bias and variance expressions for min-norm 
 least squares, and then carry out asymptotic calculations directly. Often, these
 calculations require us to ``ridge-ify'' some of the matrix functionals
 that involve pseudoinverses, and then let the auxiliary ridge parameter tend to
-zero. Curiously, the ``ridge-ified'' functionals in the second approach are not
-always exactly the same as those that appear in the asymptotic calculations for
-ridge regression, and the former can sometimes be easier to analyze in the
-ridgeless limit (of course we must end up with the same answers at the end with
-either approach).   
+zero. So they will bear strong similarites to the ridge calculations
+anyway. Curiously, the ``ridge-ified'' functionals in the second approach need
+not be exactly the same as those that appear in the asymptotic calculations for 
+ridge regression (though of course we must end up with the same answers at the
+end with either approach).    
 
 We will generally follow the second plan-of-attack, if only to give you more
 exposure to the elegant and powerful nature of random matrix theory. (Though to
 be frank in what follows we will only really cover the proof details for the 
 isotropic case.) In preparation for this, it is helpful to rewrite the ridgeless
-estimator  \eqref{eq:ls_min} as \smash{$\hbeta = (X^\T X/n)^+ X^\T Y/n$}, and
+estimator  \eqref{eq:ridgeless} as \smash{$\hbeta = (X^\T X/n)^+ X^\T Y/n$}, and
 helpful to record the bias and variance components of its risk:  
 \begin{align}
-\label{eq:ls_min_bias}
+\label{eq:ridgeless_bias}
 \Bias_X(\hbeta; \beta_0) &= \beta_0^\T (I - \hSigma^+ \hSigma) \Sigma 
   (I - \hSigma^+ \hSigma) \beta_0 \\  
-\label{eq:ls_min_var}
+\label{eq:ridgeless_var}
 \Var_X(\hbeta) &= \frac{\sigma^2}{n} \tr (\hSigma^+ \Sigma),
 \end{align}
 where \smash{$\hSigma = X^\T X/n$}, which follows from calculations similar to
@@ -275,7 +275,7 @@ vector in \eqref{eq:model}. Below we analyze the bias and variance separately.
 
 \paragraph{Bias analysis.}
 
-When $\Sigma = I$, the bias \eqref{eq:ls_min_bias} becomes 
+When $\Sigma = I$, the bias \eqref{eq:ridgeless_bias} becomes 
 \begin{align}
 \nonumber
 \Bias_X(\hbeta; \beta_0) 
@@ -283,7 +283,7 @@ When $\Sigma = I$, the bias \eqref{eq:ls_min_bias} becomes
 \nonumber
 &= \lim_{\rho \to 0} \, \beta_0^\T \big[ I - (\hSigma + \rho I)^{-1} \hSigma  
   \big] \beta_0 \\   
-\label{eq:ls_min_bias_iso}
+\label{eq:ridgeless_bias_iso}
 &= \lim_{\rho \to 0} \, \rho \beta_0^\T (\hSigma + \rho I)^{-1} \beta_0,  
 \end{align}
 where in the second line we used the general fact \smash{$(A^\T A)^+ A^\T =
@@ -313,18 +313,18 @@ $-\rho$. Thus we have $1/(a_n + \rho) \to m_F(-\rho)$, and
 \[
 \beta_0^\T (\hSigma + \rho I)^{-1} \beta_0 \asto r^2 m_F(-\rho). 
 \]
-Returning to \eqref{eq:ls_min_bias_iso}, some calculations involving the
+Returning to \eqref{eq:ridgeless_bias_iso}, some calculations involving the
 Moore-Osgood theorem (whose details we omit) allow us to switch the order of the
 limits as $n,d \to \infty$ and $\rho \to 0$, yielding
 \begin{align}
 \nonumber
-\Bias_X(\hbeta; \beta_0) &\asto r^2 \lim_{\rho \to 0} \, \rho \, m_F(-\rho) \\
+\Bias_X(\hbeta; \beta_0) &\asto r^2 \lim_{\rho \to 0} \, \rho m_F(-\rho) \\
 \nonumber
 &= r^2 \lim_{\rho \to 0} \, \frac{-(1 - \gamma + \rho) + \sqrt{(1 - \gamma +
   \rho)^2 + 4 \gamma \rho}}{2 \gamma} \\
 \nonumber
 &= r^2 \frac{-(1-\gamma) + (\gamma-1)}{2 \gamma} \\
-\label{eq:ls_min_bias_iso_limit}
+\label{eq:ridgeless_bias_iso_limit}
 &= r^2 \Big( 1- \frac{1}{\gamma} \Big),
 \end{align}
 where to compute the limit we have used the explicit form of the Stieltjes
@@ -333,7 +333,7 @@ transform of the MP law (as covered in the ridge lecture notes).
 \paragraph{Variance analysis.}
 
 When $\Sigma = I$, the variance analysis is actually quite easy (relatively
-speaking). From \eqref{eq:ls_min_var}, we have
+speaking). From \eqref{eq:ridgeless_var}, we have
 \[
 V_X(\hbeta; \beta_0) = \sigma^2 \sum_{i=1}^n \frac{1}{s_i(X^\T X)},
 \]
@@ -348,17 +348,17 @@ The rightmost term above is precisely the form of the variance in the
 underparametrized case, but with $X^\T$ in place of $X$. Thus, denoting $\tau =
 n/d < 1$, we conclude from our previous analysis that  
 \begin{equation}
-\label{eq:ls_min_var_iso_limit}
+\label{eq:ridgeless_var_iso_limit}
 V_X(\hbeta; \beta) \asto \sigma^2 \frac{\tau}{1-\tau} = \sigma^2 
 \frac{1}{\gamma-1},  
 \end{equation}
 
 \paragraph{Putting it together.}
 
-Adding the bias \eqref{eq:ls_min_bias_iso_limit} and variance results
-\eqref{eq:ls_min_var_iso_limit} together, we get
+Adding the bias \eqref{eq:ridgeless_bias_iso_limit} and variance results
+\eqref{eq:ridgeless_var_iso_limit} together, we get
 \begin{equation}
-\label{eq:ls_min_risk_iso_limit}
+\label{eq:ridgeless_risk_iso_limit}
 \Risk_X(\hbeta; \beta_0) \asto r^2 \Big( 1- \frac{1}{\gamma} \Big) + \sigma^2 
 \frac{1}{\gamma-1}. 
 \end{equation}
@@ -379,10 +379,10 @@ risk profile over $\gamma$.
 \centering
 \includegraphics[width=0.6\textwidth]{risk_iso.pdf}
 \caption{\it The asymptotic risk of least squares \eqref{eq:ls_risk_limit} for
-  $\gamma<1$ and min-norm least squares \eqref{eq:ls_min_risk_iso_limit} for
-  $\gamma>1$, where the latter assumes $\Sigma = I$, the isotropic
-  case. Different colors represent different values of $\mathrm{SNR} = r^2 /
-  \sigma^2$. The points denote finite-sample risks, computed from i.i.d.\
+  $\gamma<1$ and min-norm least squares \eqref{eq:ridgeless_risk_iso_limit} for 
+  $\gamma>1$, where the latter assumes $\Sigma = I$, the isotropic case.
+  Different colors represent different values of $\mathrm{SNR} = r^2 /
+  \sigma^2$. The points denote finite-sample risks, computed from i.i.d.\ 
   standard Gaussian features with $n=200$ and $d=[\gamma n]$ for varying
   $\gamma$. Credit: \citet{hastie2022surprises}.}  
 \label{fig:risk_iso}
@@ -410,8 +410,8 @@ Everything is the same as before, with respect to the distributions of $X$ and
 $\epsilon$. But now we have an additional part of the mean function that is
 driven by $W$, which we treat as a matrix of \emph{unobserved} features (that we 
 do not have in hand). Thus we still just carry out regression of $Y$ on $X$, as
-in \eqref{eq:ls_min}. In this context, we call \eqref{eq:model_mis} a
-\emph{misspecified} model, and analogous to \eqref{eq:risk}, we are now
+in \eqref{eq:ridgeless}. In this context, we call \eqref{eq:model_mis} a
+\emph{misspecified} model, and analogous to \eqref{eq:risk}, we are now 
 interested in risk defined as:
 \begin{equation}
 \label{eq:risk_mis}
@@ -467,8 +467,8 @@ r^2=\|\beta_0\|_2^2+\|\theta_0\|_2^2 \quad \text{and} \quad
 which represents the total signal energy and the the fraction of the signal
 energy captured by the observed features, respectively. Then \smash{$L_X(\hbeta;
   \beta_0, \theta_0)$} behaves exactly as we computed previously, in
-\eqref{eq:ls_risk_limit} for $\gamma<1$ and \eqref{eq:ls_min_risk_iso_limit} for
-$\gamma>1$, after we make the substitutions:     
+\eqref{eq:ls_risk_limit} for $\gamma<1$ and \eqref{eq:ridgeless_risk_iso_limit}
+for $\gamma>1$, after we make the substitutions:     
 \[
 r^2 \mapsto r^2 \kappa \quad \text{and} \quad
 \sigma^2 \mapsto \sigma^2 + r^2 (1-\kappa).
@@ -479,7 +479,7 @@ M(\beta_0, \theta_0) = \E[(w_0^\T \theta_0)^2] = r^2 (1-\kappa).
 \]
 Putting these results together leads to the following conclusion:
 \begin{equation}
-\label{eq:ls_min_risk_iso_mis_limit}
+\label{eq:ridgeless_risk_iso_mis_limit}
 \Risk_X(\hbeta; \beta_0; \theta_0) \asto 
 \begin{cases}
 r^2(1-\kappa) + \big(r^2(1-\kappa) + \sigma^2\big) 
@@ -492,7 +492,7 @@ r^2(1-\kappa) + r^2 \kappa \big(1-\frac{1}{\gamma}\big)
 
 \subsection{Interpretation}
 
-To interpret the risk profiles \eqref{eq:ls_min_risk_iso_mis_limit} in the
+To interpret the risk profiles \eqref{eq:ridgeless_risk_iso_mis_limit} in the 
 misspecified setting, we will need to specify a relationship between $\kappa$
 and $\gamma$. Since adding features should generally improve our approximation
 capacity, it is reasonable to model $\kappa=\kappa(\gamma)$ as an increasing 
@@ -506,7 +506,7 @@ $\gamma > 1$.
 \centering
 \includegraphics[width=0.6\textwidth]{risk_iso_mis.pdf}
 \caption{\it The asymptotic risk of min-norm least squares in the misspecified
-  setting \eqref{eq:ls_min_risk_iso_mis_limit}, with isotropic observed and
+  setting \eqref{eq:ridgeless_risk_iso_mis_limit}, with isotropic observed and 
   unobserved feature covariances, and $1-\kappa(\gamma) = (1+\gamma)^{-a}$. We
   set $\mathrm{SNR} = r^2 / \sigma^2 = 5$. Different colors represent different
   values of $a$. As in Figure \ref{fig:risk_iso}, the points denote
@@ -526,7 +526,7 @@ capacity. This is an analogy to what a feature generator can do for us.
 \section{General $\Sigma$, random $\beta_0$}
 
 In the general $\Sigma$ case, just as in the ridge analysis, the bias in 
-\eqref{eq:ls_min_bias} is especially difficult to calculate. We can make
+\eqref{eq:ridgeless_bias} is especially difficult to calculate. We can make
 progress by placing a spherical prior on $\beta_0$, such that        
 \begin{equation}
 \label{eq:prior}
@@ -537,9 +537,9 @@ progress by placing a spherical prior on $\beta_0$, such that
 
 By similar arguments to those in the isotropic case above and the ridge lecture,
 whose details we omit, one can show that for the Bayes bias, given by
-integrating \eqref{eq:ls_min_bias} over $\beta_0$,
+integrating \eqref{eq:ridgeless_bias} over $\beta_0$,
 \begin{equation}
-\label{eq:ls_min_bias_bayes_limit}
+\label{eq:ridgeless_bias_bayes_limit}
 \Bias_X(\hbeta) \asto \frac{r^2}{\gamma} \frac{1}{v_F(0)},  
 \end{equation}
 where $v_F$ is the companion Stieltjes transform of the limiting spectral
@@ -551,30 +551,30 @@ assumptions).
 
 Again by similar arguments to those in the isotropic case and the ridge lecture,
 whose details we also omit, one can show that for the variance in
-\eqref{eq:ls_min_var},  
+\eqref{eq:ridgeless_var},  
 \begin{equation}
-\label{eq:ls_min_var_limit}
+\label{eq:ridgeless_var_limit}
 \Var_X(\hbeta) \asto \sigma^2 \bigg(\frac{v'_F(0)}{v_F(0)^2} - 1 \bigg),
 \end{equation}
 where again $v_F$ is the companion Stieltjes transform of the limiting spectral 
 distribution $F = F(H, \gamma)$ from the MP theorem (and
 \smash{$v'_F(0)/v_F(0)^2 = \lim_{\rho \to 0} \, v'_F(-\rho)/v_F(-\rho)^2$}
 exists under our assumptions). We emphasize that the variance calculation in 
-\eqref{eq:ls_min_var_limit} does not depend on the prior \eqref{eq:prior} and is
+\eqref{eq:ridgeless_var_limit} does not depend on the prior \eqref{eq:prior} and is
 fully general.    
 
 \paragraph{Inspecting the asymptotics.}
 
 We note that the some of the key dependence of
-\eqref{eq:ls_min_bias_bayes_limit}, \eqref{eq:ls_min_var_limit} on $\gamma$ is
-hidden in the Stieltjes transform terms $v_F(0)$, $v'_F(0)$, which themselves
-depends on $\gamma$ (since $F$ does). While these asymptotic limit cannot be
-computed in closed-form for general covariance models (general $H$), they can be
-computed numerically by solving the Silverstein equation. This is done in
-\citet{hastie2022surprises}, in order to probe the asymptotic limits, and better
-understand how they behave. This reveals some interesting phenomena, such as 
-the fact that stronger correlations can increase the variance, but decrease the
-Bayes bias. See Figure \ref{fig:risk_ec_ar}. 
+\eqref{eq:ridgeless_bias_bayes_limit}, \eqref{eq:ridgeless_var_limit} on
+$\gamma$ is hidden in the Stieltjes transform terms $v_F(0)$, $v'_F(0)$, which
+themselves depends on $\gamma$ (since $F$ does). While these asymptotic limit
+cannot be computed in closed-form for general covariance models (general $H$),
+they can be computed numerically by solving the Silverstein equation. This is
+done in \citet{hastie2022surprises}, in order to probe the asymptotic limits,
+and better understand how they behave. This reveals some interesting phenomena,
+such as  the fact that stronger correlations can increase the variance, but
+decrease the Bayes bias. See Figure \ref{fig:risk_ec_ar}.  
 
 \begin{figure}[p]
 \centering
@@ -617,7 +617,7 @@ and
 \Bias_X(\hbeta_\lambda; \beta_0) = \lambda^2 \beta_0^\T (\hSigma + \lambda
 I)^{-1} \Sigma (\hSigma + \lambda I)^{-1} \beta_0,
 \end{equation}
-and especially the ridgeless bias \eqref{eq:ls_min_bias}, are formidable
+and especially the ridgeless bias \eqref{eq:ridgeless_bias}, are formidable 
 calculations.   
 
 The variance calculations in the ridge or ridgeless risk expansions that we
@@ -732,9 +732,9 @@ where \smash{$\tilde{b}_n, \tilde{c}_n$} solve
   / d}. 
 \end{align}
 
-\paragraph{Companion Stieltjes formulation.} 
+\paragraph{``Semi-asymptotic'' formulations.} 
 
-The fixed-point equations above can understood from an asymptotic point of view
+The fixed-point equations above can understood from an asymptotic point of view, 
 as follows. Recall the Silverstein equation, which the uniquely defines the
 companion Stieltjes transform $v_F$ of the limiting spectral measure $F$ in the
 Marchenko-Pastur theorem,  
@@ -772,7 +772,7 @@ v'_F(-\lambda) = \frac{1}{\frac{1}{v_F(-\lambda)^2} - \gamma \int \frac{s^2}{(s
 Therefore we can see from \eqref{eq:ridge_cn2} (and the fact that $b_n \to
 v_F(-\lambda)$) that $1+c_n \to v'_F(-\lambda) / v_F(-\lambda)^2$. 
 
-Putting this together,\eqref{eq:ridge_bias_limit}, we can write the
+Putting this together, instead of \eqref{eq:ridge_bias_limit}, we can write the 
 ridge bias result in ``semi-asymptotic'' form (where we reduce $b_n,c_n$ to
 their asymptotic limits) as:    
 \begin{equation}
@@ -791,13 +791,34 @@ the ridgeless bias result in ``semi-asymptotic'' form as:
 
 \paragraph{Inspecting the asymptotics.}
 
-The formulae in \eqref{eq:ridge_bias_limit2} and
-\eqref{eq:ridgeless_bias_limit2} are the most general ones that we have seen
-thus far for the ridge and ridgeless bias terms, respectively. Combined with our
-previous general variance calculations, they ``complete the picture'' for the
-asymptotic risk of ridge and ridgeless regression. However, they are not really
-closed-form, since they rely on the alignment of true signal vector $\beta_0$  
-with the population covariance matrix $\Sigma$, in a complex way.
+The formulae in \eqref{eq:ridge_bias_limit2} (or \eqref{eq:ridge_bias_limit},
+\eqref{eq:ridge_bn}, \eqref{eq:ridge_cn} for the finite-sample versions) and 
+\eqref{eq:ridgeless_bias_limit2} (or \eqref{eq:ridgeless_bias_limit},
+\eqref{eq:ridgeless_bn}, \eqref{eq:ridgeless_cn}) are the most general ones that
+we have seen thus far for the ridge and ridgeless bias terms,
+respectively. Combined with our previous general variance calculations, 
+this completes the picture for the asymptotic risk of ridge and ridgeless
+regression. For concreteness, the results (writing the bias terms in
+``semi-asymptotic'' form) are as follows:
+\begin{gather}
+\label{eq:ridge_risk_limit2}
+\bigg| \Risk_X(\hbeta_\lambda; \beta_0) - \bigg[
+\frac{v'_F(-\lambda)}{v_F(-\lambda)^2} \beta_0^\T \Sigma \big( v_F(-\lambda)
+\Sigma + I \big)^{-2} \beta_0 + \sigma^2 \bigg(
+\frac{v'_F(-\lambda)}{v_F(-\lambda)^2} - 1 \bigg) \bigg|  \asto 0, \\     
+\label{eq:ridgeless_risk_limit2}
+\bigg| \Risk_X(\hbeta; \beta_0) - \bigg[ \frac{v'_F(0)}{v_F(0)^2} \beta_0^\T
+\Sigma \big( v_F(0) \Sigma + I \big)^{-2} \beta_0 + \sigma^2 \bigg(
+\frac{v'_F(0)}{v_F(0)^2} - 1 \bigg) \bigg] \bigg| \asto 0.
+\end{gather}
+To be clear, the result in \eqref{eq:ridge_risk_limit2} holds for any $\gamma$
+and that in \eqref{eq:ridgeless_risk_limit2} holds for $\gamma>1$.
+
+Unfortunately, these are not really closed-form, since they rely not only on the
+companion Stieltjes transform $v_F$ of the limiting spectral distribution $F$
+from the MP theorem (which is not closed-form for general $H$), but moreover,
+the bias terms depend on the alignment of true signal vector $\beta_0$ with the
+population covariance matrix $\Sigma$, in a complex way.  
 
 Nonetheless, we can inspect what happens for particular feature models. For
 example, an interesting finding, as studied empirically in
