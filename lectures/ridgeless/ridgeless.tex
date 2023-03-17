@@ -237,26 +237,28 @@ of the lessons from linear feature models are preserved. You'll explore this
 
 In general, there are two ways to proceed to derive the risk of the ridgeless
 regression estimator \eqref{eq:ridgeless}. The first is to take asymptotic
-results for ridge regression (such as those we derived in the previous lecture)
-and then let $\lambda \to 0$, which typically requires us to be careful about
-how to resolve indeterminate limits. 
+results for ridge regression (like those we derived in the previous lecture) and 
+then let $\lambda \to 0$, which requires being careful about why we can exchange
+limits (as $\lambda \to 0$ and $n,d \to \infty$).  
 
 The second is to start with the bias and variance expressions for min-norm 
 least squares, and then carry out asymptotic calculations directly. Often, these
 calculations require us to ``ridge-ify'' some of the matrix functionals
 that involve pseudoinverses, and then let the auxiliary ridge parameter tend to
-zero. So they will bear strong similarites to the ridge calculations
+zero. So they will typically bear strong similarites to the ridge calculations 
 anyway. Curiously, the ``ridge-ified'' functionals in the second approach need
-not be exactly the same as those that appear in the asymptotic calculations for 
-ridge regression (though of course we must end up with the same answers at the
-end with either approach).    
+not be \emph{exactly} the same as those in the asymptotic calculations for ridge
+regression (though of course we must end up with the same answers with either
+approach).           
 
-We will generally follow the second plan-of-attack, if only to give you more
-exposure to the elegant and powerful nature of random matrix theory. (Though to
-be frank in what follows we will only really cover the proof details for the 
-isotropic case.) In preparation for this, it is helpful to rewrite the ridgeless
-estimator  \eqref{eq:ridgeless} as \smash{$\hbeta = (X^\T X/n)^+ X^\T Y/n$}, and
-helpful to record the bias and variance components of its risk:  
+We will follow the second approach to analyze the ridgeless estimator in the
+isotropic case, $\Sigma = I$, if only to give you more exposure to the elegant
+and powerful nature of random matrix theory. For general $\Sigma$ we do not give
+as many proof details, but will tend to follow the first approach, deriving
+ridgeless limits from ridge limits. In preparation for calculations to come, it
+is helpful to rewrite the ridgeless estimator  \eqref{eq:ridgeless} as
+\smash{$\hbeta = (X^\T X/n)^+ X^\T Y/n$}, and helpful to record the bias and
+variance components of its risk:     
 \begin{align}
 \label{eq:ridgeless_bias}
 \Bias_X(\hbeta; \beta_0) &= \beta_0^\T (I - \hSigma^+ \hSigma) \Sigma 
@@ -535,9 +537,10 @@ progress by placing a spherical prior on $\beta_0$, such that
 
 \paragraph{Bias analysis.}
 
-By similar arguments to those in the isotropic case above and the ridge lecture,
-whose details we omit, one can show that for the Bayes bias, given by
-integrating \eqref{eq:ridgeless_bias} over $\beta_0$,
+By taking a limit as $\lambda \to 0$ in the Bayes bias result from the ridge
+lecture (or by starting from \eqref{eq:ridgeless_bias}, integrating over
+$\beta_0$, and following similar arguments to the isotropic case above),  
+one can show  
 \begin{equation}
 \label{eq:ridgeless_bias_bayes_limit}
 \Bias_X(\hbeta) \asto \frac{r^2}{\gamma} \frac{1}{v_F(0)},  
@@ -549,9 +552,9 @@ assumptions).
 
 \paragraph{Variance analysis.}
 
-Again by similar arguments to those in the isotropic case and the ridge lecture,
-whose details we also omit, one can show that for the variance in
-\eqref{eq:ridgeless_var},  
+Again by taking a limit as $\lambda \to 0$ in the variance calculation from the
+ridge lecture (or by starting from \eqref{eq:ridgeless_var}, and following
+similar arguments to the isotropic case above), one can show  
 \begin{equation}
 \label{eq:ridgeless_var_limit}
 \Var_X(\hbeta) \asto \sigma^2 \bigg(\frac{v'_F(0)}{v_F(0)^2} - 1 \bigg),
@@ -713,9 +716,9 @@ $\lambda \to 0$ in a graceful way, which we do next.
 \paragraph{Ridgeless bias analysis.}
 
 To derive ridgeless asymptotics, we let $\lambda \to 0$ in
-\eqref{eq:ridge_bias_limit}, \eqref{eq:ridge_bn}, \eqref{eq:ridge_cn} and defer
-the details (on why this is valid) to the supplement. This yields for the
-ridgeless estimator \smash{$\hbeta = (X^\T X)^+ X^\T Y$},
+\eqref{eq:ridge_bias_limit}, \eqref{eq:ridge_bn}, \eqref{eq:ridge_cn}. The
+supplement gives details on why this is valid. This yields for the ridgeless
+estimator \smash{$\hbeta = (X^\T X)^+ X^\T Y$}, 
 \begin{equation}
 \label{eq:ridgeless_bias_limit}
 \big| \Bias_X(\hbeta; \beta_0) - (1+\tilde{c}_n) \beta_0^\T \Sigma (\tilde{b}_n
@@ -773,8 +776,8 @@ Therefore we can see from \eqref{eq:ridge_cn2} (and the fact that $b_n \to
 v_F(-\lambda)$) that $1+c_n \to v'_F(-\lambda) / v_F(-\lambda)^2$. 
 
 Putting this together, instead of \eqref{eq:ridge_bias_limit}, we can write the 
-ridge bias result in ``semi-asymptotic'' form (where we reduce $b_n,c_n$ to
-their asymptotic limits) as:    
+ridge bias in ``semi-asymptotic'' form (where we reduce $b_n,c_n$ to their
+asymptotic limits) as:     
 \begin{equation}
 \label{eq:ridge_bias_limit2}
 \bigg| \Bias_X(\hbeta_\lambda; \beta_0) - \frac{v'_F(-\lambda)}{v_F(-\lambda)^2}
@@ -782,7 +785,7 @@ their asymptotic limits) as:
 0.
 \end{equation}
 By analogous reasoning, instead of \eqref{eq:ridgeless_bias_limit}, we can write
-the ridgeless bias result in ``semi-asymptotic'' form as:
+the ridgeless bias in ``semi-asymptotic'' form as:
 \begin{equation}
 \label{eq:ridgeless_bias_limit2}
 \bigg| \Bias_X(\hbeta_\lambda; \beta_0) - \frac{v'_F(0)}{v_F(0)^2} \beta_0^\T
@@ -824,12 +827,11 @@ Nonetheless, we can inspect what happens for particular feature models. For
 example, an interesting finding, as studied empirically in
 \citet{kobak2020optimal}, occurs in an equicorrelated feature model, where
 $\Sigma_{ij} = 1$ if $i=j$ and $\rho$ otherwise. When $\beta_0$ is aligned with  
-the top eigenvector of $\Sigma$, then one will find that for a large enough SNR 
-and a large enough aspect ratio $\gamma_n = d/n$, the optimal ridge tuning
-parameter will be zero. This phenomenon should mathematically verifiable from  
-\eqref{eq:ridge_bias_limit2}, \eqref{eq:ridgeless_bias_limit2} and the
-corresponding variance results, and I will add the details to these notes at a
-later point.   
+the top eigenvector of $\Sigma$, then one will find that for a large enough
+aspect ratio $\gamma_n = d/n$ (and large enough SNR), the optimal ridge tuning
+parameter will be zero. This phenomenon should be mathematically verifiable from 
+\eqref{eq:ridge_risk_limit2}, \eqref{eq:ridgeless_risk_limit2}, and I will add
+the details to these notes at a later point.   
 
 (This relates to, but is simpler than, an asymptotic calculation from
 \citet{hastie2022surprises} for a latent feature model.) 
