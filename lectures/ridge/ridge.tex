@@ -188,7 +188,7 @@ can rewrite the min-norm solution (assuming that $d+D > n$ and \smash{$\tilde
 &= [X; \tau \tilde Z]^\T (XX^\T + \tau^2 \tilde Z \tilde Z^\T)^{-1} Y,  
 \end{align*}
 where in the last line we have rescaled the noise features so that each
-\smash{$\tilde Z_{ij} = \tau^{-1} Z_{ij}$} has mean zero and unit variance. If
+\smash{$\tilde Z_{ij} = \tau^{-1} Z_{ij}$} has zero mean and unit variance. If 
 we take \smash{$\tau = \sqrt{\lambda/D}$}, then by the law of large numbers, 
 \[
 \frac{\lambda}{D} \tilde Z \tilde Z^\T \asto \lambda I, \quad \text{as $D \to
@@ -244,7 +244,7 @@ $x_i \in \R^d$, $i=1,\dots,n$, are i.i.d., and importantly, each one is a
 \begin{equation}
 \label{eq:x_model}
 x_i = \Sigma^{1/2} z_i, \quad \text{where $z_i \in \R^d$ has i.i.d.\ entries
-  with mean zero, unit variance.} 
+  with zero mean, unit variance.} 
 \end{equation}
 We'll allow the feature covariance matrix $\Sigma$ to be more or less arbitrary 
 (subject to some limiting conditions, described shortly), and the distribution
@@ -350,7 +350,7 @@ We can recognize the term inside the trace from the expression from the ridge
 solution at tuning parameter $n\lambda$: from \eqref{eq:ridge_sol}, this is
 \smash{$\hbeta = (\hSigma + \lambda I)^{-1} X^\T Y/n$}.
 
-\subsection{Marcenko-Pastur theorem}
+\subsection{Marchenko-Pastur theorem}
 
 We are now ready to state one of the most important results in random matrix
 theory, which is called the \emph{Marchenko-Pastur theorem}, or MP theorem, due
@@ -360,7 +360,7 @@ generalized by many other authors, including \citet{silverstein1995strong}.
 \begin{theorem}[\citealt{marchenko1967distribution, silverstein1995strong}]
 \label{thm:mp}
 Let $X = Z \Sigma^{1/2} \in \R^{n \times d}$, where the entries of $Z$ are
-i.i.d.\ from a distribution with mean zero and unit variance. Assume that as
+i.i.d.\ from a distribution with zero mean and unit variance. Assume that as
 $n,d \to \infty$, it holds that $d/n \to \gamma \in (0,\infty)$, and the
 spectral distribution of $\Sigma$ converges weakly, \smash{$F_\Sigma \dto H$},
 where $H$ is supported on $[0,\infty)$. Then, almost surely, the spectral
@@ -425,7 +425,7 @@ rise to our sample covariance matrix \smash{$\hSigma = X^\T X/n$} (recall the
 relationship $X = Z \Sigma^{1/2}$), \emph{we get the same limit $F$} for the
 spectral distribution of \smash{$\hSigma$}. This limit only depends on $\gamma$
 and $H$. So for example, in the isotropic case, we learn that if we populate the
-entries of $X$ with i.i.d.\ standardized (mean zero, unit variance) random
+entries of $X$ with i.i.d.\ standardized (zero mean, unit variance) random
 variables, whether they be Gaussian, Bernoulli, Poisson, t, etc., and plot a
 histogram of the eigenvalues of $X^\T X/n$ for large $n$, then it is ``very
 likely'' that they will look like they follow \eqref{eq:mp_law}. See again
@@ -472,7 +472,7 @@ MP theorem.
 \begin{theorem}[\citealt{rubio2011spectral}]
 \label{thm:rubio}
 Let $X = Z \Sigma^{1/2} \in \R^{n \times d}$, where the entries of $Z$ are
-i.i.d.\ from a distribution with mean zero, unit variance, and finite $8+\eta$
+i.i.d.\ from a distribution with zero mean, unit variance, and finite $8+\eta$ 
 moment, for some $\eta>0$. Assume that as $n,d \to \infty$, the aspect ratio 
 $\gamma_n = d/n$ remains bounded away from $0$ and $\infty$, as do the
 eigenvalues of $\Sigma$. Then the resolvent of \smash{$\hSigma = X^\T X/n$} is
@@ -532,7 +532,7 @@ and variance $\sigma^2$, and $\epsilon \indep X$. To clearly lay out the
 conditions on the features $X \in \R^{n \times d}$, we assume the following: 
 \begin{itemize}
 \item[(A1)] $X = Z \Sigma^{1/2}$, where the entries of $Z \in \R^{n \times d}$
-  are i.i.d.\ with mean zero and unit variance;
+  are i.i.d.\ with zero mean and unit variance;
 \item[(A2)] the covariance matrix $\Sigma \in \R^{d \times d}$ has eigenvalues
   bounded away from $0$ and $\infty$;  
 \item[(A3)] $d/n \to \gamma \in (0,1)$ as $n,d \to \infty$,
@@ -686,7 +686,7 @@ model, but considering the full range $\gamma \in (0,\infty)$. To be specfic, we
 assume:    
 \begin{itemize}
 \item[(B1)] $X = Z \Sigma^{1/2}$, where the entries of $Z \in \R^{n \times d}$
-  are i.i.d.\ with mean zero, unit variance, and finite $8+\eta$ moment, for
+  are i.i.d.\ with zero mean, unit variance, and finite $8+\eta$ moment, for
   some $\eta>0$; 
 \item[(B2)] the covariance matrix $\Sigma \in \R^{d \times d}$ has eigenvalues
   bounded away from $0$ and $\infty$, and satisfies \smash{$F_\Sigma \dto H$},
@@ -951,7 +951,7 @@ We remark that this variance calculation did not require the prior assumption
 Adding the bias \eqref{eq:ridge_bias_bayes_limit} and variance results
 \eqref{eq:ridge_var_limit} together, we get
 \begin{equation}
-\label{eq:ridge_risk_bayes_limit}
+\label{eq:ridge_risk_bayes_limit1}
 \Risk_X(\hbeta) \asto \sigma^2 \gamma \Big( \phi_F(-\lambda) - \lambda (1 -
 \alpha \lambda) \phi'_F(-\lambda) \Big),  
 \end{equation}
@@ -960,25 +960,43 @@ where as before $\alpha = r^2 / (\sigma^2 \gamma)$. Recall that
 \phi_F(z) = -\frac{1}{\gamma} \bigg( \frac{1}{z v_F(z)} + 1 \bigg),
 \]
 and $v_F$ is the companion Stieltjes transform of the limit $F$ of the spectral
-distribution of \smash{$\hSigma$}, as given by Theorem \ref{thm:mp}.
+distribution of \smash{$\hSigma$}, as given by Theorem \ref{thm:mp}. It is worth
+noting the close similarity between the results in the general $\Sigma$ case
+\eqref{eq:ridge_risk_bayes_limit1} and in the $\Sigma = I$ case
+\eqref{eq:ridge_risk_iso_limit}, where $m_F$ in the latter plays the role of 
+$\phi_F$ in the former (we have written the asymptotic risk above precisely in
+this way in order to emphasize this connection). 
 
-It is worth noting the close similarity between the results in the general
-$\Sigma$ case \eqref{eq:ridge_risk_bayes_limit} and in the $\Sigma = I$ case  
-\eqref{eq:ridge_risk_iso_limit}, where $\phi_F$ in the latter plays the role of
-$m_F$ in the former. In the general $\Sigma$ case, while we were able to obtain
-an exact expression \eqref{eq:ridge_risk_bayes_limit} for the limiting risk,
-this expression is no longer explicit, as the solution $v_F$ to the
-Silverstein equation \eqref{eq:silverstein} is not explicit for general $H$. 
+There is an alternative formulation that we can obtain by simply calculating the 
+derivative of $\phi_F$, then reducing it to as simple terms as possible
+involving the companion Stieltjes transform $v_F$, which results in:     
+\begin{equation}
+\label{eq:ridge_risk_bayes_limit2}
+\Risk_X(\hbeta) \asto \frac{r^2}{\gamma} \bigg( \frac{1}{v_F(-\lambda)} -
+  \frac{\lambda v'_F(-\lambda)}{v_F(-\lambda)^2} \bigg) + \sigma^2 \bigg( 
+  \frac{v'_F(-\lambda)}{v_F(-\lambda)^2} - 1 \bigg).
+\end{equation}
 
-Still, remarkably, it is shown in \citet{dobriban2018high} that the
-asymptotically optimal tuning parameter value---the one that minimizes the 
-asymptotic risk in \eqref{eq:ridge_risk_bayes_limit}, is once again $\lambda^*   
-= 1/\alpha$, regardless of the sequence of covariance matrices $\Sigma$
-(regardless of $H$). Their argument is too clever to pass by in these notes, and
-so we outline it here. Specialize to the case where $\epsilon \sim N(0,\sigma^2
-I)$ and $\beta_0 \sim N(0, (r^2/d) I)$ in \eqref{eq:model} and \eqref{eq:prior},
-respectively. As we argued previously (recall \eqref{eq:normal_bayes},
-\eqref{eq:ridge_bayes}), note that the ridge estimator with
+It is worth being clear that, in the general $\Sigma$ case, while we were able
+to obtain an exact expressions for the limiting risk, either
+\eqref{eq:ridge_risk_bayes_limit1} or equivalently
+\eqref{eq:ridge_risk_bayes_limit2}, these are no longer truly closed-form, as
+the solution $v_F$ to the Silverstein equation \eqref{eq:silverstein} does not
+have an explicit closed-form for general $H$.  
+
+\paragraph{Optimal tuning.}
+
+Remarkably, despite the lack of a closed-form limiting risk, it is shown in
+\citet{dobriban2018high} that the asymptotically optimal tuning parameter
+value---the one that minimizes the asymptotic risk in
+\eqref{eq:ridge_risk_bayes_limit1} or \eqref{eq:ridge_risk_bayes_limit2}, is
+once again $\lambda^* = 1/\alpha$, regardless of the sequence of covariance
+matrices $\Sigma$ (regardless of $H$). Their argument is too clever to pass by
+in these notes, and so we outline it here. Specialize to the case where
+$\epsilon \sim N(0,\sigma^2 I)$ and $\beta_0 \sim N(0, (r^2/d) I)$ in
+\eqref{eq:model} and \eqref{eq:prior}, respectively. As we argued previously
+(recall \eqref{eq:normal_bayes}, \eqref{eq:ridge_bayes}), note that the ridge
+estimator with
 \[
 \lambda^*_n = (\sigma^2 d)/(r^2 n)
 \]
