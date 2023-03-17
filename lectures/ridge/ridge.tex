@@ -951,7 +951,7 @@ We remark that this variance calculation did not require the prior assumption
 Adding the bias \eqref{eq:ridge_bias_bayes_limit} and variance results
 \eqref{eq:ridge_var_limit} together, we get
 \begin{equation}
-\label{eq:ridge_risk_bayes_limit}
+\label{eq:ridge_risk_bayes_limit1}
 \Risk_X(\hbeta) \asto \sigma^2 \gamma \Big( \phi_F(-\lambda) - \lambda (1 -
 \alpha \lambda) \phi'_F(-\lambda) \Big),  
 \end{equation}
@@ -960,25 +960,43 @@ where as before $\alpha = r^2 / (\sigma^2 \gamma)$. Recall that
 \phi_F(z) = -\frac{1}{\gamma} \bigg( \frac{1}{z v_F(z)} + 1 \bigg),
 \]
 and $v_F$ is the companion Stieltjes transform of the limit $F$ of the spectral
-distribution of \smash{$\hSigma$}, as given by Theorem \ref{thm:mp}.
+distribution of \smash{$\hSigma$}, as given by Theorem \ref{thm:mp}. It is worth
+noting the close similarity between the results in the general $\Sigma$ case
+\eqref{eq:ridge_risk_bayes_limit1} and in the $\Sigma = I$ case
+\eqref{eq:ridge_risk_iso_limit}, where $m_F$ in the latter plays the role of 
+$\phi_F$ in the former (we have written the asymptotic risk above precisely in
+this way in order to emphasize this connection). 
 
-It is worth noting the close similarity between the results in the general
-$\Sigma$ case \eqref{eq:ridge_risk_bayes_limit} and in the $\Sigma = I$ case  
-\eqref{eq:ridge_risk_iso_limit}, where $\phi_F$ in the latter plays the role of
-$m_F$ in the former. In the general $\Sigma$ case, while we were able to obtain
-an exact expression \eqref{eq:ridge_risk_bayes_limit} for the limiting risk,
-this expression is no longer explicit, as the solution $v_F$ to the
-Silverstein equation \eqref{eq:silverstein} is not explicit for general $H$. 
+There is an alternative formulation that we can obtain by simply calculating the 
+derivative of $\phi_F$, then reducing it to as simple terms as possible
+involving the companion Stieltjes transform $v_F$, which results in:     
+\begin{equation}
+\label{eq:ridge_risk_bayes_limit2}
+\Risk_X(\hbeta) \asto \frac{r^2}{\gamma} \bigg( \frac{1}{v_F(-\lambda)} -
+  \frac{\lambda v'_F(-\lambda)}{v_F(-\lambda)^2} \bigg) + \sigma^2 \bigg( 
+  \frac{v'_F(-\lambda)}{v_F(-\lambda)^2} - 1 \bigg).
+\end{equation}
 
-Still, remarkably, it is shown in \citet{dobriban2018high} that the
-asymptotically optimal tuning parameter value---the one that minimizes the 
-asymptotic risk in \eqref{eq:ridge_risk_bayes_limit}, is once again $\lambda^*   
-= 1/\alpha$, regardless of the sequence of covariance matrices $\Sigma$
-(regardless of $H$). Their argument is too clever to pass by in these notes, and
-so we outline it here. Specialize to the case where $\epsilon \sim N(0,\sigma^2
-I)$ and $\beta_0 \sim N(0, (r^2/d) I)$ in \eqref{eq:model} and \eqref{eq:prior},
-respectively. As we argued previously (recall \eqref{eq:normal_bayes},
-\eqref{eq:ridge_bayes}), note that the ridge estimator with
+It is worth being clear that, in the general $\Sigma$ case, while we were able
+to obtain an exact expressions for the limiting risk, either
+\eqref{eq:ridge_risk_bayes_limit1} or equivalently
+\eqref{eq:ridge_risk_bayes_limit2}, these are no longer truly closed-form, as
+the solution $v_F$ to the Silverstein equation \eqref{eq:silverstein} does not
+have an explicit closed-form for general $H$.  
+
+\paragraph{Optimal tuning.}
+
+Remarkably, despite the lack of a closed-form limiting risk, it is shown in
+\citet{dobriban2018high} that the asymptotically optimal tuning parameter
+value---the one that minimizes the asymptotic risk in
+\eqref{eq:ridge_risk_bayes_limit1} or \eqref{eq:ridge_risk_bayes_limit2}, is
+once again $\lambda^* = 1/\alpha$, regardless of the sequence of covariance
+matrices $\Sigma$ (regardless of $H$). Their argument is too clever to pass by
+in these notes, and so we outline it here. Specialize to the case where
+$\epsilon \sim N(0,\sigma^2 I)$ and $\beta_0 \sim N(0, (r^2/d) I)$ in
+\eqref{eq:model} and \eqref{eq:prior}, respectively. As we argued previously
+(recall \eqref{eq:normal_bayes}, \eqref{eq:ridge_bayes}), note that the ridge
+estimator with
 \[
 \lambda^*_n = (\sigma^2 d)/(r^2 n)
 \]
