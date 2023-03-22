@@ -92,13 +92,13 @@ and feature matrix $X \in \R^{n \times d}$, the min-norm least squares estimator
 \smash{$\hbeta = (X^\T X/n)^+ X^\T Y/n$} has a variance component of its
 out-of-sample prediction risk (conditional on $X$) given by:
 \begin{equation}
-\label{eq:ls_min_var}
-\Var_X(\hbeta) = \frac{\sigma^2}{n} \tr (\hSigma^+ \Sigma),
+\label{eq:ridgeless_var}
+\Var_X(\hbeta) = \frac{\sigma^2}{n} \tr (\hSigma^+ \Sigma).
 \end{equation}
-where \smash{$\hSigma = X^\T X/n$}, and $\sigma^2 = \Var(y_i | x_i)$. This
-reduces to \smash{$\Var_X(\hbeta) = \frac{\sigma^2}{n} \tr (\hSigma^{-1}
-  \Sigma)$} when \smash{$\hSigma$} is invertible. In lecture, we studied a
-linear feature model of the form  
+Here \smash{$\hSigma = X^\T X/n$}, and $\Sigma = \Cov(x_i)$, for an arbitrary
+row $x_i$ of $X$ (the rows all have the same distribution). Also, $\sigma^2 =
+\Var(y_i | x_i)$ is the noise variance. In lecture, we studied a linear feature 
+model of the form    
 \begin{equation}
 \label{eq:linear_features}
 X = Z \Sigma^{1/2},
@@ -106,11 +106,11 @@ X = Z \Sigma^{1/2},
 for a covariance matrix $\Sigma \in \R^{d \times d}$ and a random matrix $Z \in
 \R^{n \times d}$ that has i.i.d.\ entries with mean zero and unit variance. When
 $\Sigma = I$, which we will assume throughout this homework problem, recall that
-we proved that the variance \eqref{eq:ls_min_var} satisfies, under standard
+we proved that the variance \eqref{eq:ridgeless_var} satisfies, under standard 
 random matrix theory conditions, as $n,d \to \infty$ and $d/n \to \gamma \in 
 (0,\infty)$, 
 \begin{equation}
-\label{eq:ls_min_var_iso_limit}
+\label{eq:ridgeless_var_iso_limit}
 \Var_X(\hbeta) \asto 
 \begin{cases}
 \sigma^2 \frac{\gamma}{1-\gamma} & \text{for $\gamma < 1$} \\ 
@@ -123,25 +123,29 @@ can consider a nonlinear feature model of the form
 \label{eq:nonlinear_features}
 X = \varphi(Z \Sigma^{1/2} W^\T),
 \end{equation}
-where $\Sigma \in \R^{k \times k}$ and $Z \in \R^{n \times k}$ are as before
-(except with $k$ in place of $d$), and now $W \in \R^{d \times k}$ is a matrix
-of i.i.d.\ $N(0,1/k)$ entries, and $\varphi : \R \to \R$ is a nonlinear
-function---called the activation function in a neural network context---that we
-interpret to act elementwise on its input.
+for a covariance matrix $\Gamma \in \R^{k \times k}$, and a random matrix $Z \in
+\R^{n \times k}$ as before (except with $k$ in place of $d$). Moreover, now $W
+\in \R^{d \times k}$ is a matrix of i.i.d.\ $N(0,1/k)$ entries, and $\varphi :
+\R \to \R$ is a nonlinear function---called the activation function in a neural
+network context---that we interpret to act elementwise on its input. 
 
 There turns to be an uncanny connection between the asymptotic variance in
 linear and nonlinear feature models, which will you uncover via simulation in
-this homework problem. Attach your code as an appendix to this homework. 
+this homework problem. Attach your code as an appendix to this homework.  
+
+\emph{***Note: for parts (a)--(d) below, just consider isotropic features, so
+  that $\Sigma = I$ in \eqref{eq:ridgeless_var} and \eqref{eq:linear_features},
+  and $\Gamma = I$ in \eqref{eq:nonlinear_features}.***}
 
 \begin{enumerate}[label=(\alph*)]
 \item Fix $n=200$, and let $d=[\gamma n]$ over a wide range of values for
-  $\gamma$ (make sure your range covers both $\gamma<1$ and $\gamma>1$). For
+  $\gamma$ (make sure your range covers both $\gamma<1$ and $\gamma>1$). 
   each $n,d$, draw $X$ from the linear feature model \eqref{eq:linear_features}
-  with $\Sigma=I$ and your choice of distribution for the entries of
-  $Z$. Compute the finite-sample variance \eqref{eq:ls_min_var}, and plot it, as
-  a function of $\gamma$, on top of the asymptotic variance curve  
-  \eqref{eq:ls_min_var_iso_limit}. To get a general idea of what this should
-  look like, refer back to Figure 2 in the overparametrization lecture notes.     
+  and your choice of distribution for the entries of $Z$. Compute the
+  finite-sample variance \eqref{eq:ridgeless_var}, and plot it, as a function of
+  $\gamma$, on top of the asymptotic variance curve
+  \eqref{eq:ridgeless_var_iso_limit}. To get a general idea of what this should
+  look like, refer back to Figure 2 in the overparametrization lecture notes.      
   \marginpar{\small [3 pts]}
 
 \item For the same values of $n,d$, and $k=100$, draw $X$ from the nonlinear
@@ -156,7 +160,7 @@ this homework problem. Attach your code as an appendix to this homework.
   standardization conditions $\E[\varphi(G)]=0$ and $\E[\varphi(G)^2]=1$, for 
   $G \sim N(0,1)$. Produce a plot just as in part (a), with the finite-sample
   variances for choice of each activation function plotted in a different color,
-  on top of the asymptotic variance curve \eqref{eq:ls_min_var_iso_limit} for
+  on top of the asymptotic variance curve \eqref{eq:ridgeless_var_iso_limit} for  
   the linear model case. Comment on what you find: do the nonlinear
   finite-sample variances lie close to the asymptotic variance for the linear
   model case?  
@@ -173,9 +177,9 @@ this homework problem. Attach your code as an appendix to this homework.
   are remarkable. 
 
 \item As another (large) bonus, rerun the analysis in this entire problem but
-  with a non-isotropic covariance $\Sigma$ in \eqref{eq:linear_features},
-  \eqref{eq:nonlinear_features}. Extra bonus points if you properly recompute
-  the asymptotic variance curves. 
+  with a non-isotropic covariance $\Sigma$ in \eqref{eq:linear_features}, and
+  $\Gamma$ in \eqref{eq:nonlinear_features}. Extra bonus points if you properly
+  recompute the asymptotic variance curves. 
 \end{enumerate}
 
 \section{Implicit regularization buffet: choose your dish [15 points]} 
