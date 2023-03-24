@@ -1,0 +1,66 @@
+\documentclass{article}
+
+\def\ParSkip{} 
+\input{../../common/ryantibs}
+
+\title{Overparametrized Regression: Implicit Regularization \\ \smallskip
+\large Advanced Topics in Statistical Learning, Spring 2023 \\ \smallskip
+Ryan Tibshirani }
+\date{}
+
+\begin{document}
+\maketitle
+\RaggedRight
+\vspace{-50pt}
+
+(This is just an outline of what we will cover. Fully fleshed out notes may be
+coming at a later point.)  
+
+
+\bigskip
+types of implicit regularization:
+
+\begin{itemize}
+\item early stopping 
+\item weight decay 
+\item dropout 
+\item batch normalization 
+\item bagging / subsampling
+\end{itemize}
+
+why do any of this? the basic idea is to endow regularity in a convenient
+(implementation-wise or computation-wise) manner  
+
+\bigskip
+gradient flow \& ridge:
+
+\begin{itemize}
+\item introduce gradient flow 
+\item grad flow for least squares 
+\item matrix exponential facts
+\item bias and variance 
+\item risk coupling 
+\item optimal tuning 
+\item asymptotics
+\end{itemize}
+
+\bigskip 
+forward stagewise \& lasso:
+
+\begin{itemize}
+\item explain origin story
+\item least angle regression
+\item infinitesimal stagewise 
+\item monotone lasso
+\end{itemize}
+
+\bigskip 
+generic stagewise (steepest descent):
+
+\begin{itemize}
+\item where do these connections come from?
+\item steepest descent is the unifying view
+\item can also look at infinitesimal dynamics
+\end{itemize}
+
+\end{document}
