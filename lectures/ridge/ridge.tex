@@ -514,7 +514,6 @@ $z=0$.
 \section{Least squares analysis}
 
 \def\Risk{\mathrm{Risk}}
-\def\Bias{\mathrm{Bias}}
 
 In this section, we will analyze the out-of-sample risk of least squares
 regression in a proportional asympotics model, both as a warm-up for ridge
@@ -710,10 +709,10 @@ homework. The bias and variance components of the risk \eqref{eq:risk} of the
 ridge estimator \eqref{eq:ridge_rescaled} are:     
 \begin{align}
 \label{eq:ridge_bias}
-\Bias_X(\hbeta; \beta_0) &= \lambda^2 \beta_0^\T (\hSigma + \lambda I)^{-1}
+B_X(\hbeta; \beta_0) &= \lambda^2 \beta_0^\T (\hSigma + \lambda I)^{-1}
   \Sigma (\hSigma + \lambda I)^{-1} \beta_0 \\ 
 \label{eq:ridge_var}
-\Var_X(\hbeta) &= \frac{\sigma^2}{n} \tr \big[ \hSigma ( \hSigma + \lambda
+V_X(\hbeta) &= \frac{\sigma^2}{n} \tr \big[ \hSigma ( \hSigma + \lambda
   I)^{-2} \Sigma \big],
 \end{align}
 respectively, where recall \smash{$\hSigma = X^\T X/n$}. It is worth noting that
@@ -730,7 +729,7 @@ vector in \eqref{eq:model}. Below we analyze the bias and variance separately.
 When $\Sigma = I$, the bias \eqref{eq:ridge_bias} becomes 
 \begin{equation}
 \label{eq:ridge_bias_iso}
-\Bias_X(\hbeta; \beta_0) = \lambda^2 \beta_0^\T (\hSigma + \lambda I)^{-2}
+B_X(\hbeta; \beta_0) = \lambda^2 \beta_0^\T (\hSigma + \lambda I)^{-2}
 \beta_0.  
 \end{equation}
 The key is to recognize this as the derivative with respect to $\lambda$ of a
@@ -772,14 +771,14 @@ derivative and the limit, yielding
 and finally from \eqref{eq:ridge_bias_iso}, 
 \begin{equation}
 \label{eq:ridge_bias_iso_limit}
-\Bias_X(\hbeta; \beta_0) \asto \lambda^2 r^2 m'_F(-\lambda).
+B_X(\hbeta; \beta_0) \asto \lambda^2 r^2 m'_F(-\lambda).
 \end{equation}
 
 \paragraph{Variance analysis.}
 
 When $\Sigma = I$, the variance \eqref{eq:ridge_var} becomes 
 \begin{align*}
-\Var_X(\hbeta)
+V_X(\hbeta)
 &= \frac{\sigma^2}{n} \tr \big[ \hSigma ( \hSigma + \lambda I)^{-2} \big] \\ 
 &=\frac{\sigma^2}{n} \Big( \tr \big[ ( \hSigma + \lambda I)^{-1} \big] - 
 \lambda \, \tr \big[ (\hSigma + \lambda I)^{-2} \big] \Big),
@@ -797,7 +796,7 @@ asymptotics, and the second term has limit $-\lambda m'_F(-\lambda)$ by the same
 arguments as above. Thus   
 \begin{equation}
 \label{eq:ridge_var_iso_limit}
-\Var_X(\hbeta) \asto \sigma^2 \gamma \big( m_F(-\lambda) - \lambda 
+V_X(\hbeta) \asto \sigma^2 \gamma \big( m_F(-\lambda) - \lambda 
 m'_F(-\lambda) \big).
 \end{equation}
 
@@ -857,7 +856,7 @@ For the bias, after taking an expectation in \eqref{eq:ridge_bias} over
 $\beta_0$ drawn from \eqref{eq:prior}, we get
 \begin{align}
 \nonumber
-\Bias_X(\hbeta) 
+B_X(\hbeta) 
 &= \lambda^2 \E \Big[ \beta_0^\T (\hSigma + \lambda I)^{-1} \Sigma (\hSigma + 
   \lambda I)^{-1} \beta_0 \Big] \\
 \label{eq:ridge_bias_bayes}
@@ -920,7 +919,7 @@ yielding
 and finally from \eqref{eq:ridge_bias_bayes}, 
 \begin{equation}
 \label{eq:ridge_bias_bayes_limit}
-\Bias_X(\hbeta) \asto \lambda^2 r^2 \phi'_F(-\lambda). 
+B_X(\hbeta) \asto \lambda^2 r^2 \phi'_F(-\lambda). 
 \end{equation}
 
 \paragraph{Variance analysis.}
@@ -928,7 +927,7 @@ and finally from \eqref{eq:ridge_bias_bayes},
 For the variance \eqref{eq:ridge_var}, by adding and subtracting $\lambda I$ in
 the leading \smash{$\hSigma$} in the trace, we get 
 \begin{align*}
-\Var_X(\hbeta) 
+V_X(\hbeta) 
 &= \frac{\sigma^2 d}{n} \Big( \tr \big[ \Sigma ( \hSigma + \lambda I)^{-1} \big] -
   \lambda \, \tr \big[ \Sigma (\hSigma + \lambda I)^{-2} \big] \Big) \\
 &= \frac{\sigma^2 d}{n} \bigg( \frac{1}{d} \tr \big[ \Sigma ( \hSigma + \lambda 
@@ -940,7 +939,7 @@ above inside the parentheses: the first has limit $\phi_F(-\lambda)$ and the
 second has limit $-\lambda \phi'_F(-\lambda)$, therefore   
 \begin{equation}
 \label{eq:ridge_var_limit}
-\Var_X(\hbeta) \asto \sigma^2 \gamma \big( \phi_F(-\lambda) - \lambda 
+V_X(\hbeta) \asto \sigma^2 \gamma \big( \phi_F(-\lambda) - \lambda 
 \phi'_F(-\lambda) \big).
 \end{equation}
 We remark that this variance calculation did not require the prior assumption
