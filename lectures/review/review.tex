@@ -511,31 +511,65 @@ prediction error. In the former, it is natural to ask: how would well would we
 predict at a new test point $(x_0,y_0)$? That is, given an estimator
 \smash{$\hf$} that we fit to training data $(x_i,y_i)$, $i=1,\dots,n$, we 
 consider       
-\[
+\begin{equation}
+\label{eq:random_x_error}
 \Err(\hf) = \E\big[ (y_0 - \hf(x_0))^2 \big],
-\]
+\end{equation}
 where the expectation is taken over the training data $(x_i,y_i)$, $i=1,\dots,n$
 and the test point $(x_0,y_0)$, all i.i.d. We'll call \smash{$\Err(\hf)$} the
-\emph{out-of-sample prediction error}, often (here in and other terms) dropping
-the term ``prediction'' for simplicity.  
+\emph{out-of-sample prediction error}, often (here and frequently with other
+terms as well) dropping ``prediction'' for simplicity.  
 
-Assuming independence of $\epsilon_0 = y_0 - f(x_0)$ and $x_0$, we have (by
-adding and subtracting $f(x_0)$, and expanding): 
+Meanwhile, in the Fixed-X setting, it would instead be more natural to consider       
+\begin{equation}
+\label{eq:fixed_x_error}
+\Err(\hf; x_{1:n}) = \E\bigg[ \frac{1}{n}\sum_{i=1}^n (y_i^* - \hf(x_i))^2
+\bigg], 
+\end{equation}
+where the expectation is taken each over $y_i$ and an independent copy $y_i^*$
+of the response value. The notation \smash{$\Err(\hf; x_{1:n})$} emphasizes the 
+dependence of this metric, which we call the \emph{in-sample prediction
+  error},\footnote{Don't confuse this with training error! This may be tempting
+  as the name ``in-sample'' may remind you of training error. But they're not
+  the same thing! (Even worse, some other authors use ``in-sample error'' and
+  ``training error'' synonomously).}     
+on $x_{1:n} = \{x_1,\dots,x_n\}$. It can be interpreted as the prediction error
+\emph{had we encountered new responses at the exact same feature values}.
+
+If you think the latter interpretation sounds strange, then---well, you're
+right, it is a bit strange in a modern prediction context! (More discussion
+soon.)    
+
+\subsubsection{Risk equivalents} 
+
+Assuming independence of $\epsilon_0 = y_0 - f(x_0)$ and $x_0$, we have, by
+adding and subtracting $f(x_0)$ in \eqref{eq:random_x_error} and expanding:  
 \[
 \underbrace{\E\big[ (y_0 - \hf(x_0))^2 \big]}_{\Err(\hf)} =
 \underbrace{\E\big[ (f(x_0) - \hf(x_0))^2 \big]}_{\Risk(\hf)} +\, \sigma^2,
 \]
 where $\sigma^2 = \Var[\epsilon_0]$ is the noise variance (also known as the 
-\emph{Bayes error} or \emph{irreducible error} in the current context). In this 
-lecture, we'll call the first term on the right-hand side the
-\emph{out-of-sample risk}, and denote it by \smash{$\Risk(\hf)$}. (Admittedly,
-this is somewhat nonstandard terminology; many authors use ``risk'' and
-``error'' interchangeably, and do not use it to distinguish whether the target
-is $f(x_0)$ or $y_0$.)   
-% \footnote{Yet another convention is to call $\E[ (f(x_0) - \hf(x_0))^2]$ the
-% \emph{excess risk}, since it equals \smash{$\E[ (y_0 - \hf(x_0))^2] - \inf_g
-% \E[ (y_0 - g(x_0))^2]$}, where the infimum is achieved at $g=f$, the
-% regression function.}      
+\emph{Bayes error} or \emph{irreducible error} in the current context). We'll
+call the first term on the right-hand side the \emph{out-of-sample prediction
+  risk}\footnote{Admittedly, many authors use the terms ``risk'' and ``error'' 
+  interchangeably, and do not use it to distinguish whether the target is
+  $f(x_0)$ or $y_0$. In fact, we may do so ourselves in future lectures!
+  However, when considering both metrics in a single discussion---either 
+  \eqref{eq:random_x_error} and \eqref{eq:random_x_risk}, or 
+  \eqref{eq:fixed_x_error} and \eqref{eq:fixed_x_risk}---it is helpful to use  
+  nomenclature to distinguish the two.} 
+and denote it by \smash{$\Risk(\hf)$}. Like the above relationship, we can also
+write down a similar equivalence to risk in the Fixed-X context, by adding and
+subtracting $f(x_i)$ in each summand of \eqref{eq:fixed_x_error} and expanding:  
+\[
+\underbrace{\E\bigg[ \frac{1}{n}\sum_{i=1}^n (y_i^* - \hf(x_i))^2 
+  \bigg]}_{\Err(\hf; x_{1:n})} =   
+\underbrace{\E\bigg[ \frac{1}{n}\sum_{i=1}^n (f(x_i) - \hf(x_i))^2
+  \bigg]}_{\Risk(\hf;  x_{1:n})} +\, \sigma^2, 
+\]
+where $\sigma^2 = \Var[\epsilon_i]$ is the noise variance. Similarly, we'll call
+the first term on the right-hand side the \emph{in-sample prediction risk}, and
+denote it by \smash{$\Risk(\hf; x_{1:n})$}. 
 
 So to recap, in the Random-X setting, we have as a natural metric  
 \begin{equation}
@@ -543,39 +577,16 @@ So to recap, in the Random-X setting, we have as a natural metric
 \Risk(\hf) = \E\big[ (f(x_0) - \hf(x_0))^2 \big],
 \end{equation}
 called the out-of-sample risk, which only differs from the out-of-sample error
-by a constant (the noise variance $\sigma^2$). Meanwhile, in the Fixed-X
-setting, it would instead be more natural to consider     
+by $\sigma^2$. Meanwhile, in the Fixed-X setting, we have the natural metric 
 \begin{equation}
 \label{eq:fixed_x_risk}
 \Risk(\hf; x_{1:n}) = \E\bigg[ \frac{1}{n}\sum_{i=1}^n (f(x_i) - \hf(x_i))^2
 \bigg], 
 \end{equation}
-which we call the \emph{in-sample risk}. The expectation above is only taken
-over the responses $y_1,\dots,y_n$ used to fit \smash{$\hf$}. The notation 
-\smash{$\Risk(\hf; x_{1:n})$} emphasizes the dependence of this metric on
-$x_{1:n} = \{x_1,\dots,x_n\}$.   
+called the in-sample risk, which again only difference from the in-sample error
+by $\sigma^2$.
 
-Like the relationship between \eqref{eq:random_x_risk} and error, we can also
-write down a similar relationship for \eqref{eq:fixed_x_risk},  
-\[
-\underbrace{\E\bigg[ \frac{1}{n}\sum_{i=1}^n (y_i^* - \hf(x_i))^2 
-  \bigg]}_{\Err(\hf; x_{1:n})} =   
-\underbrace{\E\bigg[ \frac{1}{n}\sum_{i=1}^n (f(x_i) - \hf(x_i))^2
-  \bigg]}_{\Risk(\hf;  x_{1:n})} +\, \sigma^2, 
-\]
-where each $y_i^*$ is an independent copy of $y_i$. In other words,
-\smash{$\Err(\hf; x_{1:n})$}, the \emph{in-sample error},\footnote{Don't confuse
-  this with training error! This may be tempting as the name ``in-sample'' may
-  remind you of training error. But they're not the same thing! (Even worse,
-  some other authors use ``in-sample error'' and ``training error''
-  synonomously).}   
-can be interpreted as the prediction error \emph{had we encountered new
-  responses at the exact same feature values}. 
-
-If you think this sounds strange, then---well, you're right, it actually is a
-bit strange! (More discussion soon.)
-
-\subsubsection{Interlude: same roses, other names}
+\subsubsection{Interlude: same roses, different names}
 
 Note that we can also view \smash{$\Risk(\hf)$} and \smash{$\Risk(\hf;
   x_{1:n})$} in terms of the $L^2(P)$ and $L^2(P_n)$ error metrics:
@@ -587,9 +598,9 @@ Note that we can also view \smash{$\Risk(\hf)$} and \smash{$\Risk(\hf;
 \end{align*}
 where $P$ is the feature distribution and $P_n$ the empirical distribution of
 $x_{1:n}$. Thus out-of-sample and in-sample error could also be called the
-(expected) \emph{$L^2(P)$ error} and \emph{$L^2(P_n)$ error},
-respectively. Other names you'll hear are the \emph{population $L^2$ error} and
-\emph{empirical $L^2$ error}, respectively.    
+(expected) \emph{$L^2(P)$ risk} and \emph{$L^2(P_n)$ risk},
+respectively. Other names you'll hear are the \emph{population $L^2$ risk} and
+\emph{empirical $L^2$ risk}, respectively.    
 
 Empirical process theory gives us bounds on the $L^2(P_n)$ and $L^2(P)$ norms
 (typically, these bounds hold for all functions in some particular function
