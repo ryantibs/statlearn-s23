@@ -674,16 +674,15 @@ Before delivering the proof in the next subsection, we make several remarks.
   approximation error term \smash{$\|\bar{f} - f_0\|_n^2$} will be of much
   smaller order than the second term \smash{$2 \lambda \max\{ J(f_0), J(\bar{f})
     \}^v$}, which will scale as \smash{$n^{-2/(2+w)}$} when $J(f_0) \asymp 1$
-  (as seen in \eqref{eq:error_bd2}). This is very useful because it means that
-  we can use splines to approximately solve \eqref{eq:variational_opt}
-  (regardless of whether or not splines actually solve
-  \eqref{eq:variational_opt} or not) and we will not incur any loss in the 
-  statistical error rate. We will not cover the details, but refer to Theorem 1
-  and Corollary 1 in \citet{sadhanala2019additive} for an example of such a
-  result.       
+  (as seen in \eqref{eq:error_bd2}). 
 
-  (We'll also derive explicit oracle inequalities in the next lecture on the
-  lasso.)  
+  This is very useful because it means that we can use splines to approximately
+  solve \eqref{eq:variational_opt} (regardless of whether or not splines
+  actually solve \eqref{eq:variational_opt} or not) and we will not incur any
+  loss in the statistical error rate. We will not cover the details, but refer
+  to Theorem 1 and Corollary 1 in \citet{sadhanala2019additive} for an example
+  of such a result. (We'll also derive explicit oracle inequalities in the next
+  lecture on the lasso.)  
 
 \item The rate in \eqref{eq:error_bd2} is minimax optimal. This can be shown
   using Fano's inequality along with a construction that leverages a concept 
