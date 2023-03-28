@@ -260,7 +260,7 @@ conditions, the $k$-nearest neighbors estimator with \smash{$k \asymp
 with respect to the randomness over draws of the input points $x_{1:n} =
 \{x_1,\dots,x_n\}$.  
 
-Proof sketch: denote $\sigma^2 = \Var(\epsilon_0)$, and fix the input points
+Proof sketch: denote $\sigma^2 = \Var[\epsilon_0]$, and fix the input points
 (technically, we condition on them, but for simplicity we hide this
 notationally). Conditioning on $x_0$, and using the bias-variance decomposition,   
 \begin{align*}
@@ -518,7 +518,7 @@ satisfies
 just like kNN regression. Similar results hold for more general compactly
 supported kernels.    
 
-Proof sketch: as usual, denote $\sigma^2 = \Var(\epsilon_0)$, fix the input
+Proof sketch: as usual, denote $\sigma^2 = \Var[\epsilon_0]$, fix the input
 points (condition on them), and condition on $x_0$. We'll compute the bias and
 variance separately. In fact we already did the bias calculation, using a
 first-order Taylor expansion of $f_0$: 
