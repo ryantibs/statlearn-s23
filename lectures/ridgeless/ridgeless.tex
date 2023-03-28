@@ -137,7 +137,6 @@ successes) in machine learning.
 \def\asto{\overset{\mathrm{as}}{\to}}
 \def\dto{\overset{d}{\to}}
 \def\Risk{\mathrm{Risk}}
-\def\Bias{\mathrm{Bias}}
 \def\hSigma{\hat\Sigma}
 
 We will assume the usual linear model 
@@ -261,10 +260,10 @@ is helpful to rewrite the ridgeless estimator  \eqref{eq:ridgeless} as
 variance components of its risk:     
 \begin{align}
 \label{eq:ridgeless_bias}
-\Bias_X(\hbeta; \beta_0) &= \beta_0^\T (I - \hSigma^+ \hSigma) \Sigma 
+B_X(\hbeta; \beta_0) &= \beta_0^\T (I - \hSigma^+ \hSigma) \Sigma 
   (I - \hSigma^+ \hSigma) \beta_0 \\  
 \label{eq:ridgeless_var}
-\Var_X(\hbeta) &= \frac{\sigma^2}{n} \tr (\hSigma^+ \Sigma),
+V_X(\hbeta) &= \frac{\sigma^2}{n} \tr (\hSigma^+ \Sigma),
 \end{align}
 where \smash{$\hSigma = X^\T X/n$}, which follows from calculations similar to
 those in the underparametrized case.      
@@ -280,7 +279,7 @@ vector in \eqref{eq:model}. Below we analyze the bias and variance separately.
 When $\Sigma = I$, the bias \eqref{eq:ridgeless_bias} becomes 
 \begin{align}
 \nonumber
-\Bias_X(\hbeta; \beta_0) 
+B_X(\hbeta; \beta_0) 
 &= \beta_0^\T (I - \hSigma^+ \hSigma) \beta_0 \\ 
 \nonumber
 &= \lim_{\rho \to 0} \, \beta_0^\T \big[ I - (\hSigma + \rho I)^{-1} \hSigma  
@@ -320,7 +319,7 @@ Moore-Osgood theorem (whose details we omit) allow us to switch the order of the
 limits as $n,d \to \infty$ and $\rho \to 0$, yielding
 \begin{align}
 \nonumber
-\Bias_X(\hbeta; \beta_0) &\asto r^2 \lim_{\rho \to 0} \, \rho m_F(-\rho) \\
+B_X(\hbeta; \beta_0) &\asto r^2 \lim_{\rho \to 0} \, \rho m_F(-\rho) \\
 \nonumber
 &= r^2 \lim_{\rho \to 0} \, \frac{-(1 - \gamma + \rho) + \sqrt{(1 - \gamma +
   \rho)^2 + 4 \gamma \rho}}{2 \gamma} \\
@@ -543,7 +542,7 @@ $\beta_0$, and following similar arguments to the isotropic case above),
 one can show  
 \begin{equation}
 \label{eq:ridgeless_bias_bayes_limit}
-\Bias_X(\hbeta) \asto \frac{r^2}{\gamma} \frac{1}{v_F(0)},  
+B_X(\hbeta) \asto \frac{r^2}{\gamma} \frac{1}{v_F(0)},  
 \end{equation}
 where $v_F$ is the companion Stieltjes transform of the limiting spectral
 distribution $F = F(H, \gamma)$ from the Marchenko-Pastur theorem (and
@@ -557,7 +556,7 @@ ridge lecture (or by starting from \eqref{eq:ridgeless_var}, and following
 similar arguments to the isotropic case above), one can show  
 \begin{equation}
 \label{eq:ridgeless_var_limit}
-\Var_X(\hbeta) \asto \sigma^2 \bigg(\frac{v'_F(0)}{v_F(0)^2} - 1 \bigg),
+V_X(\hbeta) \asto \sigma^2 \bigg(\frac{v'_F(0)}{v_F(0)^2} - 1 \bigg),
 \end{equation}
 where again $v_F$ is the companion Stieltjes transform of the limiting spectral 
 distribution $F = F(H, \gamma)$ from the MP theorem (and
@@ -617,7 +616,7 @@ For general $\Sigma$, and a fixed $\beta_0$, the ridge bias where (recall)
 and  
 \begin{equation}
 \label{eq:ridge_bias}
-\Bias_X(\hbeta_\lambda; \beta_0) = \lambda^2 \beta_0^\T (\hSigma + \lambda
+B_X(\hbeta_\lambda; \beta_0) = \lambda^2 \beta_0^\T (\hSigma + \lambda
 I)^{-1} \Sigma (\hSigma + \lambda I)^{-1} \beta_0,
 \end{equation}
 and especially the ridgeless bias \eqref{eq:ridgeless_bias}, are formidable 
@@ -638,7 +637,7 @@ bias terms for general $\Sigma$ and $\beta_0$, see, e.g., \citet{wu2020optimal,
 calculations in the latter paper (as they are, in a sense, the most general
 anyway), but in keeping with our style in these lectures thus far, we translate
 them to the language of deterministic equivalents. We only give some part of the
-details; for the remainder, see the supplementary notes posted on the course
+details; for the remainder, a supplementary note can be found on the course 
 website.   
 
 \paragraph{Ridge bias analysis.}
@@ -697,7 +696,7 @@ the following conclusion: assuming $\|\beta_0\|_2$ remains bounded, the ridge
 bias in \eqref{eq:ridge_bias} satisfies
 \begin{equation}
 \label{eq:ridge_bias_limit}
-\big| \Bias_X(\hbeta_\lambda; \beta_0) - (1+c_n) \beta_0^\T \Sigma (b_n \Sigma + 
+\big| B_X(\hbeta_\lambda; \beta_0) - (1+c_n) \beta_0^\T \Sigma (b_n \Sigma + 
 I)^{-2} \beta_0 \big| \asto 0, 
 \end{equation}
 where $b_n,c_n$ solve (recalling $\gamma_n = d/n$): 
@@ -721,7 +720,7 @@ supplement gives details on why this is valid. This yields for the ridgeless
 estimator \smash{$\hbeta = (X^\T X)^+ X^\T Y$}, 
 \begin{equation}
 \label{eq:ridgeless_bias_limit}
-\big| \Bias_X(\hbeta; \beta_0) - (1+\tilde{c}_n) \beta_0^\T \Sigma (\tilde{b}_n
+\big| B_X(\hbeta; \beta_0) - (1+\tilde{c}_n) \beta_0^\T \Sigma (\tilde{b}_n
 \Sigma + I)^{-2} \beta_0 \big| \asto 0,  
 \end{equation}
 where \smash{$\tilde{b}_n, \tilde{c}_n$} solve
@@ -780,7 +779,7 @@ ridge bias in ``semi-asymptotic'' form (where we reduce $b_n,c_n$ to their
 asymptotic limits) as:     
 \begin{equation}
 \label{eq:ridge_bias_limit2}
-\bigg| \Bias_X(\hbeta_\lambda; \beta_0) - \frac{v'_F(-\lambda)}{v_F(-\lambda)^2}
+\bigg| B_X(\hbeta_\lambda; \beta_0) - \frac{v'_F(-\lambda)}{v_F(-\lambda)^2}
 \beta_0^\T \Sigma \big( v_F(-\lambda) \Sigma + I \big)^{-2} \beta_0 \bigg| \asto
 0.
 \end{equation}
@@ -788,7 +787,7 @@ By analogous reasoning, instead of \eqref{eq:ridgeless_bias_limit}, we can write
 the ridgeless bias in ``semi-asymptotic'' form as:
 \begin{equation}
 \label{eq:ridgeless_bias_limit2}
-\bigg| \Bias_X(\hbeta_\lambda; \beta_0) - \frac{v'_F(0)}{v_F(0)^2} \beta_0^\T
+\bigg| B_X(\hbeta_\lambda; \beta_0) - \frac{v'_F(0)}{v_F(0)^2} \beta_0^\T
 \Sigma \big( v_F(0) \Sigma + I \big)^{-2} \beta_0 \bigg| \asto 0.
 \end{equation}
 
