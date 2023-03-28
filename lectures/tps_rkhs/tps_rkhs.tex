@@ -1,0 +1,232 @@
+\documentclass{article}
+
+\def\ParSkip{} 
+\input{../../common/ryantibs}
+\DeclareMathOperator*{\esssup}{ess\,sup}
+
+%%% Begin Alden's additions
+\def\BL{\mathrm{BL}}
+\newcommand{\Ebb}{\mathbb{E}}
+\newcommand{\Pbb}{\mathbb{P}}
+\newcommand{\dotp}[2]{\langle #1, #2 \rangle}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\wh}[1]{\widehat{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\Reals}{\mathbb{R}} % Same thing as Ryan's \R
+\newcommand{\Rd}{\Reals^d}
+\newcommand{\wb}[1]{\widebar{#1}}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+\newcommand{\1}{\mathbf{1}}
+\newcommand{\bj}{{\bf j}}
+\newcommand{\restr}[2]{\ensuremath{\left.#1\right|_{#2}}}
+\newcommand{\TV}{\mathrm{TV}}
+
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\wc}{0}{mathx}{"71}
+%%% End Alden's Additions
+
+\title{Supplementary Notes: Representation of thin-plate splines \\ \smallskip
+\large Advanced Topics in Statistical Learning, Spring 2023 \\ \smallskip
+Alden Green}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\RaggedRight
+\vspace{-50pt}
+
+Given data $(x_1,y_1),\ldots,(x_n,y_n)$ with each $x_i \in \Reals^{d}$, $y_i \in \Reals$, the thin-plate spline problem is to minimize
+\begin{equation}
+\label{eqn:tps}
+\min \frac{1}{n}\sum_{i = 1}^{n}(y_i - f(x_i))^2 + \lambda J_d^{m}(f),
+\end{equation}
+where $J_d^{m}(f) = \sum_{|\alpha| = m} \frac{m!}{\alpha!} \int_{\Rd} (D^{\alpha}f(x))^2 \,dx$ is a derivative-based penalty of roughness.
+
+Thin-plate splines were originally proposed by~\citet{duchon1977splines}, though in the context of interpolation rather than penalized regression. Duchon showed that when $m > d/2$ there is a representer theorem for the thin-plate spline problem~\eqref{eqn:tps} that allows it to be recast as a generalized ridge regression. The result is analogous to representation for penalized regression in Reproducing Kernel Hilbert Spaces (RKHS), but with the added subtlety that the regularizer $J_d^m(f)$ has a non-trivial null space. For this reason the representer theorem for~\eqref{eqn:tps} does not immediately follow from results for RKHS. Instead~\eqref{eqn:tps} must be derived separately, and the proof must correctly handle the null space of $J_d^m(f)$.
+
+The proof of Duchon relies heavily on Fourier transforms and is overall a little technical. Subsequent papers~\citet{meinguet1979multivariate,wahba1980some} and the book on smoothing splines~\citet{gu2013smoothing} give a simplified and more constructive analysis, but the first reference still requires an appreciable level of mathematical sophistication and I found that the latter two go a little fast over some of the details. (Though all three are excellent references.) In this note I explicitly state the thin-plate spline representer theorem (Theorem~\ref{thm:tps-representer} below) and walk through the proof.
+
+\section{The theorem}
+
+The solution to~\eqref{eqn:fundamental-solution} is made up of radial basis functions (RBFs) and polynomials. The RBFs we care about are translates of the fundamental solution (also known as a Green's function) $E$ of the polyharmonic equation
+\begin{equation}
+\label{eqn:fundamental-solution}
+(-1)^m\Delta^{m} E = \delta_0.
+\end{equation}
+In equation~\eqref{eqn:fundamental-solution} the operator $\Delta^{m}$ is the $k$th-iterated Laplacian -- defined recursively -- and $\delta_0$ is the Dirac impulse. The fundamental solution has the explicit form
+\begin{equation*}
+E(r) =  c_d 
+\begin{dcases}
+r^{2m - d} \ln r, \quad & \textrm{if $2m > d$ and $d$ is even} \\
+r^{2m - d}, \quad & \textrm{otherwise.}
+\end{dcases}
+\end{equation*}
+Here $c_d$ is some complicated constant I won't bother writing out. The RBF at point $x_i$ is given by $E(x_i,\cdot) := E(|x_i - \cdot|)$. 
+
+As mentioned, the null space $\mc{N}$ of $J_d^m(f)$ is non-trivial and in fact consists of all polynomials of degree at most $m - 1$. This is am $M = {m + d - 1\choose d}$ dimensional vector space, and we take $\phi_{1},\ldots,\phi_M$ to be an arbitrary basis of $\mc{N}$. Let ${\bf \Phi} \in \Reals^{n \times M}$ have entries ${\bf \Phi}_{ij} = \phi_j(x_i)$ and ${\bf E} \in \Reals^{n \times n}$ have entries ${\bf E}_{ij} = E(x_i,x_j)$. 
+\begin{theorem}
+	\label{thm:tps-representer}
+	Suppose $m > d/2$. Then the solution to~\eqref{eqn:tps} is well-defined and can be written in the form 
+	$$f_{\lambda}(x) = \sum_{\nu = 1}^{M} c_{\nu} \phi_{\nu}(x) + \sum_{i = 1}^{n} d_i E(x_i,x),$$ 
+	where additionally $\sum_{i = 1}^{n} d_i \phi_{\nu}(x_i) = 0$ for each $\nu$. The optimization can be rewritten as the \emph{generalized ridge} problem
+	\begin{equation}
+	\label{eqn:tps-ridge}
+	\min_{c,d} \|y - {\bf \Phi} c - {\bf E} d\|^2 + \lambda d^{\top} {\bf E} d, \quad \textrm{subject to ${\bf \Phi}^{\top}d = 0$,}
+	\end{equation}
+	which has a unique solution so long as $\mathrm{rank}(x_1,\ldots,x_n) \geq M$.
+\end{theorem}
+
+\section{Formalizing thin-plate splines}
+Formally speaking, to make sense of problem~\eqref{eqn:tps} one needs a domain. The first thought is to use the Sobolev space $W^{m,2}(\Rd)$ which is the space of $m$-times weakly differentiable functions for which $D^{\alpha}f \in L^2(\Rd)$ for all $|\alpha| \leq m$. Technically speaking the Sobolev space is made up of equivalence classes of functions that agree up to sets of measure zero, but when $m > d/2$ each equivalence class contains a continuous representative (by the Sobolev Embedding Theorem) and so we can restrict our attention to continuous functions.  
+
+A more fundamental concern is that polynomials are not in $W^{m,2}(\Rd)$ and so clearly that cannot be the right space to search for the solution. This issue is cleared up by using the Beppo Levi space, which consists of functions
+\begin{equation}
+\mathrm{BL}_{m}(\Rd) = \Bigl\{f \in C(\Rd),~~ D^{\alpha} f~\textrm{exists and}~ D^{\alpha}f  \in L^2(\Rd)~~\textrm{for all $\alpha = |m|$} \Bigr\},
+\end{equation}
+and is equipped with the semi-inner product 
+\begin{equation}
+(u,v)_{\mathrm{BL}_{m}(\Rd)} := \sum_{|\alpha| = m} \frac{m!}{\alpha!} (D^{\alpha}u, D^{\alpha}v)_{L^2}.
+\end{equation}
+For simplicity write $(u,v)_{m} = (u,v)_{\mathrm{BL}_{m}(\Rd)}$. Throughout, the minimum in~\eqref{eqn:tps} should be interpreted as being over all functions $f \in \mathrm{BL}_m(\Rd)$.
+
+\section{Road map}
+Let's start with a road map for the proof of Theorem~\ref{thm:tps-representer}. The fundamental idea will be to define an inner product $\dotp{\cdot}{\cdot}$ on $\mathrm{BL}_{m}(\Rd)$, allowing us to ``project out'' polynomials in the resulting inner product space $\mc{H}$.  That is, we will decompose functions $f \in \mc{H}$ into the sum of two orthogonal parts $$f = Pf + [I - P]f, \quad Pf \in \mc{H}_0, [I - P]f \in \mc{H}_1,$$ where $P$ is the projection of $f \in \BL_m(\Rd)$ onto $\mc{N}$. This is useful because, as we will see, $(\cdot,\cdot)_{m}$ is an inner product in $\mc{H}_1 = \{[I - P]f: f \in \mc{H}\}$, and the resulting Hilbert space is an RKHS; letting $\{\eta_{x}^{(m)}: x \in \Rd\}$ be the representers of evaluation, we can use standard arguments in the theory of RKHS to show that $[I - P]f_{\lambda} \in \mathrm{span}\{\eta_{x_1}^{(m)},\ldots, \eta_{x_n}^{(m)}\}$. This is what will end up happening in Proposition~\ref{prop:tps-representer}. Finally we will use an explicit representation of the reproducing kernel $\eta^{(m)}$ to rewrite the solution in terms of $E_{x_1},\ldots,E_{x_n}$, giving us the desired result. 
+
+\section{Direct sum RKHS}
+In order to execute this plan we need to define a suitable inner product on $\mathrm{BL}_m(\Rd)$ with which to project out polynomials.  To that end let $\{z_0,\ldots,z_M\}$ be a collection of $\mc{N}$-unisolvent points, meaning
+$$ \sum_{\nu = 1}^{M} c_{\nu} \phi_{\nu}(z_k) = 0 ~~\textrm{for all $k$} \Longrightarrow  c = 0.$$
+Now introduce a second semi-inner product over $\mathrm{BL}_{m}(\Rd)$: 
+\begin{equation}
+\label{eqn:semi-inner-product}
+(u,v)_{0} := \sum_{j = 1}^{M} u(z_j) v(z_j).
+\end{equation}
+Then $\dotp{u}{v} := (u,v)_0 + (u,v)_{m}$ is an inner product on $\mathrm{BL}_m(\Rd)$, and
+$$\mc{H} = \{f \in \mathrm{BL}_{m}(\Rd):  \dotp{f}{f} < \infty\}$$ is an RKHS.
+
+Now we introduce the spaces $\mc{H}_0, \mc{H}_1$ alluded to above. $\mc{H}_0$ is simply the null space $\mc{N}$ of $J_m^d(\cdot)$, equipped with the inner product $(\cdot,\cdot)_0$ defined in~\eqref{eqn:semi-inner-product}, and $\mc{H}_1$ is the orthogonal complement:
+$$\mc{H}_1 = \bigl\{f \in \mc{H}: f(z_k) = 0~\textrm{for each}~z_k\bigr\}.$$
+These spaces are orthogonal in the sense that $\dotp{f_0}{f_1} = 0$ for $f_0 \in \mc{H}_0$ and $f_1 \in \mc{H}_1$. Additionally both are RKHS, and the reproducing kernel $\eta(x,y)$ of $\mc{H}$ can be decomposed as
+\begin{equation*}
+\eta(x,y) = \eta^{(0)}(x,y) + \eta^{(m)}(x,y),
+\end{equation*}
+where $\eta^{(0)}$ is the reproducing kernel of $\mc{H}_0$ and $\eta^{(m)}$ the reproducing kernel of $\mc{H}_1$. So we can write $\mc{H} = \mc{H}_0 \oplus \mc{H}_1$ as a direct sum RKHS.
+
+As mentioned, we prove Theorem~\ref{thm:tps-representer} by establishing a representation of the solution in terms of $\eta^{(m)}$, and then rewriting this as a function of $E$. The relationship between $\eta^{(m)}$ and $E$ is given in terms of the projection operator $P$ in Theorem~\ref{lem:rk-greens}. To write things more explicitly, taking $\{\varphi_1,\ldots,\varphi_M\}$ to be an orthobasis of $\mc{H}_0$ we can write the projection operator as $Pf(x) = \sum_{\nu} (\varphi_{\nu},f)_0 \varphi_{\nu}$, and for simplicity taking $\{\varphi_1,\ldots,\varphi_M\}$ to be the canonical basis (so that $\varphi_{\nu}(z_k) = \delta_{\nu k}$) this becomes
+\begin{equation*}
+Pf(x) = \sum_{\nu} f(z_{\nu}) \varphi_{\nu}(x).
+\end{equation*}
+
+\begin{theorem}
+	\label{lem:rk-greens}
+	The reproducing kernel of $\mc{H}_1$, evaluated at a given $x,y \in \Rd$, is given by
+	\begin{equation}
+	\label{eqn:rk}
+	\eta^{(m)}(x,y) = E(x,y) - \sum_{\nu} E(x,z_{\nu}) \varphi_{\nu}(y) - \sum_{\nu'} E(z_{\nu'},y) \varphi_{\nu'}(x) + \sum_{\nu,\nu'} \varphi_{\nu}(x) \varphi_{\nu'}(y) E(z_{\nu},z_{\nu'}).
+	\end{equation}
+\end{theorem}
+
+\paragraph{Proof.}
+This result and proof is due to \citet{meinguet1979multivariate}. I will go fast without really doing the argument justice, and you should consult~\citet{meinguet1979multivariate} for missing details.
+
+We begin from the definition of the reproducing kernel of $\mc{H}_1$:
+\begin{equation*}
+\bigl(\eta_x^{(m)},f\bigr)_m = f(x), \quad \textrm{for all $f \in \mc{H}_1, x \in \Reals^d$.}
+\end{equation*}
+Let $\mc{D}$ be the Schwartz space of distributions, i.e. continuous linear functionals on the set of smooth and compactly supported functions $C_c^{\infty}(\Rd) = \mc{D}'$. By definition $[I - P]f \in \mc{H}_1$ and so
+\begin{equation}
+\label{pf:rk-greens-1}
+f(x) - \sum_{\nu = 1}^{M} f(z_{\nu}) \varphi_{\nu}(x) = \bigl(\eta^{(m)},[I - P]f\bigr)_m = \bigl(\eta_x^{(m)},f\bigr)_m.
+\end{equation}
+Now we make use of repeated application of integration by parts -- keeping in mind that $f \in \mc{D}'$ is compactly supported -- to deduce that
+\begin{equation*}
+\bigl(\eta_x^{(m)},f\bigr)_m = \bigl((-1)^m \Delta^m \eta_x^{(m)},f\bigr),
+\end{equation*}
+where $(\cdot,\cdot)$ is the duality pairing between $\mc{D}$ and $\mc{D}'$. Rewriting the left hand side of~\eqref{pf:rk-greens-1} in terms of this duality pairing, we obtain that $\eta_x^{(m)} \in \mc{H}_1$ satisfies the differential equation
+\begin{equation}
+\label{pf:rk-greens-2}
+(-1)^m \Delta^m F_x = \delta_{x} - \sum_{\nu = 1}^{M} \varphi_{\nu}(x) \delta_{z_\nu},
+\end{equation}
+which has to be interpreted in the distributional sense: both sides of~\eqref{pf:rk-greens-1} are operators which act in the same way on all $f \in \mc{D}'$.
+
+Now from the definition of $E$ we can easily get a distribution $H_x$ that satisfies~\eqref{pf:rk-greens-2}, although $H_x$ is not in $\mc{H}_1$:
+\begin{equation*}
+H_x = E_x - \sum_{\nu = 1}^{M} \varphi_{\nu}(x) E_{z_{\nu}}.
+\end{equation*}
+At this point we will use an important result without proof: $H_x \in \mc{H}$. To get a sense of why this is non-trivial, note that the same statement does not hold true for $E_x$. However, once we take for granted that $H_x \in \mc{H}$ the proof is almost finished; clearly $[I - P]H_x \in \mc{H}_1$ and in fact $[I - P]H_x$ is the unique function in $\mc{H}_1$ for which~\eqref{pf:rk-greens-2} is satisfied (since $P$ projects to the null space of $\Delta^m$). So $\eta^{(m)} = [I - P]H_x$. Solving for $[I - P]H_x$ in terms of $E$ then gives the desired result.
+
+\section{A first representer theorem for TPS}
+Now we have everything we need to represent $f_{\lambda}$ in terms of the reproducing kernel of $\mc{H}_{1}$. 
+\begin{proposition}
+	\label{prop:tps-representer}
+	The solution to~\eqref{eqn:tps} can be written as
+	\begin{equation}
+	\label{eqn:tps-representer}
+	f_{\lambda} = \sum_{\nu = 1}^{M} c_{\nu} \phi_{\nu} + \sum_{i = 1}^{n} d_i \eta^{(m)}_{x_i}.
+	\end{equation}
+	Thus, letting ${\bf Q} \in \Reals^{n \times n}$ have entries ${\bf Q}_{ij} = \eta^{(m)}(x_i,x_j)$, the problem~\eqref{eqn:tps} can be recast as the generalized ridge problem
+	\begin{equation}
+	\label{eqn:generalized-ridge}
+	\min_{c,d} \|y - {\bf \Phi} c - {\bf Q} d\|^2 + \lambda d^{\top} {\bf Q} d \quad \textrm{subject to ${\bf \Phi}^{\top}d = 0$.}
+	\end{equation}
+\end{proposition}
+
+\paragraph{Proof.}
+Decompose $f_{\lambda} = Pf_{\lambda} + [I - P]f_{\lambda}$. Observe that since the smoothness functional $J_m^d(f_{\lambda}) = (f_{\lambda},f_{\lambda})_m = ([I - P]f_{\lambda}, [I - P]f_{\lambda})$ we can rewrite the objective in~\eqref{eqn:tps}, evaluated at its minimizer $f_{\lambda}$, as
+\begin{equation*}
+\frac{1}{n}\sum_{i = 1}^{n}\Bigl(y_i - Pf_{\lambda}(x_i) - [I - P]f_{\lambda}(x_i)\Bigr)^2 + \lambda J_d^{m}([I - P]f_{\lambda}).
+\end{equation*}
+From here the analyis is completely standard for the theory of reproducing kernels. Further decompose $[I - P]f_{\lambda} = f_{\lambda}^{(\pi)} + f_{\lambda}^{\perp}$, where $f_{\lambda}^{(\pi)} \in \mathrm{span}(\eta_{x_i}^{(m)})$ and $f_{\lambda}^{\perp}$ belongs to the orthogonal complement. Since $\eta_{x_i}^{(m)}$ is the representer of evaluation for $\mc{H}_1$ and since $f_{\lambda}^{(\pi)}$ and $f_{\lambda}^{\perp}$ are orthogonal it follows that 
+$$f_{\lambda}^{\perp}(x_i) = (f_{\lambda}^{\perp}, \eta_{x_i}^{(m)})_m = 0.$$ 
+Also, again using the orthogonality of $f_{\lambda}^{(\pi)}$ and $f_{\lambda}^{\perp}$,
+$$J_d^{m}\bigl([I - P]f_{\lambda}\bigr) = J_d^{m}(f_\lambda^{(\pi)}) + J_d^{m}(f_\lambda^{\perp}) \geq J_d^{m}(f_\lambda^{(\pi)}),$$ with equality only if $f_\lambda^{\perp} = 0$. We conclude that $f_{\lambda}^{\perp} = 0$, from which~\eqref{eqn:tps-representer} follows. 
+
+Finally, to complete the proof of Proposition~\ref{prop:tps-representer} we need to show the equivalence between the original problem and~\eqref{eqn:generalized-ridge}. First of all, noting that $f_{\lambda}(x_i) = {\bf \Phi}_{i\cdot} c + {\bf Q}_{i \cdot} d$ and $J_d^{m}([I - P]f_{\lambda}) = d^{\top} {\bf Q} d$,  we see that~\eqref{eqn:tps} can be rewritten as 
+\begin{equation*}
+\min_{c,d} \|y - {\bf \Phi} c - {\bf Q} d\|^2 + \lambda d^{\top} {\bf Q} d,
+\end{equation*}
+which is~\eqref{eqn:generalized-ridge} without the constraint ${\bf \Phi}^{\top}d = 0$. To see why this constraint additionally holds, we look at the normal equations: at the minimizer $(\hat{c},\hat{d})$ of~\eqref{eqn:generalized-ridge},
+\begin{equation}
+\label{eqn:normal}
+\begin{aligned}
+{\bf \Phi}^{\top} y &=  {\bf \Phi}^{\top} {\bf Q} \hat{d} + {\bf \Phi}^{\top} {\bf \Phi} \hat{c} \\
+{\bf Q} y & = \lambda {\bf Q} \hat{d}  + {\bf Q}{\bf Q} \hat{d} + {\bf Q} {\bf \Phi} \hat{c}.
+\end{aligned}
+\end{equation}
+Since $\eta^{(m)}$ is a positive definite kernel ${\bf Q}$ is invertible. So we may rewrite the second equation in~\eqref{eqn:normal} as $y = \lambda \hat{d} + {\bf Q} \hat{d} + {\bf \Phi} \hat{c}$, and plugging this into the first equation in~\eqref{eqn:normal} yields
+\begin{equation*}
+\lambda {\bf \Phi}^{\top} \hat{d} = 0.
+\end{equation*}
+
+\section{Representation in terms of Green's function}
+Lemma~\ref{lem:rk-greens} gives the explicit relationship between $\eta^{(m)}$ and the Green's function $E$. Applying this to $\sum_{i = 1}^{n} \hat{d}_i \eta_{x_i}^{(m)}$ gives the following expression:
+\begin{equation*}
+\sum_{i = 1}^{n} \hat{d}_i \eta_{x_i}^{(m)}(t) = \sum_{i = 1}^{n} \hat{d}_i E_{x_i}(t) - \sum_{i = 1}^{n} \sum_{\nu} \hat{d}_i E(x_i,z_{\nu}) \varphi_{\nu}(t) + \sum_{i = 1}^{n} \hat{d}_i \sum_{\nu'} E_{t}(z_{\nu'}) \varphi_{\nu'}(x_i) + \sum_{i = 1}^{n} \hat{d}_i \sum_{\nu,\nu'} \varphi_{\nu}(t) \varphi_{\nu'}(x_i) E(z_{\nu},z_{\nu'}).
+\end{equation*}
+On the right hand side the second and fourth terms are polynomial in $t$. On the other hand, $\hat{d}$ lies in the kernel of ${\bf \Phi}^{\top}$ and so the third term is $0$. We conclude that $\sum_{i = 1}^{n} \hat{d}_i \eta_{x_i}^{(m)} = \sum_{i = 1}^{n} \hat{d}_i E_{x_i} + p$ for some polynomial $p$, and consequently for some $\wt{c}$,
+\begin{equation}
+\label{pf:thm1-1}
+f_{\lambda} = \sum_{\nu = 1}^{M} \tilde{c}_{\nu} \phi_{\nu} + \sum_{i = 1}^{n} \hat{d}_i E_{x_i}.
+\end{equation}
+
+\section{Proof of Theorem~\ref{thm:tps-representer}}
+Combining~\eqref{pf:thm1-1} and Proposition~\ref{prop:tps-representer} shows that the solution to~\eqref{eqn:tps} is equal to
+\begin{equation}
+\label{pf:thm1-2}
+\min_{c,d} \|y - {\bf \Phi} c - {\bf E} d\|^2 + \lambda \hspace{2 pt} J_d^m\biggl(\sum_{i = 1}^{n} d_i E_{x_i}\biggr) \quad \textrm{subject to ${\bf \Phi}^{\top}d = 0$.}
+\end{equation}
+It remains only to show that the penalty in~\eqref{pf:thm1-2} has the finite-dimensional representation as written in~\eqref{eqn:tps-representer}. This can be seen by another application of Lemma~\ref{lem:rk-greens}: for any $d$ such that ${\bf \Phi}^{\top} d = 0$,
+\begin{align*}
+J_d^m\biggl(\sum_{i = 1}^{n} d_i E_{x_i}\biggr) & = J_d^m\biggl(\sum_{i = 1}^{n} d_i \eta_{x_i}^{(m)}\biggr) \\
+& = \sum_{i,j = 1}^{n} d_i d_j \eta^{(m)}(x_i,x_j) \\
+& = \sum_{i,j = 1}^{n} d_i d_j \biggl\{E(x_i,x_j) -  \sum_{\nu} E(x_i,z_{\nu}) \varphi_{\nu}(x_j) - \sum_{\nu'} E(z_{\nu'},x_j) \varphi_{\nu'}(x_i) + \sum_{\nu,\nu'} \varphi_{\nu}(x_i) \varphi_{\nu'}(x_j) E(z_{\nu},z_{\nu'}) \biggr\} \\
+& = \sum_{i,j = 1}^{n} d_i d_j E(x_i,x_j),
+\end{align*}
+where the first equality follows since $\eta_{x_i}^{m}$ and $E_{x_i}$ differ by a polynomial.
+
+\bibliographystyle{plainnat}
+\bibliography{tps_rkhs} 
+
+\end{document}
