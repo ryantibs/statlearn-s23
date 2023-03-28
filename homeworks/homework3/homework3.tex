@@ -93,11 +93,11 @@ and feature matrix $X \in \R^{n \times d}$, the min-norm least squares estimator
 out-of-sample prediction risk (conditional on $X$) given by:
 \begin{equation}
 \label{eq:ridgeless_var}
-\Var_X(\hbeta) = \frac{\sigma^2}{n} \tr (\hSigma^+ \Sigma).
+V_X(\hbeta) = \frac{\sigma^2}{n} \tr (\hSigma^+ \Sigma).
 \end{equation}
 Here \smash{$\hSigma = X^\T X/n$}, and $\Sigma = \Cov(x_i)$, for an arbitrary
 row $x_i$ of $X$ (the rows all have the same distribution). Also, $\sigma^2 =
-\Var(y_i | x_i)$ is the noise variance. In lecture, we studied a linear feature 
+\Var[y_i | x_i]$ is the noise variance. In lecture, we studied a linear feature 
 model of the form    
 \begin{equation}
 \label{eq:linear_features}
@@ -111,7 +111,7 @@ random matrix theory conditions, as $n,d \to \infty$ and $d/n \to \gamma \in
 (0,\infty)$, 
 \begin{equation}
 \label{eq:ridgeless_var_iso_limit}
-\Var_X(\hbeta) \asto 
+V_X(\hbeta) \asto 
 \begin{cases}
 \sigma^2 \frac{\gamma}{1-\gamma} & \text{for $\gamma < 1$} \\ 
 \sigma^2 \frac{1}{\gamma-1} & \text{for $\gamma > 1$}.
