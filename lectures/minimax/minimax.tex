@@ -721,12 +721,13 @@ The underlying issue here is similar to what we encountered in the splines
 lecture. In what we referred to there as the subcritical regime, $2m \leq d$, we
 cannot really talk about point evaluation in a Sobolev space (as the point
 evaluation operator is not continuous). Fortunately, in a Random-X model, the
-randomness in the inputs $x_i$, $i=1,\dots,n$ sort of finesses this problem. But 
-in a Fixed-X model, obtaining knowledge of $f(x_i)$, $i=1,\dots,n$ doesn't help
-you reason about what $f$ looks like on the rest of the domain $[0,1]^d$, for $f
-\in W^{m,2}(L; [0,1]^d)$. (This is the case even if you know that its Sobolev
+randomness in the inputs $x_i$, $i=1,\dots,n$ sort of finesses this
+problem, in a sense---which is itself fairly remarkable. In a Fixed-X model,
+however, obtaining knowledge of $f(x_i)$, $i=1,\dots,n$ doesn't help you reason
+about what $f$ looks like on the rest of the domain $[0,1]^d$, for $f \in
+W^{m,2}(L; [0,1]^d)$. (This is the case even if you know that its Sobolev
 seminorm is zero!) And this makes consistent estimation, in the sense of sup
-risk, impossible. 
+risk, impossible.  
 
 There's more to say about this general phenomenon but to avoid going on a huge
 tangent, we'll save that for another day (another lecture?). 
