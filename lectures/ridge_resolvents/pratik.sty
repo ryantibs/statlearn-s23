@@ -1,0 +1,788 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% packages %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% page layout
+\usepackage[margin=1in]{geometry}
+
+% what font to use to print characters
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% allows to input accented characters
+\usepackage[utf8]{inputenc}
+
+% typographical refinements
+\usepackage{microtype}
+
+% color support
+\usepackage[usenames,svgnames,dvipsnames]{xcolor}
+
+% ams math
+\usepackage{amsmath, amssymb, amsthm, amsfonts, amscd}
+
+\usepackage{mathrsfs}
+\usepackage{dsfont}
+\usepackage{empheq}
+
+\usepackage{mathtools}
+
+\usepackage{mathabx}
+
+% extended bold math support
+\usepackage{bm}
+
+% for urls
+\usepackage{url}
+
+% for better tables
+\usepackage{booktabs}
+
+\usepackage{longtable}
+
+% extended blackboard math support 
+\usepackage{bbm}
+
+% graphics
+\usepackage{graphicx}
+
+\usepackage{float}
+
+\usepackage{wrapfig}
+
+\usepackage{epstopdf}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows.meta,arrows}
+
+% captioning
+\usepackage{caption}
+\usepackage{subcaption}
+
+% automatic conversion from eps to pdf for figures
+\usepackage{epstopdf}
+
+% better enumeration
+\usepackage[shortlabels]{enumitem}
+
+
+% hyperlinks
+\usepackage{hyperref}
+
+\hypersetup{ 
+    colorlinks,
+    linkcolor={blue!80!black},
+    citecolor={green!40!black},
+    urlcolor={red!50!black}
+}
+
+\hypersetup{
+  unicode   =true,    % non-Latin characters in Acrobat’s bookmarks
+  pdftoolbar=true,    % show Acrobat’s toolbar
+  pdfmenubar=true     % show Acrobat’s menu
+}
+
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+% \usepackage[ruled,vlined]{algorithm2e}
+
+% better referencing
+\usepackage{cleveref}
+
+\usepackage{crossreftools}
+\pdfstringdefDisableCommands{%
+    \let\Cref\crtCref
+    \let\cref\crtcref
+}
+
+% bookmarks
+\usepackage{bookmark}
+
+% extended toc
+\usepackage{tocloft}
+
+% better underlines
+\usepackage[normalem]{ulem}
+
+% % margin length for TODO notes
+% \setlength\marginparwidth{2cm}
+
+% % todo notes
+% \usepackage[
+%     textsize = scriptsize,
+%     % textwidth = 0.7in,
+%     bordercolor = White,
+%     textcolor =  Black,
+%     backgroundcolor = Yellow!15
+%     % disable
+% ]{todonotes}
+% % \usepackage{todonotes}
+
+% better references
+\usepackage[round]{natbib}
+\renewcommand{\bibname}{References}
+
+\usepackage{scalerel}
+
+% starred version of eqref
+% source: https://tex.stackexchange.com/questions/126767/create-eqref-eqref-without-link-i-e-starred-eqref
+% removed the \usepackage{xparse} line (doesn't seem to complain)
+% \let\oldeqref\eqref
+% \makeatletter
+% \RenewDocumentCommand\eqref{s m}{%
+%   \IfBooleanTF#1%
+%   {\textup{\tagform@{\ref*{#2}}}}% If a star is seen
+%   {\oldeqref{#2}}%                 If no star is seen
+% }
+% \makeatother
+
+% miscellaneous
+
+\usepackage{empheq}
+
+\usepackage{xparse}
+
+\usepackage{ragged2e}
+
+\usepackage{textcomp}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% theorem, lemma, corollary, proposition in plain style
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+
+% definition, assumption, remark in definition style
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+% add tags for clever ref package
+\crefname{assumption}{assumption}{assumptions} % upper case done automatically
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% macros %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% make varepsilon default
+% \let\originalepsilon\eps
+\newcommand{\eps}{\varepsilon}
+
+% short forms (commands)
+\newcommand{\ol}{\overline}
+\newcommand{\ul}{\underline}
+\newcommand{\wt}{\widetilde}
+\newcommand{\wh}{\widehat}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% blackboards
+%%% pattern: use \<><> if available, otherwise \bb<>
+
+% english uppercase
+\newcommand{\bbA}{\mathbb{A}}
+\newcommand{\BB}{\mathbb{B}}
+\newcommand{\CC}{\mathbb{C}} % complex numbers
+\newcommand{\DD}{\mathbb{D}}
+\newcommand{\EE}{\mathbb{E}} % expectation
+\newcommand{\FF}{\mathbb{F}} % field
+\newcommand{\GG}{\mathbb{G}}
+\newcommand{\HH}{\mathbb{H}} % hilbert space
+\newcommand{\II}{\mathbb{I}}
+\newcommand{\JJ}{\mathbb{J}}
+\newcommand{\KK}{\mathbb{K}} % field
+\newcommand{\LL}{\mathbb{L}}
+\newcommand{\MM}{\mathbb{M}}
+\newcommand{\NN}{\mathbb{N}} % natural numbers
+\newcommand{\OO}{{\mathbb{O}}}
+\newcommand{\PP}{\mathbb{P}} % probability
+\newcommand{\QQ}{\mathbb{Q}} % rational numbers
+\newcommand{\RR}{\mathbb{R}} % real numbers
+\newcommand{\bbS}{\mathbb{S}}
+\newcommand{\TT}{\mathbb{T}}
+\newcommand{\UU}{\mathbb{U}}
+\newcommand{\VV}{\mathbb{V}} % variance
+\newcommand{\WW}{\mathbb{W}} % whole numbers
+\newcommand{\XX}{\mathbb{X}}
+\newcommand{\YY}{\mathbb{Y}}
+\newcommand{\ZZ}{\mathbb{Z}} % integers
+
+% greek uppercase
+\newcommand{\OOmega}{\mathbb{\Omega}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% caligraphics
+%%% pattern: use \c<> if available, otherwise \cal<>
+
+% english uppercase
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cD}{\mathcal{D}} % dataset
+\newcommand{\cE}{\mathcal{E}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cG}{\mathcal{G}}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\cI}{\mathcal{I}} % fisher information matrix
+\newcommand{\cJ}{\mathcal{J}}
+\newcommand{\cK}{\mathcal{K}}
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\cN}{\mathcal{N}} % normal random variable
+\newcommand{\cO}{\mathcal{O}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\cQ}{\mathcal{Q}}
+\newcommand{\cR}{\mathcal{R}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cT}{\mathcal{T}}
+\newcommand{\cU}{\mathcal{U}}
+\newcommand{\cV}{\mathcal{V}}
+\newcommand{\cW}{\mathcal{W}}
+\newcommand{\cX}{\mathcal{X}}
+\newcommand{\cY}{\mathcal{Y}}
+\newcommand{\cZ}{\mathcal{Z}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% bolds
+%%% pattern: use \b<> if available, otherwise \bol<>
+
+% english lowercase
+\newcommand{\ba}{\bm{a}}
+\newcommand{\bb}{\bm{b}}
+\newcommand{\bc}{\bm{c}}
+\newcommand{\bd}{\bm{d}}
+\newcommand{\be}{\bm{e}}
+\newcommand{\bolf}{\bm{f}}
+\newcommand{\bg}{\bm{g}}
+\newcommand{\bh}{\bm{h}}
+\newcommand{\bi}{\bmf{i}}
+\newcommand{\bj}{\bm{j}}
+\newcommand{\bk}{\bm{k}}
+\newcommand{\bl}{\bm{l}}
+\newcommand{\bolm}{\bm{m}}
+\newcommand{\bn}{\bm{n}}
+\newcommand{\bo}{\bm{o}}
+\newcommand{\bp}{\bm{p}}
+\newcommand{\bq}{\bm{q}}
+\newcommand{\br}{\bm{r}}
+\newcommand{\bs}{\bm{s}}
+\newcommand{\bt}{\bm{t}}
+\newcommand{\bu}{\bm{u}}
+\newcommand{\bv}{\bm{v}}
+\newcommand{\bw}{\bm{w}}
+\newcommand{\bx}{\bm{x}}
+\newcommand{\by}{\bm{y}}
+\newcommand{\bz}{\bm{z}}
+
+% english uppercase
+\newcommand{\bA}{\bm{A}}
+\newcommand{\bB}{\bm{B}}
+\newcommand{\bC}{\bm{C}}
+\newcommand{\bD}{\bm{D}}
+\newcommand{\bE}{\bm{E}}
+\newcommand{\bF}{\bm{F}}
+\newcommand{\bG}{\bm{G}}
+\newcommand{\bH}{\bm{H}}
+\newcommand{\bI}{\bm{I}}
+\newcommand{\bJ}{\bm{J}}
+\newcommand{\bK}{\bm{K}}
+\newcommand{\bL}{\bm{L}}
+\newcommand{\bM}{\bm{M}}
+\newcommand{\bN}{\bm{N}}
+\newcommand{\bO}{\bm{O}}
+\newcommand{\bP}{\bm{P}}
+\newcommand{\bQ}{\bm{Q}}
+\newcommand{\bR}{\bm{R}}
+\newcommand{\bS}{\bm{S}}
+\newcommand{\bT}{\bm{T}}
+\newcommand{\bU}{\bm{U}}
+\newcommand{\bV}{\bm{V}}
+\newcommand{\bW}{\bm{W}}
+\newcommand{\bX}{\bm{X}}
+\newcommand{\bY}{\bm{Y}}
+\newcommand{\bZ}{\bm{Z}}
+
+% greek lowercase
+\newcommand{\balpha}{\bm{\alpha}}
+\newcommand{\bbeta}{\bm{\beta}}
+\newcommand{\bgamma}{\bm{\gamma}}
+\newcommand{\bepsilon}{\bm{\epsilon}}
+\newcommand{\beps}{\bm{\varepsilon}}
+\newcommand{\bvarepsilon}{\bm{\varepsilon}}
+\newcommand{\bzeta}{\bm{\zeta}}
+\newcommand{\btheta}{\bm{\theta}}
+\newcommand{\bvartheta}{\bm{\vartheta}}
+\newcommand{\bkappa}{\bm{\kappa}}
+\newcommand{\blambda}{\bm{\lambda}}
+\newcommand{\bmu}{\bm{\mu}}
+\newcommand{\bnu}{\bm{\nu}}
+\newcommand{\bxi}{\bm{\xi}}
+\newcommand{\bpi}{\bm{\pi}}
+\newcommand{\bvarpi}{\bm{\varpi}}
+\newcommand{\brho}{\bm{\varrho}}
+\newcommand{\bsigma}{\bm{\sigma}}
+\newcommand{\bvarsigma}{\bm{\varsigma}}
+\newcommand{\btau}{\bm{\tau}}
+\newcommand{\bupsilon}{\bm{\upsilon}}
+\newcommand{\bphi}{\bm{\phi}}
+\newcommand{\bvarphi}{\bm{\varphi}}
+\newcommand{\bchi}{\bm{\chi}}
+\newcommand{\bpsi}{\bm{\psi}}
+\newcommand{\bomega}{\bm{\omega}}
+\newcommand{\bdelta}{\bm{\delta}}
+
+% greek uppercase
+\newcommand{\bGamma}{\bm{\Gamma}}
+\newcommand{\bDelta}{\bm{\Delta}}
+\newcommand{\bTheta}{\bm{\Theta}}
+\newcommand{\bLambda}{\bm{\Lambda}}
+\newcommand{\bXi}{\bm{\Xi}}
+\newcommand{\bPi}{\bm{\Pi}}
+\newcommand{\bSigma}{\bm{\Sigma}}
+\newcommand{\bUpsilon}{\bm{\Upsilon}}
+\newcommand{\bPhi}{\bm{\Phi}}
+\newcommand{\bPsi}{\bm{\Psi}}
+\newcommand{\bOmega}{\bm{\Omega}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% hats
+%%% pattern: use \h<> if available, otherwise \hat<>
+
+% english lowercase
+\newcommand{\ha}{\widehat{a}}
+\newcommand{\hb}{\widehat{b}}
+\newcommand{\hc}{\widehat{c}}
+\newcommand{\hd}{\widehat{d}}
+\newcommand{\he}{\widehat{e}}
+\newcommand{\hf}{\widehat{f}}
+\newcommand{\hg}{\widehat{g}}
+\newcommand{\hh}{\widehat{h}}
+\newcommand{\hi}{\widehat{i}}
+\newcommand{\hj}{\widehat{j}}
+\newcommand{\hk}{\widehat{k}}
+\newcommand{\hl}{\widehat{l}}
+\newcommand{\hatm}{\widehat{m}}
+\newcommand{\hn}{\widehat{n}}
+\newcommand{\ho}{\widehat{o}}
+\newcommand{\hp}{\widehat{p}}
+\newcommand{\hq}{\widehat{q}}
+\newcommand{\hr}{\widehat{r}}
+\newcommand{\hs}{\widehat{s}}
+\newcommand{\hatt}{\widehat{t}}
+\newcommand{\hu}{\widehat{u}}
+\newcommand{\hv}{\widehat{v}}
+\newcommand{\hw}{\widehat{w}}
+\newcommand{\hx}{\widehat{x}}
+\newcommand{\hy}{\widehat{y}}
+\newcommand{\hz}{\widehat{z}}
+
+% english uppercase
+\newcommand{\hA}{\widehat{A}}
+\newcommand{\hB}{\widehat{B}}
+\newcommand{\hC}{\widehat{C}}
+\newcommand{\hD}{\widehat{D}}
+\newcommand{\hE}{\widehat{E}}
+\newcommand{\hF}{\widehat{F}}
+\newcommand{\hG}{\widehat{G}}
+\newcommand{\hH}{\widehat{H}}
+\newcommand{\hI}{\widehat{I}}
+\newcommand{\hJ}{\widehat{J}}
+\newcommand{\hK}{\widehat{K}}
+\newcommand{\hL}{\widehat{L}}
+\newcommand{\hM}{\widehat{M}}
+\newcommand{\hN}{\widehat{N}}
+\newcommand{\hO}{\widehat{O}}
+\newcommand{\hP}{\widehat{P}}
+\newcommand{\hQ}{\widehat{Q}}
+\newcommand{\hR}{\widehat{R}}
+\newcommand{\hS}{\widehat{S}}
+\newcommand{\hT}{\widehat{T}}
+\newcommand{\hU}{\widehat{U}}
+\newcommand{\hV}{\widehat{V}}
+\newcommand{\hW}{\widehat{W}}
+\newcommand{\hX}{\widehat{X}}
+\newcommand{\hY}{\widehat{Y}}
+\newcommand{\hZ}{\widehat{Z}}
+
+% greek lowercase letters
+\newcommand{\halpha}{{\widehat{\alpha}}}
+\newcommand{\hbeta}{{\widehat{\beta}}}
+\newcommand{\hgamma}{{\widehat{\gamma}}}
+\newcommand{\hdelta}{{\widehat{\delta}}}
+\newcommand{\heps}{{\widehat{\varepsilon}}}
+\newcommand{\hepsilon}{{\widehat{\epsilon}}}
+\newcommand{\hzeta}{{\widehat{\zeta}}}
+\newcommand{\heta}{{\widehat{\eta}}}
+\newcommand{\htheta}{{\widehat{\theta}}}
+\newcommand{\hiota}{{\widehat{\iota}}}
+\newcommand{\hkappa}{{\widehat{\kappa}}}
+\newcommand{\hlambda}{{\widehat{\lambda}}}
+\newcommand{\hmu}{{\widehat{\mu}}}
+\newcommand{\hnu}{{\widehat{\nu}}}
+\newcommand{\hxi}{{\widehat{\xi}}}
+\newcommand{\hpi}{{\widehat{\pi}}}
+\newcommand{\hrho}{{\widehat{\rho}}}
+\newcommand{\hsigma}{{\widehat{\sigma}}}
+\newcommand{\htau}{{\widehat{\tau}}}
+\newcommand{\hupsilon}{{\widehat{\upsilon}}}
+\newcommand{\hphi}{{\widehat{\phi}}}
+\newcommand{\hchi}{{\widehat{\chi}}}
+\newcommand{\hpsi}{{\widehat{\psi}}}
+\newcommand{\homega}{{\widehat{\omega}}}
+
+% greek uppercase letters
+\newcommand{\hGamma}{{\widehat{\Gamma}}}
+\newcommand{\hDelta}{{\widehat{\Delta}}}
+\newcommand{\hTheta}{{\widehat{\Theta}}}
+\newcommand{\hLambda}{{\widehat{\Lambda}}}
+\newcommand{\hXi}{{\widehat{\Xi}}}
+\newcommand{\hPi}{{\widehat{\Pi}}}
+\newcommand{\hSigma}{{\widehat{\Sigma}}}
+\newcommand{\hUpsilon}{{\widehat{\Upsilon}}}
+\newcommand{\hPhi}{{\widehat{\Phi}}}
+\newcommand{\hPsi}{{\widehat{\Psi}}}
+\newcommand{\hOmega}{{\widehat{\Omega}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% tildes
+%%% pattern: use \t<> if avaiable, otherwise \til<>
+
+% english lowercase
+\newcommand{\ta}{\widetilde{a}}
+\newcommand{\tilb}{\widetilde{b}}
+\newcommand{\tc}{\widetilde{c}}
+\newcommand{\td}{\widetilde{d}}
+\newcommand{\te}{\widetilde{e}}
+\newcommand{\tf}{\widetilde{f}}
+\newcommand{\tg}{\widetilde{g}}
+\newcommand{\tilh}{\widetilde{h}}
+\newcommand{\ti}{\widetilde{i}}
+\newcommand{\tj}{\widetilde{j}}
+\newcommand{\tk}{\widetilde{k}}
+\newcommand{\tl}{\widetilde{l}}
+\newcommand{\tm}{\widetilde{m}}
+\newcommand{\tn}{\widetilde{n}}
+\newcommand{\tilo}{\widetilde{o}}
+\newcommand{\tp}{\widetilde{p}}
+\newcommand{\tq}{\widetilde{q}}
+\newcommand{\tilr}{\widetilde{r}}
+\newcommand{\ts}{\widetilde{s}}
+\newcommand{\tilt}{\widetilde{t}}
+\newcommand{\tu}{\widetilde{u}}
+\newcommand{\tv}{\widetilde{v}}
+\newcommand{\tw}{\widetilde{w}}
+\newcommand{\tx}{\widetilde{x}}
+\newcommand{\ty}{\widetilde{y}}
+\newcommand{\tz}{\widetilde{z}}
+
+% english uppercase
+\newcommand{\tA}{\widetilde{A}}
+\newcommand{\tB}{\widetilde{B}}
+\newcommand{\tC}{\widetilde{C}}
+\newcommand{\tD}{\widetilde{D}}
+\newcommand{\tE}{\widetilde{E}}
+\newcommand{\tF}{\widetilde{F}}
+\newcommand{\tG}{\widetilde{G}}
+\newcommand{\tH}{\widetilde{H}}
+\newcommand{\tI}{\widetilde{I}}
+\newcommand{\tJ}{\widetilde{J}}
+\newcommand{\tK}{\widetilde{K}}
+\newcommand{\tL}{\widetilde{L}}
+\newcommand{\tM}{\widetilde{M}}
+\newcommand{\tN}{\widetilde{N}}
+\newcommand{\tO}{\widetilde{O}}
+\newcommand{\tP}{\widetilde{P}}
+\newcommand{\tQ}{\widetilde{Q}}
+\newcommand{\tR}{\widetilde{R}}
+\newcommand{\tS}{\widetilde{S}}
+\newcommand{\tT}{\widetilde{T}}
+\newcommand{\tU}{\widetilde{U}}
+\newcommand{\tV}{\widetilde{V}}
+\newcommand{\tW}{\widetilde{W}}
+\newcommand{\tX}{\widetilde{X}}
+\newcommand{\tY}{\widetilde{Y}}
+\newcommand{\tZ}{\widetilde{Z}}
+
+% greek lowercase
+\newcommand{\talpha}{{\widetilde{\alpha}}}
+\newcommand{\tbeta}{{\widetilde{\beta}}}
+\newcommand{\tgamma}{{\widetilde{\gamma}}}
+\newcommand{\tdelta}{{\widetilde{\delta}}}
+\newcommand{\teps}{{\widetilde{\varepsilon}}}
+\newcommand{\tepsilon}{{\widetilde{\epsilon}}}
+\newcommand{\tzeta}{{\widetilde{\zeta}}}
+\newcommand{\teta}{{\widetilde{\eta}}}
+\newcommand{\ttheta}{{\widetilde{\theta}}}
+\newcommand{\tiota}{{\widetilde{\iota}}}
+\newcommand{\tkappa}{{\widetilde{\kappa}}}
+\newcommand{\tlambda}{{\widetilde{\lambda}}}
+\newcommand{\tmu}{{\widetilde{\mu}}}
+\newcommand{\tnu}{{\widetilde{\nu}}}
+\newcommand{\txi}{{\widetilde{\xi}}}
+\newcommand{\tpi}{{\widetilde{\pi}}}
+\newcommand{\trho}{{\widetilde{\rho}}}
+\newcommand{\tsigma}{{\widetilde{\sigma}}}
+\newcommand{\ttau}{{\widetilde{\tau}}}
+\newcommand{\tupsilon}{{\widetilde{\upsilon}}}
+\newcommand{\tphi}{{\widetilde{\phi}}}
+\newcommand{\tchi}{{\widetilde{\chi}}}
+\newcommand{\tpsi}{{\widetilde{\psi}}}
+\newcommand{\tomega}{{\widetilde{\omega}}}
+
+% greek uppercase
+\newcommand{\tGamma}{{\widetilde{\Gamma}}}
+\newcommand{\tDelta}{{\widetilde{\Delta}}}
+\newcommand{\tTheta}{{\widetilde{\Theta}}}
+\newcommand{\tLambda}{{\widetilde{\Lambda}}}
+\newcommand{\tXi}{{\widetilde{\Xi}}}
+\newcommand{\tPi}{{\widetilde{\Pi}}}
+\newcommand{\tSigma}{{\widetilde{\Sigma}}}
+\newcommand{\tUpsilon}{{\widetilde{\Upsilon}}}
+\newcommand{\tPhi}{{\widetilde{\Phi}}}
+\newcommand{\tPsi}{{\widetilde{\Psi}}}
+\newcommand{\tOmega}{{\widetilde{\Omega}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% frakturs
+%%% pattern: use \f<> if available, otherwise \frak<>
+
+% english uppercase
+\newcommand{\fA}{{\mathfrak{A}}}
+\newcommand{\fB}{{\mathfrak{B}}}
+\newcommand{\fC}{{\mathfrak{C}}}
+\newcommand{\fD}{{\mathfrak{D}}}
+\newcommand{\fE}{{\mathfrak{E}}}
+\newcommand{\fF}{{\mathfrak{F}}}
+\newcommand{\fG}{{\mathfrak{G}}}
+\newcommand{\fH}{{\mathfrak{H}}}
+\newcommand{\fI}{{\mathfrak{I}}}
+\newcommand{\fJ}{{\mathfrak{J}}}
+\newcommand{\fK}{{\mathfrak{K}}}
+\newcommand{\fL}{{\mathfrak{L}}}
+\newcommand{\fM}{{\mathfrak{M}}}
+\newcommand{\fN}{{\mathfrak{N}}}
+\newcommand{\fO}{{\mathfrak{O}}}
+\newcommand{\fP}{{\mathfrak{P}}}
+\newcommand{\fQ}{{\mathfrak{Q}}}
+\newcommand{\fR}{{\mathfrak{R}}}
+\newcommand{\fS}{{\mathfrak{S}}}
+\newcommand{\fT}{{\mathfrak{T}}}
+\newcommand{\fU}{{\mathfrak{U}}}
+\newcommand{\fV}{{\mathfrak{V}}}
+\newcommand{\fW}{{\mathfrak{W}}}
+\newcommand{\fX}{{\mathfrak{X}}}
+\newcommand{\fY}{{\mathfrak{Y}}}
+\newcommand{\fZ}{{\mathfrak{Z}}}
+
+% english lowercase
+\newcommand{\fa}{{\mathfrak{a}}}
+\newcommand{\fb}{{\mathfrak{b}}}
+\newcommand{\fc}{{\mathfrak{c}}}
+\newcommand{\fd}{{\mathfrak{d}}}
+\newcommand{\fe}{{\mathfrak{e}}}
+\newcommand{\ff}{{\mathfrak{f}}}
+\newcommand{\fg}{{\mathfrak{g}}}
+\newcommand{\fh}{{\mathfrak{h}}}
+\newcommand{\fraki}{{\mathfrak{i}}}
+\newcommand{\fj}{{\mathfrak{j}}}
+\newcommand{\fk}{{\mathfrak{k}}}
+\newcommand{\fl}{{\mathfrak{l}}}
+\newcommand{\fm}{{\mathfrak{m}}}
+\newcommand{\fn}{{\mathfrak{n}}}
+\newcommand{\fo}{{\mathfrak{o}}}
+\newcommand{\fp}{{\mathfrak{p}}}
+\newcommand{\fq}{{\mathfrak{q}}}
+\newcommand{\fr}{{\mathfrak{r}}}
+\newcommand{\fs}{{\mathfrak{s}}}
+\newcommand{\ft}{{\mathfrak{t}}}
+\newcommand{\fu}{{\mathfrak{u}}}
+\newcommand{\fv}{{\mathfrak{v}}}
+\newcommand{\fw}{{\mathfrak{w}}}
+\newcommand{\fx}{{\mathfrak{x}}}
+\newcommand{\fy}{{\mathfrak{y}}}
+\newcommand{\fz}{{\mathfrak{z}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% overbars, underbars
+%%% pattern: use \o<> if available, otherwise use \over<>
+
+% english uppercase
+\newcommand{\oA}{{\overline{A}}}
+\newcommand{\oB}{{\overline{B}}}
+\newcommand{\oC}{{\overline{C}}}
+\newcommand{\oD}{{\overline{D}}}
+\newcommand{\oE}{{\overline{E}}}
+\newcommand{\oF}{{\overline{F}}}
+\newcommand{\oG}{{\overline{G}}}
+\newcommand{\oH}{{\overline{H}}}
+\newcommand{\oI}{{\overline{I}}}
+\newcommand{\oJ}{{\overline{J}}}
+\newcommand{\oK}{{\overline{K}}}
+\newcommand{\oL}{{\overline{L}}}
+\newcommand{\oM}{{\overline{M}}}
+\newcommand{\oN}{{\overline{N}}}
+\newcommand{\oO}{{\overline{O}}}
+\newcommand{\oP}{{\overline{P}}}
+\newcommand{\oQ}{{\overline{Q}}}
+\newcommand{\oR}{{\overline{R}}}
+\newcommand{\oS}{{\overline{S}}}
+\newcommand{\oT}{{\overline{T}}}
+\newcommand{\oU}{{\overline{U}}}
+\newcommand{\oV}{{\overline{V}}}
+\newcommand{\oW}{{\overline{W}}}
+\newcommand{\oX}{{\overline{X}}}
+\newcommand{\oY}{{\overline{Y}}}
+\newcommand{\oZ}{{\overline{Z}}}
+
+% english lowercase
+\newcommand{\oa}{{\overline{a}}}
+\newcommand{\ob}{{\overline{b}}}
+\newcommand{\oc}{{\overline{c}}}
+\newcommand{\od}{{\overline{d}}}
+\newcommand{\ole}{{\overline{e}}}
+\newcommand{\of}{{\overline{f}}}
+\newcommand{\og}{{\overline{g}}}
+\newcommand{\oh}{{\overline{h}}}
+\newcommand{\oi}{{\overline{i}}}
+\newcommand{\oj}{{\overline{j}}}
+\newcommand{\ok}{{\overline{k}}}
+\newcommand{\overl}{{\overline{l}}}
+\newcommand{\om}{{\overline{m}}}
+\newcommand{\on}{{\overline{n}}}
+\newcommand{\oo}{{\overline{o}}}
+\newcommand{\overp}{{\overline{p}}}
+\newcommand{\oq}{{\overline{q}}}
+\newcommand{\olr}{{\overline{r}}}
+\newcommand{\os}{{\overline{s}}}
+\newcommand{\ot}{{\overline{t}}}
+\newcommand{\ou}{{\overline{u}}}
+\newcommand{\ov}{{\overline{v}}}
+\newcommand{\ow}{{\overline{w}}}
+\newcommand{\ox}{{\overline{x}}}
+\newcommand{\oy}{{\overline{y}}}
+\newcommand{\oz}{{\overline{z}}}
+
+% greek lowercase
+\newcommand{\oalpha}{{\overline{\alpha}}}
+\newcommand{\obeta}{{\overline{\beta}}}
+\newcommand{\ogamma}{{\overline{\gamma}}}
+\newcommand{\odelta}{{\overline{\delta}}}
+\newcommand{\oeps}{{\overline{\varepsilon}}}
+\newcommand{\oepsilon}{{\overline{\epsilon}}}
+\newcommand{\ozeta}{{\overline{\zeta}}}
+\newcommand{\ooleta}{{\overline{\eta}}}
+\newcommand{\otheta}{{\overline{\theta}}}
+\newcommand{\oiota}{{\overline{\iota}}}
+\newcommand{\okappa}{{\overline{\kappa}}}
+\newcommand{\olambda}{{\overline{\lambda}}}
+\newcommand{\omu}{{\overline{\mu}}}
+\newcommand{\onu}{{\overline{\nu}}}
+\newcommand{\oxi}{{\overline{\xi}}}
+\newcommand{\opi}{{\overline{\pi}}}
+\newcommand{\orho}{{\overline{\rho}}}
+\newcommand{\osigma}{{\overline{\sigma}}}
+\newcommand{\otau}{{\overline{\tau}}}
+\newcommand{\oupsilon}{{\overline{\upsilon}}}
+\newcommand{\ophi}{{\overline{\phi}}}
+\newcommand{\ochi}{{\overline{\chi}}}
+\newcommand{\opsi}{{\overline{\psi}}}
+\newcommand{\oomega}{{\overline{\omega}}}
+
+% greek uppercase letters
+\newcommand{\oGamma}{{\overline{\Gamma}}}
+\newcommand{\oDelta}{{\overline{\Delta}}}
+\newcommand{\oTheta}{{\overline{\Theta}}}
+\newcommand{\oLambda}{{\overline{\Lambda}}}
+\newcommand{\oXi}{{\overline{\Xi}}}
+\newcommand{\oPi}{{\overline{\Pi}}}
+\newcommand{\oSigma}{{\overline{\Sigma}}}
+\newcommand{\oUpsilon}{{\overline{\Upsilon}}}
+\newcommand{\oPhi}{{\overline{\Phi}}}
+\newcommand{\oPsi}{{\overline{\Psi}}}
+\newcommand{\oOmega}{{\overline{\Omega}}}
+
+% wide under line
+\newcommand{\ulambda}{{\underline{\lambda}}}
+
+% bars
+\newcommand{\barS}{{\bar{S}}}
+% \newcommand{\bR}{\widebar{R}}
+\newcommand{\RRbar}{\overline{\mathbb{R}}} % extended real numbers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% math operators
+\DeclareMathOperator{\dom}{dom} % domain
+\DeclareMathOperator{\img}{im} % image
+\DeclareMathOperator{\Img}{Im} % image
+\DeclareMathOperator{\Ker}{Ker} % kernel
+\DeclareMathOperator{\rank}{rank} % rank
+\DeclareMathOperator{\Tr}{Tr} % trace
+\DeclareMathOperator{\tr}{tr} % trace
+\DeclareMathOperator{\pr}{pr} % projection
+\DeclareMathOperator{\op}{op} % operator
+
+\DeclareMathOperator{\sign}{sgn}
+
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+
+\newcommand{\Var}{\mathop{\mathrm{Var}}}
+\newcommand{\Cov}{\mathop{\mathrm{Cov}}}
+
+\newcommand{\asympequi}{\simeq}
+
+% choice of transpose
+\def\T{\top}
+
+% choice of pseudoinverse
+\def\pinv{\dagger}
+
+% math operators (optimization)
+\newcommand{\argmin}{\mathop{\mathrm{arg\,min}}}
+\newcommand{\argmax}{\mathop{\mathrm{arg\,max}}}
+\newcommand{\minimize}{\mathop{\mathrm{minimize}}}
+\newcommand{\maximize}{\mathop{\mathrm{maximize}}}
+\newcommand{\st}{\mathop{\mathrm{subject\,\,to}}}
+\newcommand{\diag}{\mathop{\mathrm{diag}}}
+
+% modes of convergence
+\newcommand{\asto}{\xrightarrow{\mathrm{a.s.}}}
+\newcommand{\wto}{\xrightarrow{\mathrm{w}}}
+\newcommand{\pto}{\xrightarrow{\mathrm{p}}}
+\newcommand{\dto}{\xrightarrow{\mathrm{d}}}
+
+% left and right wrappers
+\newcommand{\abs}[1]{\lvert #1 \rvert}
+\newcommand{\Abs}[1]{\Bigl\lvert #1 \Bigr\rvert}
+\newcommand{\ABS}[1]{\left\lvert #1 \right\rvert}
+\newcommand{\norm}[1]{\lVert #1 \rVert}
+\newcommand{\Norm}[1]{\Bigl\lVert #1 \Bigr\rVert}
+\newcommand{\NORM}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\paren}[1]{( #1 )}
+\newcommand{\Paren}[1]{\Bigl( #1 \Bigr)}
+\newcommand{\PAREN}[1]{\left( #1 \right)}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+
+% display fractions
+\newcommand\ddfrac[2]{\frac{\displaystyle #1}{\displaystyle #2}}
+
+% short hands
+\newcommand{\inv}{{^{-1}}}
+\newcommand{\half}{\frac{1}{2}}
+\newcommand{\nth}{\frac{1}{n}}
+
+% special symbols
+\def\ones{\mathbbm{1}}
+% \def\1{\mathbbm{1}}
+% \def\1{\mathbb{I}}
