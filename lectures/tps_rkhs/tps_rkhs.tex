@@ -38,10 +38,10 @@ Alden Green}
 \RaggedRight
 \vspace{-50pt}
 
-Given data $(x_1,y_1),\ldots,(x_n,y_n)$ with each $x_i \in \Reals^{d}$, $y_i \in \Reals$, the thin-plate spline problem is to minimize
+Given data $(x_1,y_1),\ldots,(x_n,y_n)$ with each $x_i \in \Reals^{d}$, $y_i \in \Reals$, the thin-plate spline problem is to solve
 \begin{equation}
 \label{eqn:tps}
-\min \frac{1}{n}\sum_{i = 1}^{n}(y_i - f(x_i))^2 + \lambda J_d^{m}(f),
+\minimize_f \; \frac{1}{n}\sum_{i = 1}^{n}(y_i - f(x_i))^2 + \lambda J_d^{m}(f),
 \end{equation}
 where $J_d^{m}(f) = \sum_{|\alpha| = m} \frac{m!}{\alpha!} \int_{\Rd} (D^{\alpha}f(x))^2 \,dx$ is a derivative-based penalty of roughness.
 
@@ -74,7 +74,7 @@ As mentioned, the null space $\mc{N}$ of $J_d^m(f)$ is non-trivial and in fact c
 	where additionally $\sum_{i = 1}^{n} d_i \phi_{\nu}(x_i) = 0$ for each $\nu$. The optimization can be rewritten as the \emph{generalized ridge} problem
 	\begin{equation}
 	\label{eqn:tps-ridge}
-	\min_{c,d} \|y - {\bf \Phi} c - {\bf E} d\|^2 + \lambda d^{\top} {\bf E} d, \quad \textrm{subject to ${\bf \Phi}^{\top}d = 0$,}
+	\minimize_{c,d} \; \|y - {\bf \Phi} c - {\bf E} d\|^2 + \lambda d^{\top} {\bf E} d \;\; \st \;\; {\bf \Phi}^{\top}d = 0,
 	\end{equation}
 	which has a unique solution so long as $\mathrm{rank}(x_1,\ldots,x_n) \geq M$.
 \end{theorem}
@@ -169,7 +169,7 @@ Now we have everything we need to represent $f_{\lambda}$ in terms of the reprod
 	Thus, letting ${\bf Q} \in \Reals^{n \times n}$ have entries ${\bf Q}_{ij} = \eta^{(m)}(x_i,x_j)$, the problem~\eqref{eqn:tps} can be recast as the generalized ridge problem
 	\begin{equation}
 	\label{eqn:generalized-ridge}
-	\min_{c,d} \|y - {\bf \Phi} c - {\bf Q} d\|^2 + \lambda d^{\top} {\bf Q} d \quad \textrm{subject to ${\bf \Phi}^{\top}d = 0$.}
+	\minimize_{c,d} \; \|y - {\bf \Phi} c - {\bf Q} d\|^2 + \lambda d^{\top} {\bf Q} d \;\; \st \;\; {\bf \Phi}^{\top}d = 0.
 	\end{equation}
 \end{proposition}
 
@@ -185,7 +185,7 @@ $$J_d^{m}\bigl([I - P]f_{\lambda}\bigr) = J_d^{m}(f_\lambda^{(\pi)}) + J_d^{m}(f
 
 Finally, to complete the proof of Proposition~\ref{prop:tps-representer} we need to show the equivalence between the original problem and~\eqref{eqn:generalized-ridge}. First of all, noting that $f_{\lambda}(x_i) = {\bf \Phi}_{i\cdot} c + {\bf Q}_{i \cdot} d$ and $J_d^{m}([I - P]f_{\lambda}) = d^{\top} {\bf Q} d$,  we see that~\eqref{eqn:tps} can be rewritten as 
 \begin{equation*}
-\min_{c,d} \|y - {\bf \Phi} c - {\bf Q} d\|^2 + \lambda d^{\top} {\bf Q} d,
+\minimize_{c,d} \; \|y - {\bf \Phi} c - {\bf Q} d\|^2 + \lambda d^{\top} {\bf Q} d,
 \end{equation*}
 which is~\eqref{eqn:generalized-ridge} without the constraint ${\bf \Phi}^{\top}d = 0$. To see why this constraint additionally holds, we look at the normal equations: at the minimizer $(\hat{c},\hat{d})$ of~\eqref{eqn:generalized-ridge},
 \begin{equation}
@@ -215,7 +215,7 @@ f_{\lambda} = \sum_{\nu = 1}^{M} \tilde{c}_{\nu} \phi_{\nu} + \sum_{i = 1}^{n} \
 Combining~\eqref{pf:thm1-1} and Proposition~\ref{prop:tps-representer} shows that the solution to~\eqref{eqn:tps} is equal to
 \begin{equation}
 \label{pf:thm1-2}
-\min_{c,d} \|y - {\bf \Phi} c - {\bf E} d\|^2 + \lambda \hspace{2 pt} J_d^m\biggl(\sum_{i = 1}^{n} d_i E_{x_i}\biggr) \quad \textrm{subject to ${\bf \Phi}^{\top}d = 0$.}
+\minimize_{c,d} \; \|y - {\bf \Phi} c - {\bf E} d\|^2 + \lambda \hspace{2 pt} J_d^m\biggl(\sum_{i = 1}^{n} d_i E_{x_i}\biggr) \;\; \st \;\; {\bf \Phi}^{\top}d = 0.
 \end{equation}
 It remains only to show that the penalty in~\eqref{pf:thm1-2} has the finite-dimensional representation as written in~\eqref{eqn:tps-representer}. This can be seen by another application of Lemma~\ref{lem:rk-greens}: for any $d$ such that ${\bf \Phi}^{\top} d = 0$,
 \begin{align*}
