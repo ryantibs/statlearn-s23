@@ -1,0 +1,856 @@
+\documentclass{article}
+
+\title{Supplementary Notes: RRR (Ridge Risk Resolvents)\footnote{Any connection 
+to the eponymous 2022 movie (\url{https://en.wikipedia.org/wiki/RRR_(film)}) 
+is purely coincidental!\\There is neither Rise nor Roar nor Revolt here! } \\ \smallskip
+\large Advanced Topics in Statistical Learning, Spring 2023 \\ \smallskip
+Pratik Patil}
+\author{}
+\date{}
+
+\usepackage{pratik}
+\usepackage{parskip}
+
+\begin{document}
+\maketitle
+\RaggedRight
+\vspace{-50pt}
+
+Note: The content of this supplement is pretty much taken shamelessly 
+from Appendix C of \cite{patil_2022}
+(continuing the trend from Ryan's supplementary notes on B-splines).
+
+\section{Calculus of asymptotic equivalents}
+\label{sec:calculus_deterministic_equivalents}
+
+We will use the language of asymptotic equivalents
+to express the limiting bias and variance resolvents of ridge regression.
+In this section, we provide a basic review of the definition
+of asymptotic equivalents and list several useful calculus rules
+that such equivalence obeys.
+For more details, see \cite{dobriban_sheng_2021, patil_2022}.
+The treatment below borrows heavily from the latter reference.
+
+
+\begin{definition}
+    [Asymptotic equivalence]
+    \label{def:deterministic-equivalence}
+    Consider sequences $\{ A_p \}_{p \ge 1}$ and $\{ B_p \}_{p \ge 1}$
+    of (random or deterministic) matrices of growing dimension.
+    We say that $A_p$ and $B_p$ are asymptotically equivalent and write
+    $A_p \asympequi B_p$ if
+    $\lim_{p \to \infty} | \tr[C_p (A_p - B_p)] | = 0$ almost surely
+    for any sequence $C_p$ matrices with bounded trace norm
+    such that $\limsup \| C_p \|_{\mathrm{tr}} < \infty$
+    as $p \to \infty$.
+\end{definition}
+
+An observant reader will notice that
+\cite{dobriban_sheng_2021}
+use the notation $A_p \asymp B_p$
+to denote asymptotic equivalence.
+% In this paper, 
+We instead prefer to use the notation
+$A_p \asympequi B_p$ for such equivalence
+to stress the fact that this equivalence
+is exact in the limit rather than up to constants
+as the ``standard'' use of the asymptotic notation
+$\asymp$ would hint at.
+
+\begin{lemma}
+    [Calculus of asymptotic equivalents, \cite{dobriban_wager_2018}, \cite{dobriban_sheng_2021}]
+    \label{lem:calculus-detequi}
+    Let $A_p$, $B_p$, and $C_p$ be sequences of (random or deterministic) matrices.
+    The calculus of deterministic equivalents satisfy the following properties:
+    \begin{enumerate}
+        \item 
+        \label{lem:calculus-detequi-item-equivalence}
+        Equivalence:
+        The relation $\asympequi$ is an equivalence relation.
+        \item 
+        \label{lem:calculus-detequi-item-sum}
+        Sum:
+        If $A_p \asympequi B_p$ and $C_p \asympequi D_p$, then $A_p + C_p \asympequi B_p + D_p$.
+        \item 
+        \label{lem:calculus-detequi-item-product}
+        Product:
+        If $A_p$ a sequence of matrices with bounded operator norms, i.e., $\| A_p \|_{\op} < \infty$,
+        and $B_p \asympequi C_p$, then $A_p B_p \asympequi A_p C_p$.
+        \item 
+        \label{lem:calculus-detequi-item-trace}
+        Trace:
+        If $A_p \asympequi B_p$, then $\tr[A_p] / p - \tr[B_p] / p \to 0$ almost surely.
+        \item 
+        \label{lem:calculus-detequi-item-differentiation}
+        Differentiation:
+        Suppose $f(z, A_p) \asympequi g(z, B_p)$ where the entries of $f$ and $g$
+        are analytic functions in $z \in S$ and $S$ is an open connected subset of $\CC$.
+        Suppose for any sequence $C_p$ of deterministic matrices with bounded trace norm
+        we have $| \tr[C_p (f(z, A_p) - g(z, B_p))] | \le M$ for every $p$ and $z \in S$.
+        Then, we have $f'(z, A_p) \asympequi g'(z, B_p)$ for every $z \in S$,
+        where the derivatives are taken entry-wise with respect to $z$.
+    \end{enumerate}
+\end{lemma}
+
+The notion of \emph{deterministic} equivalence is a special case
+of asymptotic equivalence 
+where one of the sequences is a deterministic sequence. 
+In the sequel, 
+we will first record deterministic equivalent for the standard ridge resolvent 
+in terms of the population covariance matrix $\Sigma$,
+and then derive deterministic equivalents for the bias and variance resolvents
+arising in the squared prediction risk of ridge regression.
+
+A side comment:
+Some of you may be wondering what the term ``resolvent'' means.
+Resolvent formalism is a technique that uses complex-analytic machinery
+in the study of the spectrum of operators on Hilbert, Banach spaces, 
+and more general spaces.
+You can quench your curiosity to know more about this topic at:
+\url{https://en.wikipedia.org/wiki/Resolvent_formalism}.
+
+\begin{lemma}
+    [Deterministic equivalent for basic ridge resolvent,
+    adapted from 
+    Theorem 1 of \cite{rubio_mestre_2011};
+    see also Theorem 3.1 of \cite{dobriban_sheng_2021}]
+    \label{lem:basic-ridge-resolvent-deterministic-equivalent}
+    Suppose $x_i \in \RR^{p}$, $1 \le i \le n$, are i.i.d.\ random vectors
+    where each $x_i = z_i \Sigma^{1/2}$,
+    where $z_i$ contains i.i.d.\ entries $z_{ij}$, $1 \le j \le p$,
+    with $\EE[z_{ij}] = 0$, $\EE[z_{ij}^2] = 1$, and $\EE[|z_{ij}|^{8+\alpha}] \le M_\alpha$
+    for some $\alpha > 0$ and $M_\alpha < \infty$,
+    and $\Sigma \in \RR^{p \times p}$ is a positive semidefinite matrix
+    such that $0 \preceq \Sigma \preceq r_{\max} I_p$
+    for some constant
+    (independent of $p$)
+    $r_{\max} < \infty$.
+    Let $X \in \RR^{n \times p}$ the matrix with $x_i$, $1 \le i \le n$ as rows
+    and $\hSigma \in \RR^{p \times p}$ denote the random matrix $X^\top X / n$.
+    Define $\gamma_n = p / n$.
+    Then, 
+    for $z \in \CC^{> 0}$,
+    as $n, p \to \infty$ such that $0 < \liminf \gamma_n \le \limsup \gamma_n < \infty$,
+    we have
+    \begin{equation}
+        (\hSigma - z I_p)^{-1}
+        \asympequi
+        (c(e(z; \gamma_n)) \Sigma - z I_p)^{-1},
+    \end{equation}
+    where
+    $c(e(z; \gamma_n))$ is defined as
+    \begin{equation}
+        \label{eq:basic-ridge-equivalence-c-e-relation}
+        c(e(z; \gamma_n))
+        = \frac{1}{ 1 + \gamma_n e(z; \gamma_n)},
+    \end{equation}
+    and $e(z; \gamma_n)$ is the unique solution in $\CC^{> 0}$ to the fixed-point equation
+    \begin{equation}
+        \label{eq:basic-ridge-equivalence-e-fixed-point}
+        e(z; \gamma_n)
+        = 
+        \tr[ \Sigma (c(e(z; \gamma_n)) \Sigma  - z I_p)^{-1} ] / p.
+    \end{equation}
+\end{lemma}
+
+We note that in defining $e(\lambda; \gamma_n)$,
+it is also implicitly a parameterized by $\Sigma$.
+We suppress this dependence for notational simplicity,
+and only explicitly indicate dependence on 
+$z$
+and $\gamma_n$
+that will be useful for our purposes. 
+
+A helpful corollary of \Cref{lem:basic-ridge-resolvent-deterministic-equivalent}
+is the following result that considers the``scaled'' ridge resolvent.
+The reason why such scaling helps is because
+in the limit as $\lambda \to 0^+$,
+the ridge resolvent itself may blow up,
+but the scaled resolvent is well-behaved.
+
+
+\begin{corollary}
+    [Deterministic equivalent for scaled ridge resolvent]
+    \label{cor:basic-ridge-resolvent-equivalent-in-v}
+    Assume the setting of 
+    \Cref{lem:basic-ridge-resolvent-deterministic-equivalent}.
+    Then, for $\lambda > 0$,
+    as $n, p \to \infty$
+    such that $0 < \liminf \gamma_n \le \limsup \gamma_n < \infty$,
+    we have
+    \[
+        \lambda (\hSigma + \lambda I_p)^{-1}
+        \asympequi
+        (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1},
+    \]
+    where $v(-\lambda; \gamma_n)$
+    is the unique solution to the fixed-point equation
+    \[
+        \frac{1}{v(-\lambda; \gamma_n)}
+        =
+        \lambda
+        + \gamma_n \tr[\Sigma (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1}] / p.
+    \]
+\end{corollary}
+
+We remark that in moving from 
+\Cref{lem:basic-ridge-resolvent-deterministic-equivalent}
+to
+\Cref{cor:basic-ridge-resolvent-equivalent-in-v},
+we have switched from a complex $z$ to a real $\lambda$.
+For more details of how this is done,
+see the proof of \Cref{cor:basic-ridge-resolvent-equivalent-in-v}
+in Appendix C of \cite{patil_2022}
+or the proof of Theorem 5 in \cite{hastie2022surprises}
+(that uses
+Lemma 2.2 of
+\cite{knowles_yin_2017}).
+
+\section{Deterministic equivalents for ridge}
+
+\begin{lemma}
+    [Deterministic equivalents for bias and variance ridge resolvents]
+    \label{lem:deter-approx-generalized-ridge}
+    Assume the setting of \Cref{lem:basic-ridge-resolvent-deterministic-equivalent}.
+    Then, for $\lambda > 0$,
+    as $n, p \to \infty$
+    with $0 < \liminf \gamma_n \le \limsup \gamma_n < \infty$,
+    the following asymptotic deterministic equivalences hold:
+    \begin{enumerate}
+        \item Variance resolvent of ridge regression:
+        \begin{equation}
+            \label{eq:detequi-ridge-genbias}
+            (\hSigma + \lambda I_p)^{-2} \hSigma \Sigma
+            \asympequi
+            \tv(-\lambda; \gamma_n) (v(-\lambda; \gamma_n) \Sigma + I_p)^{-2} \Sigma^2,
+        \end{equation}
+        where $v(-\lambda; \gamma_n) \ge 0$
+        is the unique solution to the fixed-point equation
+        \begin{equation}
+            \label{eq:fixed-point-v-ridge-statement}
+            v(-\lambda; \gamma_n)^{-1}
+            = \lambda + \gamma_n \tr[\Sigma (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1}] / p,
+        \end{equation}
+        and $\tv(-\lambda; \gamma_n)$ is defined via 
+        $v(-\lambda; \gamma_n)$ by the equation
+        \begin{equation}
+            \label{eq:def-v'-ridge}
+            \tv(-\lambda; \gamma_n)^{-1}
+            = 
+                v(-\lambda; \gamma_n)^{-2}
+                - 
+                \gamma_n
+                \tr[\Sigma^2 (v(-\lambda; \gamma_n) \Sigma + I_p)^{-2}] / p.
+        \end{equation}
+        \item Bias resolvent of ridge regression:
+        \begin{equation}
+            \label{eq:detequi-ridge-genvar}
+            \lambda^2
+            (\hSigma + \lambda I_p)^{-1} \Sigma (\hSigma + \lambda I_p)^{-1}
+            \asympequi 
+            (1 + \tv_b(-\lambda; \gamma_n))
+            (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1}
+            % (\tv_b(-\lambda; \gamma_n) \Sigma + A)
+            \Sigma
+            (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1},
+        \end{equation}
+        where $v(-\lambda; \gamma_n)$ as defined in \eqref{eq:fixed-point-v-ridge},
+        and $\tv_b(-\lambda; \gamma_n)$
+        is defined via $v(-\lambda; \gamma_n)$ by the equation
+        \begin{equation}
+            \label{eq:def-vg'-ridge}
+            \tv_b(-\lambda; \gamma_n)
+            =
+            \ddfrac
+            {
+                \gamma_n \tr[\Sigma^2 (v(-\lambda; \gamma_n) \Sigma + I_p)^{-2}] / p
+            }
+            {
+                v(-\lambda; \gamma_n)^{-2}
+                - \gamma_n \tr[\Sigma^2 (v(-\lambda; \gamma_n) \Sigma + I_p)^{-2}] / p
+            }.
+        \end{equation}
+    \end{enumerate}
+\end{lemma}
+\begin{proof}
+    The plan of attack for both the first and second parts is to use 
+    \Cref{cor:basic-ridge-resolvent-equivalent-in-v}
+    as the starting point,
+    and apply the calculus rules for asymptotic deterministic equivalents 
+    listed in \Cref{sec:calculus_deterministic_equivalents}
+    to manipulate into the desired equivalents.
+    
+    \paragraph{Part 1.}
+    For the first part,
+    observe that we can express the resolvent of interest 
+    (associated with the variance of ridge regression)
+    as a derivative (with respect to $\lambda$) of a certain resolvent:
+   \begin{equation}
+        \label{eq:deriv-def-genvar-ridge}
+        (\hSigma + \lambda I_p)^{-2} \hSigma \Sigma
+        = (\hSigma + \lambda I_p)^{-1} \Sigma - \lambda (\hSigma + \lambda I_p)^{-2} \Sigma
+        = 
+        \frac{\partial}{\partial \lambda}
+        [\lambda (\hSigma + \lambda I_p)^{-1} \Sigma)].
+   \end{equation}
+   To find a deterministic equivalent for $(\hSigma + \lambda I_p)^{-2} \hSigma \Sigma$,
+   it thus suffices to obtain a deterministic equivalent for the resolvent
+   $\lambda (\hSigma + \lambda I_p)^{-1} \Sigma$
+   and take its derivative, 
+   thanks to the differentiation rule from
+    \Cref{lem:calculus-detequi}~\eqref{lem:calculus-detequi-item-differentiation}.
+    
+    Starting with
+    \Cref{cor:basic-ridge-resolvent-equivalent-in-v},
+    we have
+    \[
+        \lambda (\hSigma + \lambda I_p)^{-1}
+        \asympequi (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1},
+    \]
+  where $v(-\lambda; \gamma_n)$ is the unique solution to the fixed point equation
+  \begin{equation}
+        \label{eq:fixed-point-v-ridge}
+        v(-\lambda; \gamma_n)^{-1}
+        = \lambda + \gamma_n \tr[\Sigma (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1}] / p.
+  \end{equation}
+   Since $\Sigma$ has bounded operator norm (uniformly in $p$),
+   from 
+    \Cref{lem:calculus-detequi}~\eqref{lem:calculus-detequi-item-product},
+   we have
+  \begin{equation}
+        \label{eq:variance-base-functional-equivalence-ridge}
+        \lambda (\hSigma + \lambda I_p)^{-1} \Sigma
+        \asympequi (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1} \Sigma,
+  \end{equation}
+  where $v(-\lambda; \gamma_n)$ is as defined by \eqref{eq:fixed-point-v-ridge}.
+    It now remains to take the derivative of 
+    the right hand side of \eqref{eq:variance-base-functional-equivalence-ridge}
+    with respect to $\lambda$.
+    One can verify that the differentiation rule indeed applies in this case.
+    (You should check this!)
+    Taking derivative,
+    we have
+    \begin{equation}
+        \label{eq:deriv-detequi-genvar-ridge}
+        \frac{\partial}{\partial \lambda}
+        [(v(-\lambda; \gamma_n) \Sigma + I_p)^{-1} \Sigma]
+        = - \frac{\partial}{\partial \lambda}[v(-\lambda; \gamma_n)]
+        (v(-\lambda; \gamma_n) \Sigma + I_p)^{-2} \Sigma^2.
+    \end{equation}
+    We can write 
+    - $\partial / \partial \lambda [v(-\lambda; \gamma_n)]$
+    in terms of $v(-\lambda; \gamma_n)$
+    by taking derivative of \eqref{eq:fixed-point-v-ridge}
+    with respect to $\lambda$
+    and solving for 
+    - $\partial / \partial \lambda [v(-\lambda; \gamma_n)]$.
+    Taking the derivative of \eqref{eq:fixed-point-v-ridge} yields
+    the following equation:
+    \begin{equation}
+        - \label{eq:deriv-relation-v-ridge}
+        \frac{\partial}{\partial \lambda} [v(-\lambda; \gamma_n)]
+        v(-\lambda; \gamma_n)^{-2}
+        =  1 + \gamma_n - \frac{\partial}{\partial \lambda}[v(-\lambda; \gamma_n)] 
+        \tr[\Sigma^2 (v(-\lambda; \gamma_n) \Sigma + I_p)^{-2}] / p.
+    \end{equation}
+    Denoting 
+    - $\partial / \partial \lambda [v(-\lambda; \gamma_n)]$
+    by $\tv(-\lambda; \gamma_n)$
+    and solving for $\tv(-\lambda; \gamma_n)$
+    in \eqref{eq:deriv-relation-v-ridge},
+    we get
+    \begin{equation}
+        \label{eq:def-tv-ridge-in-the-proof}
+        \tv(-\lambda; \gamma_n)^{-1}
+        = 
+        v(-\lambda; \gamma_n)^{-2}
+        - \gamma_n \tr[\Sigma^2 (v(-\lambda; \gamma_n) \Sigma + I_p)^{-2}] / p.
+    \end{equation}
+    Combining 
+    \eqref{eq:deriv-def-genvar-ridge},
+    \eqref{eq:deriv-detequi-genvar-ridge},
+    and 
+    \eqref{eq:def-tv-ridge-in-the-proof},
+    the statement follows.
+    This completes the proof of the first part.
+    
+    
+    \paragraph{Part 2.}
+    For the second part,
+    observe that we can express
+    the resolvent of interest 
+    (appearing in the bias of ridge regression)
+    as a derivative 
+    of a certain parameterized resolvent at a fixed value
+    of the parameter:
+    \begin{equation}
+        \label{eq:deriv-def-genbias-ridge}
+        \begin{split}
+        \lambda^2 
+        (\hSigma + \lambda I_p)^{-1}
+        \Sigma
+        (\hSigma + \lambda I_p)^{-1}
+        &=
+        \lambda^2
+        (\hSigma + \lambda I_p + \lambda \rho \Sigma)^{-1} 
+        \Sigma 
+        (\hSigma + \lambda I_p + \lambda \rho \Sigma)^{-1} |_{\rho = 0} \\
+        &=
+        -
+        \frac{\partial}{\partial \rho}
+        [\lambda (\hSigma + \lambda I_p + \lambda \rho \Sigma)^{-1}] \mathrel{\Big |}_{\rho = 0}.
+        \end{split}
+    \end{equation}
+    It is worth remarking that in contrast to Part 1, we needed
+    to introduce another parameter $\rho$ for this part to appropriately
+    pull out the matrix $\Sigma$ in the middle.
+    This trick has been used in the proof
+    of Theorem 5 in \cite{hastie2022surprises}
+    in the context of bias calculation for ridge regression.
+    Our strategy henceforth will be to
+    obtain a deterministic equivalent
+    for the resolvent $\lambda (\hSigma + \lambda I_p + \lambda \rho \Sigma)^{-1}$,
+    take its derivative with respect to $\rho$, and set $\rho = 0$.
+    Towards that end,
+    we first massage it
+    to make it amenable
+    for application of \Cref{lem:basic-ridge-resolvent-deterministic-equivalent}
+    as follows:
+   \begin{align}
+        \lambda
+        \big(\hSigma + \lambda I_p + \lambda \rho \Sigma\big)^{-1}
+        &=
+        \lambda
+        \big(\hSigma + \lambda (I_p + \rho \Sigma)\big)^{-1} 
+        \nonumber \\
+        &=
+        (I_p + \rho \Sigma)^{-1/2}
+        \lambda\big((I_p + \rho \Sigma)^{-1/2} \hSigma (I_p + \rho \Sigma)^{-1/2} + \lambda I_p\big)^{-1}
+        (I_p + \rho \Sigma)^{-1/2} 
+        \nonumber \\
+        &=
+        (I_p + \rho \Sigma)^{-1/2}
+        \lambda
+        \big(
+        \hSigma_{\rho, \Sigma} + \lambda I_p
+        \big)^{-1}
+        (I_p + \rho \Sigma)^{-1/2}, \label{eq:resolvent-massage-genbias-ridge}
+   \end{align}
+   where $\hSigma_{\rho, \Sigma} := \Sigma_{\rho, \Sigma}^{1/2} (Z^\top Z / n) \Sigma_{\rho, \Sigma}^{1/2}$
+   and $\Sigma_{\rho, \Sigma} := (I_p + \rho \Sigma)^{-1/2} \Sigma (I_p + \rho \Sigma)^{-1/2}$.
+   We will now obtain a deterministic equivalent
+   for $\lambda (\hSigma_{\rho, \Sigma} + \lambda I_p)^{-1}$,
+   and use the product rule to arrive at the deterministic
+   equivalent for $\lambda (\hSigma + \lambda I_p + \lambda \rho \Sigma)^{-1}$.
+   
+   Using 
+   \Cref{cor:basic-ridge-resolvent-equivalent-in-v},
+   we have
+   \begin{equation}
+        \label{eq:resolvent-in-v-genbias-ridge}
+        \lambda (\hSigma_{\rho, \Sigma} + \lambda I_p)^{-1}
+        \asympequi (v_b(-\lambda, \rho; \gamma_n) \Sigma_{\rho, \Sigma} + I_p)^{-1},
+   \end{equation}
+   where $v_b(-\lambda, \rho; \gamma_n)$
+   is the unique solution to the fixed-point equation
+   \begin{equation}
+        \label{eq:fixed-point-in-v-genbias-ridge}
+        v_b(-\lambda, \rho; \gamma_n)^{-1}
+        = \lambda + \gamma_n 
+        \tr[\Sigma_{\rho, \Sigma}  (v_b(-\lambda, \rho; \gamma_n) \Sigma_{\rho, \Sigma} + I_p)^{-1}] / p.
+   \end{equation}
+   Combining 
+   \eqref{eq:resolvent-massage-genbias-ridge}
+   with 
+   \eqref{eq:resolvent-in-v-genbias-ridge},
+   and using the product rule from 
+    \Cref{lem:calculus-detequi}~\eqref{lem:calculus-detequi-item-product}
+   (which is applicable since $(I_p + \rho \Sigma)^{-1/2}$ is a deterministic matrix),
+   we get
+   \begin{align*}
+        \lambda (\hSigma + \lambda I_p + \lambda \rho \Sigma)^{-1}
+        &= 
+        (I_p + \rho \Sigma)^{-1/2}
+        \lambda
+        (\hSigma_{\rho, \Sigma} + \lambda I_p)^{-1}
+        (I_p + \rho \Sigma)^{-1/2}
+        \\
+        &\asympequi
+        (I_p + \rho \Sigma)^{-1/2}
+        (v_b(-\lambda, \rho; \gamma_n) \Sigma_{\rho, \Sigma} + I_p)^{-1}
+        (I_p + \rho \Sigma)^{-1/2} \\
+        &= 
+        (I_p + \rho \Sigma)^{-1/2}
+        (v_b(-\lambda, \rho; \gamma_n) (I_p + \rho \Sigma)^{-1/2} \Sigma (I_p + \rho \Sigma)^{-1/2}  + I_p)^{-1}
+        (I_p + \rho \Sigma)^{-1/2} \\
+        &=
+        (v_b(-\lambda, \rho; \gamma_n) \Sigma + I_p + \rho \Sigma)^{-1}.
+   \end{align*}
+   Similarly, 
+   the right hand side of the fixed-point equation 
+   \eqref{eq:fixed-point-in-v-genbias-ridge} 
+   can be simplified
+   by substituting back for $\Sigma_{\rho, \Sigma}$ to yield
+   \begin{align}
+       v_b(-\lambda, \rho; \gamma_n)^{-1}
+       &= \lambda + \gamma_n 
+       \tr[(I_p + \rho \Sigma)^{-1/2} \Sigma (I_p + \rho \Sigma)^{-1/2} 
+       (v_b(-\lambda, \rho; \gamma_n) \Sigma_{\rho, \Sigma} + I_p)^{-1}] / p \nonumber \\
+       &=
+       \lambda + \gamma_n
+       \tr[ \Sigma 
+       (v_b(-\lambda, \rho; \gamma_n) 
+       (I_p + \rho \Sigma)^{1/2} \Sigma_{\rho, \Sigma} (I_p + \rho \Sigma)^{1/2} 
+       + (I_p + \rho \Sigma))^{-1}] / p \nonumber \\
+       &=
+       \lambda + \gamma_n
+       \tr[\Sigma (v_b(-\lambda, \rho; \gamma_n) \Sigma + I_p + \rho \Sigma)^{-1}] / p. \label{eq:fixed-point-vg-with-rho}
+   \end{align}
+   Finally, we will now use
+  the differentiation rule 
+    from \Cref{lem:calculus-detequi}~\eqref{lem:calculus-detequi-item-differentiation}
+   (with respect to $\rho$ this time).
+   It is easy verify that the differentiation rule applies
+   in the neighborhood of $\rho = 0$.
+    (Again, check this!)
+    Taking derivative with respect to $\rho$,
+    we get
+   \begin{equation}
+        \label{eq:deriv-detequi-genbias-ridge}
+        \begin{split}
+        &-
+        \frac{\partial}{\partial \rho}
+        [ ( v_b(-\lambda, \rho; \gamma_n) \Sigma + I_p + \rho \Sigma )^{-1} ] \\
+        &\quad = (v_b(-\lambda, \rho; \gamma_n) \Sigma + I_p + \rho \Sigma)^{-1}
+        \left(\frac{\partial}{\partial \rho}[v_b(-\lambda, \rho; \gamma_n)] \Sigma + \Sigma\right)
+        (v_b(-\lambda, \rho; \gamma_n) \Sigma + I_p + \rho \Sigma)^{-1}.
+        \end{split}
+   \end{equation}
+   Setting $\rho = 0$ and observing that
+   $v_b(-\lambda, 0; \gamma_n) = v(-\lambda; \gamma_n)$,
+   where $v(-\lambda; \gamma_n)$ is as defined in \eqref{eq:fixed-point-v-ridge},
+    we have
+    \begin{equation}
+        \label{eq:deriv-detequi-genbias-ridge-rho0}
+        \begin{split}
+        &\frac{\partial}{\partial \rho}
+        [
+        (v_b(-\lambda, \rho; \gamma_n) \Sigma + I_p + \rho \Sigma)^{-1}
+        ] \mathrel{\Big |}_{\rho = 0} \\
+        &\quad = 
+        (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1}
+        \left( 
+            \frac{\partial}{\partial \rho}[v_b(-\lambda, \rho; \gamma_n)] 
+            \mathrel{\Big|}_{\rho = 0} 
+            \Sigma  + \Sigma 
+        \right)
+        (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1}.
+        \end{split}
+    \end{equation}
+    To obtain an equation for 
+    $\partial / \partial \rho [v_b(-\lambda, \rho; \gamma_n)] |_{\rho = 0}$,
+    we can differentiate the fixed-point equation \eqref{eq:fixed-point-vg-with-rho}
+    with respect to $\rho$ to yield
+    % \begin{multline}
+    \begin{equation*}
+    \begin{split}
+        &-
+        \frac{\partial}{\partial \rho}
+        [v_b(-\lambda, \rho; \gamma_n)] 
+        v_b(-\lambda, \rho; \gamma_n)^{-2} \\
+        &\quad = 
+        - \gamma_n 
+        \frac{\partial}{\partial \rho}[v_b(-\lambda, \rho; \gamma_n)]
+        \tr[\Sigma^2 (v_b(-\lambda, \rho; \gamma_n) \Sigma + I_p + \rho \Sigma)^{-2}] / p \\
+        &\qquad \qquad - \gamma_n
+        \tr[\Sigma^2 (v_b(-\lambda, \rho; \gamma_n) \Sigma + I_p + \rho \Sigma)^{-2}] / p.
+    \end{split}
+    \end{equation*}
+    % \end{multline}
+    Setting $\rho = 0$ in the equation above,
+    and using the fact that $v_b(-\lambda, 0; \gamma_n) = v(-\lambda; \gamma_n)$,
+    and denoting 
+    $\partial / \partial \rho[v_b(-\lambda, \rho; \gamma_n)] |_{\rho = 0}$
+    by $\tv_b(-\lambda; \gamma_n)$,
+    we get that
+    \begin{equation}
+        \label{eq:def-tvg-ridge-in-the-proof}
+        \tv_b(-\lambda; \gamma_n)
+        = 
+        \ddfrac
+        {\gamma_n \tr[\Sigma^2 (v(-\lambda; \gamma_n) \Sigma + I_p)^{-2}] / p}
+        {v(-\lambda; \gamma_n)^{-2} - \gamma_n \tr[\Sigma^2 (v(-\lambda; \gamma_n) \Sigma + I_p)^{-2}] / p}.
+    \end{equation}
+    Therefore, from \eqref{eq:deriv-def-genbias-ridge} 
+    and \eqref{eq:deriv-detequi-genbias-ridge-rho0},
+    we finally have
+   \begin{align*}
+        \lambda^2
+        (\hSigma + \lambda I_p)^{-1}
+        \Sigma
+        (\hSigma + \lambda I_p)^{-1}
+        &\asympequi
+        (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1}
+        (\tv_b(-\lambda; \gamma_n) \Sigma + \Sigma)
+        (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1} \\
+        &=
+        (1 + \tv_b(-\lambda; \gamma_n))
+        (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1}
+        \Sigma
+        (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1},
+   \end{align*}
+   where $v(-\lambda; \gamma_n)$ is as defined in \eqref{eq:fixed-point-v-ridge},
+   and $\tv_b(-\lambda; \gamma_n)$ is as defined in \eqref{eq:def-tvg-ridge-in-the-proof}.
+   This completes the proof of the second part.
+\end{proof}
+
+\section{Deterministic equivalents for ridgeless}
+
+\begin{lemma}
+    [Deterministic equivalents for bias and variance ridgeless resolvents]
+    \label{lem:deter-approx-generalized-ridgeless}
+    Assume the setting of \Cref{lem:deter-approx-generalized-ridge}
+    with $\gamma_n \in (1, \infty)$.
+    Then,
+    the following deterministic equivalences hold:
+    \begin{enumerate}
+        \item Variance resolvent of ridgeless regression:
+        \begin{equation}
+            \label{eq:detequi-mn2ls-genbias}
+            \hSigma^{+} \Sigma
+            \asympequi
+            \tv(0; \gamma_n)
+            (v(0; \gamma_n) \Sigma + I_p)^{-2} \Sigma^2,
+        \end{equation}
+        where $v(0; \gamma_n)$ is the unique solution
+        to the fixed-point equation
+        \begin{equation}
+            \label{eq:fixed-point-v-mn2ls}
+            \gamma_n^{-1}
+            = \tr[v(0; \gamma_n) \Sigma (v(0; \gamma_n) \Sigma + I_p)^{-1}] / p,
+        \end{equation}
+        and $\tv(0; \gamma_n)$ is defined through $v(0; \gamma_n)$  via
+        \begin{equation}
+            \label{eq:def-vg-mn2ls-tv}
+            \tv(0; \gamma_n)
+            = \big( v(0; \gamma_n)^{-2} - \gamma_n \tr[\Sigma^2 (v(0; \gamma_n) \Sigma + I_p)^{-2}] / p \big)^{-1}.
+        \end{equation}
+        \item Bias resolvent of ridgeless regression:
+        \begin{equation}
+            (I_p - \hSigma^{+} \hSigma)
+            \Sigma
+            (I_p - \hSigma^{+} \hSigma)
+            \asympequi
+            (1 + \tv_b(0; \gamma_n))
+            (v(0; \gamma_n) \Sigma + I_p)^{-1}
+            \Sigma
+            (v(0; \gamma_n) \Sigma + I_p)^{-1},
+        \end{equation}
+    \end{enumerate}
+\end{lemma}
+where $v(0; \gamma_n)$ is as defined in \eqref{eq:fixed-point-v-mn2ls},
+and $\tv_b(0; \gamma_n)$ is defined via $v(0; \gamma_n)$ by
+\begin{equation}
+    \label{eq:def-tv-mn2ls-tvg}
+    \tv_b(0; \gamma_n)
+    =
+    \gamma_n
+    \tr[\Sigma^2 (v(0; \gamma_n) \Sigma + I_p)^{-2}] / p
+    \cdot
+    \big(v(0; \gamma_n)^{-2} - \gamma_n \tr[\Sigma^2 (v(0; \gamma_n) \Sigma + I_p)^{-2}] / p\big)^{-1}.
+\end{equation}
+
+\begin{proof}
+    The plan of attack 
+    for both the parts is to use the results of \Cref{lem:deter-approx-generalized-ridge}
+    and limiting arguments as $\lambda \to 0^{+}$.
+    The results of \Cref{lem:deter-approx-generalized-ridge}
+    are pointwise in $\lambda$,
+    but can be strengthened to be uniform in $\lambda$
+    over a range
+    that includes $\lambda = 0$
+    allowing one to take the limits of the deterministic equivalents
+    obtained in \Cref{lem:deter-approx-generalized-ridge}
+    as $\lambda \to 0^{+}$.
+    
+    \paragraph{Part 1.}
+    We will use the result in Part 1 of \Cref{lem:deter-approx-generalized-ridge}
+    as our starting point.
+    Let $\Lambda := [0, \lambda_{\max}]$
+    where $\lambda_{\max} < \infty$,
+    and let $T$ be a matrix with bounded trace norm.
+    Note that
+    \begin{equation}
+        \label{eq:var-func-bound}
+        \vert \tr[(\hSigma + \lambda I_p)^{-2} \hSigma \Sigma T ] \vert
+        \le \| (\hSigma + \lambda I_p)^{-2} \hSigma \Sigma \|_{\mathrm{op}} \tr[T]
+        \le C \| (\hSigma + \lambda I_p)^{-2} \hSigma \|_{\mathrm{op}} 
+        \| \Sigma \|_{\mathrm{op}}
+        \le C
+    \end{equation}
+    for some constant $C < \infty$.
+    Here, the last inequality follows
+    because $s_i^2 / (s_i^2 + \lambda)^2 \le 1$
+    where $s_i^2$, $1 \le i \le p$,
+    are the eigenvalues of $\hSigma$,
+    and the operator norm $\Sigma$ is assumed to be bounded.
+    Consider the magnitude of the derivative (in $\lambda$) of the map
+     $\lambda
+     \mapsto
+     \tr[(\hSigma + \lambda I_p)^{-2} \hSigma \Sigma T]$
+     given by
+    \[
+        \left|
+        \frac{\partial}{\partial \lambda}
+        \tr[(\hSigma + \lambda I_p)^{-2} \hSigma \Sigma T]
+        \right|
+        = 2 \vert \tr[(\hSigma + \lambda I_p)^{-3} \hSigma \Sigma T] \vert.
+    \]
+    Following the argument in \eqref{eq:var-func-bound},
+    for $\lambda \in \Lambda$,
+    observe that
+    \[
+        \vert \tr[(\hSigma + \lambda I_p)^{-3} \hSigma \Sigma T] \vert
+        \le \| (\hSigma + \lambda I_p)^{-3} \hSigma \|_{\mathrm{op}} 
+        \| \Sigma \|_{\mathrm{op}} \tr[T]
+        \le C
+    \]
+    for some constant $C < \infty$.
+    Similarly,
+    in the same interval
+    $
+        \tr
+        [
+        \tv(-\lambda; \gamma_n)
+        (v(-\lambda; \gamma_n) \Sigma + I_p)^{-2}
+        \Sigma^2 T
+        ]
+        \le C.
+    $
+    In addition,
+    it is easy to show that
+    the map
+    $
+        \lambda 
+        \mapsto
+        \tr[\tv(-\lambda; \gamma_n) 
+        (v(-\lambda; \gamma_n) \Sigma + I_p)^{-2} \Sigma T]
+    $
+    is differentiable in $\lambda$
+    and that 
+    the derivative for $\lambda \in \Lambda$ is bounded.
+    Therefore,
+    the family of functions
+    $\tr[ (\hSigma + \lambda I_p)^{-2} \hSigma \Sigma T] 
+    - \tr[\tv(-\lambda; \gamma_n) (v(-\lambda; \gamma_n) \Sigma + I_p)^{-2} \Sigma^2 T]$
+    forms an equicontinuous family in $\lambda$
+    over $\lambda \in \Lambda$.
+    Thus, the convergence in Part 1 of \Cref{lem:deter-approx-generalized-ridge} 
+    is uniform in $\lambda$.
+    We can now use the Moore-Osgood theorem
+    to interchange the limits
+    to obtain
+    \begin{align*}
+        &\lim_{p \to \infty}
+        \Big\{ \tr[\hSigma^{+} \Sigma T]
+        - \tr[\tv(0; \gamma_n) (v(0; \gamma_n) \Sigma + I_p)^{-2} \Sigma^2 T] \Big\} \\
+        &=
+        \lim_{p \to \infty}
+        \lim_{\lambda \to 0^{+}}
+        \Big\{ \tr[(\hSigma + \lambda I_p)^{-2} \hSigma \Sigma T]
+        - \tr[\tv(-\lambda; \gamma_n) (v(-\lambda; \gamma_n) \Sigma + I_p)^{-2} \Sigma^2 T)] \Big\} \\
+        &=
+        \lim_{\lambda \to 0^{+}}
+        \lim_{p \to \infty}
+        \Big\{
+        \tr[(\hSigma + \lambda I_p)^{-2} \hSigma \Sigma T]
+        - \tr[\tv(-\lambda; \gamma_n) (v(-\lambda; \gamma_n) \Sigma + I_p)^{-2} \Sigma^2 T)] \Big\} \\
+        &= 0.
+    \end{align*}
+    In the first equality above,
+    we used the fact that 
+    $\hSigma^{+} = \hSigma^{+} \hSigma \hSigma^{+} 
+    = \lim_{\lambda \to 0^{+}} (\hSigma + \lambda I_p)^{-1} \hSigma (\hSigma + \lambda I_p)^{-1}$,
+    and that the functions
+    $v(\cdot; \gamma_n)$
+    and
+    $\tv(\cdot; \gamma_n)$
+    are continuous
+    (which is easy to verify). 
+    This
+    provides the right hand side of \eqref{eq:detequi-mn2ls-genbias}.
+    Similarly, the fixed-point equation \eqref{eq:fixed-point-v-ridge}
+    as $\lambda \to 0^{+}$ becomes
+    \[
+        v(0; \gamma_n)^{-1}
+        = \gamma_n \tr[\Sigma (v(0; \gamma_n) \Sigma + I_p)^{-1}] / p.
+    \]
+    Moving $v(0; \gamma_n)$ to the other side
+    (it follows easily that $v(0; \gamma_n) > 0$
+    for $\gamma_n \in (1, \infty)$, so we are safe in doing this),
+    we arrive at the desired result.
+    
+    \paragraph{Part 2.}
+    As done in Part 1,
+    it is not difficult to show
+    that over $\lambda \in \Lambda$
+    the family of functions
+    $\tr[\lambda^2 (\hSigma + \lambda I_p)^{-1} \Sigma (\hSigma + \lambda I_p)^{-1} T]
+    - \tr[(1 + \tv_b(-\lambda; \gamma_n)) (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1} \Sigma 
+    (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1} T]$
+    form an equicontinuous family.
+    Therefore,
+    the convergence in Part 2 of 
+    \Cref{lem:deter-approx-generalized-ridge}
+    is uniform in $\lambda$ over $\Lambda$ (that includes $0$).
+    Using the Moore-Osgood theorem
+    to the interchange the limits,
+    one has
+    \begin{align*}
+        &\lim_{p \to \infty}
+        \Big\{
+        \tr[(I_p - \hSigma^{+} \hSigma) \Sigma (I_p - \hSigma^{+} \hSigma) T] \\
+        &\qquad \qquad
+        -
+        \tr[ 
+        (1 + \tv_b(0; \gamma_n))
+        (v(0; \gamma_n) \Sigma + I_p)^{-1} 
+        % (\tv_b(0; \gamma_n) \Sigma + \Sigma) 
+        \Sigma
+        (v(0; \gamma_n) \Sigma + I_p)^{-1}
+        T
+        ]  \Big\}
+        \\
+        &=
+        \lim_{p \to \infty}
+        \lim_{\lambda \to 0^{+}}
+        \Big\{
+        \tr[\lambda^2 (\hSigma + \lambda I_p)^{-1} \Sigma (\hSigma + \lambda I_p)^{-1} T] \\
+        &\qquad \qquad \qquad \qquad - \tr[ (1 + \tv_b(-\lambda; \gamma_n))  (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1} 
+        % (\tv_b(-\lambda; \gamma_n) \Sigma + \Sigma) 
+        \Sigma
+        (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1} T] \Big\} \\
+        &=
+        \lim_{\lambda \to 0^{+}}
+        \lim_{p \to \infty}
+        \Big\{
+        \tr[\lambda^2 (\hSigma + \lambda I_p)^{-1} \Sigma (\hSigma + \lambda I_p)^{-1} T] \\
+        &\qquad \qquad \qquad \qquad - \tr[ (1 + \tv_b(-\lambda; \gamma_n)) (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1}
+        % (\tv_b(-\lambda; \gamma_n) \Sigma + \Sigma) 
+        \Sigma
+        (v(-\lambda; \gamma_n) \Sigma + I_p)^{-1} T] \Big\} \\
+        &= 0.
+    \end{align*}
+    Now, both \eqref{eq:def-vg-mn2ls-tv} and \eqref{eq:def-tv-mn2ls-tvg}
+    follow by taking $\lambda \to 0^{+}$
+    in 
+    \eqref{eq:detequi-ridge-genvar}
+    and
+    \eqref{eq:def-vg'-ridge},
+    respectively.
+\end{proof}
+
+\bibliographystyle{plainnat}
+\bibliography{pratik.bib}
+
+\end{document}
