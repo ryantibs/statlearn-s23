@@ -100,11 +100,11 @@ F(x) = \lim_{y \to x^+} F(y)
 Let $D_1$ and $D_2$ be an arbitrary partition of $\{1,\dots,n\}$ into sets of
 sizes $n_1=|D_1|$ and $n_2=|D_2|$. Recall, in lecture, we stated that for the
 split conformal prediction band \smash{$\hC_n$}, computed on a proper training
-set $\{(X_i,Y_i)\}_{i \in D_1}$ and a calibration set $\{(X_i,Y_i)\}_{i \in D_2}$, it
-holds that  
+points $(X_i,Y_i)$, $i \in D_1$ and a calibration points $(X_i,Y_i)$, $i \in
+D_2$, it holds that  
 \begin{equation}
 \label{eq:coverage_beta_split}
-\P\Big(Y_{n+1} \in \hC_n(X_{n+1}) \, \Big| \, \{ (X_i,Y_i) \}_{i=1}^n \Big)
+\P\Big(Y_{n+1} \in \hC_n(X_{n+1}) \, \Big| \, (X_i,Y_i), \, i=1,\dots,n \Big) 
 \sim \mathrm{Beta}(k_\alpha, n_2+1-k_\alpha), 
 \end{equation}
 where $k_\alpha = \lceil (1-\alpha)(n_2+1) \rceil$. This assumes that
