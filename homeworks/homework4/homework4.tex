@@ -1,0 +1,117 @@
+\documentclass{article}
+
+\def\ParSkip{} 
+\input{../../common/ryantibs}
+
+\title{Homework 4 \\ \smallskip
+\large Advanced Topics in Statistical Learning, Spring 2023 \\ \smallskip
+Due Friday April 14 at 5pm}
+\date{}
+
+\begin{document}
+\maketitle
+\RaggedRight
+\vspace{-50pt}
+
+\section{Basic fact about CDFs and quantiles [20 pts]}
+
+In this exercise, we'll walk through a number of basic but important facts about 
+quantiles and cumulative distribution functions (CDFs). Let $F$ be a CDF, of the
+form 
+\[
+F(x) = \P(X \leq x), \quad x \in \R,
+\]
+for some real-valued random variable $X$. Let $Q$ be the corresponding quantile 
+function,
+\[
+Q(t) = \inf \{ x : F(x) \geq t \}, \quad t \in [0,1].
+\]
+(This is often denoted as $Q = F^{-1}$, even when the inverse of $F$ does not
+exist in the usual sense.) We note that $F$ is always nondecreasing and 
+right-continuous; the latter says, for any $x$,    
+\[
+F(x) = \lim_{y \to x^+} F(y)
+\]
+(where $y \to x^+$ means that $y$ approaches $x$ from the right).
+Similarly, $Q$ is always nonincreasing and left-continuous; the latter says,
+for any $t$,  
+\[
+Q(t) = \lim_{u \to t^-} Q(u)
+\]
+(where $u \to t^-$ means that $u$ approaches $t$ from the left).
+
+\begin{enumerate}[label=(\alph*)]
+\item Prove that for any $x$ and any $t$, 
+  \marginpar{\small [3 pts]}
+  \[
+  F(x) \geq t \iff Q(t) \leq x.
+  \]
+  This is sometimes called the \emph{Galois inequality} for the quantile
+  function. Hint: one direction follows from the definition of $Q$, and the
+  other is a consequence of right-continuity of $F$.  
+
+\item Use part (a) to prove that if $U \sim \mathrm{Unif}(0,1)$, then $Q(U)$ is
+  distributed according to $F$ (meaning, it has $F$ as its CDF). 
+  \marginpar{\small [2 pts]}
+
+\item Use part (a) to prove that for any $t$, 
+  \marginpar{\small [2 pts]}
+  \[
+  F(Q(t)) \geq t,
+  \]
+  with strict inequality if and only if $t$ is not in the range of $F$. 
+
+\item Use parts (b) and (c) to prove that if $X$ is distributed according to
+  $F$, then $F(X)$ is sub-uniform, which means that for any $t$, 
+  \marginpar{\small [3 pts]}
+  \[
+  \P(F(X) \leq t) \leq t.
+  \]
+  Hint: you may start by replacing $X$ with $Q(U)$, for $U \sim
+  \mathrm{Unif}(0,1)$, as they have the same distribution.  
+  
+\item Give an example to show that, in general, equality may fail in the result
+  in part (d).  
+  \marginpar{\small [2 pts]}
+
+\item Show that we can always achieve equality in part (d) via auxiliary
+  randomization: define 
+  \[
+  F^*(x; v) =  \lim_{y \to x^-} F(y) + v \cdot \Big( F(x) - \lim_{y \to x^-}
+  F(y) \Big), 
+  \]
+  and prove that for $V \sim \mathrm{Unif}(0,1)$, independent of $X$, and for
+  any $t$,  
+  \marginpar{\small [3 pts]}
+  \[
+  \P(F^*(X; V) \leq t) = t.
+  \]
+  Hint: there are different ways to go about this; one way is to show that, with
+  respect to the randomness in $(X,V)$ jointly, we can think of $F^*$ as a CDF 
+  that is continuous at every point, and hence one for which we always have an
+  inequality in part (c). 
+\end{enumerate}
+
+\section{Calibration-conditional beta coverage}
+
+derive beta result do simulations
+
+\begin{enumerate}[label=(\alph*)]
+\item
+  \marginpar{\small [2 pts]}
+\end{enumerate}
+
+\section{X-conditional coverage: impossible!}
+
+\begin{enumerate}[label=(\alph*)]
+\item
+  \marginpar{\small [2 pts]}
+\end{enumerate}
+
+
+\section{}
+
+\bibliographystyle{plainnat}
+\bibliography{../../common/ryantibs}
+
+\end{document}
