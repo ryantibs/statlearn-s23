@@ -13,7 +13,7 @@ Due Friday April 14 at 5pm}
 \RaggedRight
 \vspace{-50pt}
 
-\section{Basic fact about CDFs and quantiles [18 pts]}
+\section{Basic fact about CDFs and quantiles [18 points]}
 
 In this exercise, we'll walk through a number of basic but important facts about 
 quantiles and cumulative distribution functions (CDFs). Let $F$ be a CDF, of the
@@ -93,7 +93,7 @@ F(x) = \lim_{y \to x^+} F(y)
   equality in part (d). 
 \end{enumerate}
 
-\section{Calibration-conditional beta coverage [18 pts]}
+\section{Calibration-conditional beta coverage [18 points]}
 
 \def\hC{\hat{C}}
 
@@ -170,11 +170,32 @@ in \eqref{eq:coverage_beta_split}.
   \marginpar{\small [5 pts]}
 \end{enumerate}
 
-\section{X-conditional coverage: impossible!}
+\section{X-conditional coverage: impossible! [18 points]}
+
+In lecture, we briefly discussed an impossibility result for X-conditional
+coverage in a distribution-free setting. This exercise investigates
+X-conditional coverage more deeply from theoretical and practical angles. 
 
 \begin{enumerate}[label=(\alph*)]
-\item
-  \marginpar{\small [2 pts]}
+\item Recite and prove any of the impossibility results in
+  \citet{lei2014distribution, vovk2012conditional, barber2021limits}. Note: it's
+  perfectly fine for your solution to follow directly from what's in any of
+  those papers---no new arguments are needed---but make sure to be fully precise
+  in stating the result and providing its proof, all in your own words.  
+  \marginpar{\small [8 pts]}
+
+\item Conduct a simulation to show that, nonetheless, different conformity
+  scores can give rise to appreciably different results in terms of approximate
+  conditional coverage in practice. By ``approximate'' here, we mean some
+  kind of local coverage, where we average over a small neighborhood of a point 
+  $x$.    
+
+  Start with the absolute residual as your conformity score, and then compare
+  its approximate conditional coverage performance to at least one other
+  conformity score (a number of choices are availability), where you have
+  designed the latter to do better in your simulation. Note: split conformal is
+  fine to use throughout. 
+  \marginpar{\small [10 pts]}
 \end{enumerate}
 
 
