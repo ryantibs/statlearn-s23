@@ -13,7 +13,7 @@ Due Friday April 14 at 5pm}
 \RaggedRight
 \vspace{-50pt}
 
-\section{Basic fact about CDFs and quantiles [20 pts]}
+\section{Basic fact about CDFs and quantiles [18 pts]}
 
 In this exercise, we'll walk through a number of basic but important facts about 
 quantiles and cumulative distribution functions (CDFs). Let $F$ be a CDF, of the
@@ -33,12 +33,12 @@ right-continuous; the latter says, for any $x$,
 F(x) = \lim_{y \to x^+} F(y)
 \]
 (where $y \to x^+$ means that $y$ approaches $x$ from the right).
-Similarly, $Q$ is always nonincreasing and left-continuous; the latter says,
-for any $t$,  
-\[
-Q(t) = \lim_{u \to t^-} Q(u)
-\]
-(where $u \to t^-$ means that $u$ approaches $t$ from the left).
+% Similarly, $Q$ is always nonincreasing and left-continuous; the latter says, 
+% for any $t$,  
+% \[
+% Q(t) = \lim_{u \to t^-} Q(u)
+% \]
+% (where $u \to t^-$ means that $u$ approaches $t$ from the left).
 
 \begin{enumerate}[label=(\alph*)]
 \item Prove that for any $x$ and any $t$, 
@@ -51,7 +51,7 @@ Q(t) = \lim_{u \to t^-} Q(u)
   other is a consequence of right-continuity of $F$.  
 
 \item Use part (a) to prove that if $U \sim \mathrm{Unif}(0,1)$, then $Q(U)$ is
-  distributed according to $F$ (meaning, it has $F$ as its CDF). 
+  distributed according to $F$ (which means it has CDF $F$).
   \marginpar{\small [2 pts]}
 
 \item Use part (a) to prove that for any $t$, 
@@ -67,21 +67,22 @@ Q(t) = \lim_{u \to t^-} Q(u)
   \[
   \P(F(X) \leq t) \leq t.
   \]
-  Hint: you may start by replacing $X$ with $Q(U)$, for $U \sim
+  with equality $\P(F(X) \leq t) = t$ if and only if $t$ is in the range of
+  $F$. Hint: you may start by replacing $X$ with $Q(U)$, for $U \sim
   \mathrm{Unif}(0,1)$, as they have the same distribution.  
   
-\item Give an example to show that, in general, equality may fail in the result
-  in part (d).  
+\item Give a concrete worked example to show when equality fails in the result  
+  in part (d).
   \marginpar{\small [2 pts]}
 
 \item Show that we can always achieve equality in part (d) via auxiliary
   randomization: define 
   \[
   F^*(x; v) =  \lim_{y \to x^-} F(y) + v \cdot \Big( F(x) - \lim_{y \to x^-}
-  F(y) \Big), 
+  F(y) \Big)
   \]
-  and prove that for $V \sim \mathrm{Unif}(0,1)$, independent of $X$, and for
-  any $t$,  
+  (where $y \to x^-$ means that $y$ approaches $x$ from the left), and prove
+  that for $V \sim \mathrm{Unif}(0,1)$, independent of $X$, and for any $t$,   
   \marginpar{\small [3 pts]}
   \[
   \P(F^*(X; V) \leq t) = t.
@@ -89,16 +90,84 @@ Q(t) = \lim_{u \to t^-} Q(u)
   Hint: there are different ways to go about this; one way is to show that, with
   respect to the randomness in $(X,V)$ jointly, we can think of $F^*$ as a CDF 
   that is continuous at every point, and hence one for which we always have an
-  inequality in part (c). 
+  equality in part (d). 
 \end{enumerate}
 
-\section{Calibration-conditional beta coverage}
+\section{Calibration-conditional beta coverage [18 pts]}
 
-derive beta result do simulations
+\def\hC{\hat{C}}
+
+Let $D_1$ and $D_2$ be an arbitrary partition of $\{1,\dots,n\}$ into sets of
+sizes $n_1=|D_1|$ and $n_2=|D_2|$. Recall, in lecture, we stated that for the
+split conformal prediction band \smash{$\hC_n$}, computed on a proper training
+set $\{(X_i,Y_i)\}_{i \in D_1}$ and a calibration set $\{(X_i,Y_i)\}_{i \in D_2}$, it
+holds that  
+\begin{equation}
+\label{eq:coverage_beta_split}
+\P\Big(Y_{n+1} \in \hC_n(X_{n+1}) \, \Big| \, \{ (X_i,Y_i) \}_{i=1}^n \Big)
+\sim \mathrm{Beta}(k_\alpha, n_2+1-k_\alpha), 
+\end{equation}
+where $k_\alpha = \lceil (1-\alpha)(n_2+1) \rceil$. This assumes that
+$(X_i,Y_i)$, $i=1,\dots,n+1$ were all i.i.d.\ draws from some arbitrary
+distribution $P$. In what follows, you will work towards a proof of the result
+in \eqref{eq:coverage_beta_split}.   
 
 \begin{enumerate}[label=(\alph*)]
-\item
+\item Let $U_1,\dots,U_n$ be i.i.d.\ from $\mathrm{Unif}(0,1)$, and denote their
+  \emph{order statistics} by  
+  \[
+  U_{(1)} \leq U_{(2)} \leq \cdots \leq U_{(n)}.
+  \]
+  Fix any $1 \leq k \leq n$. Prove that the density $f_{(k)}$ of $U_{(k)}$ is
+  given by 
+  \marginpar{\small [4 pts]}
+  \[
+  f_{(k)}(x) = n {n-1 \choose k-1} x^{k-1} (1-x)^{n-k}.
+  \]
+  Hint: calculate the probability that $U_{(k)}$ lies in $[x,x+\epsilon]$, then
+  send $\epsilon \to 0$.
+  
+\item From the result in part (a), argue that 
+  \marginpar{\small [1 pt]}
+  \[
+  U_{(k)} \sim \mathrm{Beta}(k, n+1-k).
+  \]
+  (You just need to recall the form of the beta distribution; you don't need to
+  do any hard calculations here.)
+
+\item Now let $X_1,\dots,X_{n+1}$ be i.i.d.\ according to $F$, and assume that
+  $F$ is continuous. Prove that 
+  \marginpar{\small [3 pts]}
+  \[
+  \P\big( X_{n+1} \leq X_{(k)} \,|\, X_1,\dots,X_n \big) \sim \mathrm{Beta}(k,
+  n+1-k). 
+  \]
+  Hint: let $U_i = F(X_i)$, $i=1,\dots,n+1$. Use Q1 part (d) to argue that each
+  $U_i \sim \mathrm{Unif}(0,1)$. Then use the result from part (b) of this
+  question.  
+
+\item Use part (c) to show that the split conformal prediction result
+  \eqref{eq:coverage_beta_split} holds whenever the distribution of each
+  conformity score $V(X_i,Y_i)$ is continuous.  
   \marginpar{\small [2 pts]}
+
+\item Show that the result in part (c) still holds when the CDF $F$ is not 
+  necessarily continuous, and therefore the result in
+  \eqref{eq:coverage_beta_split} holds in general, even when each $V(X_i,Y_i)$
+  does not have a continuous distribution (and ties can occur with positive
+  probability).  
+  \marginpar{\small [3 pts]}
+
+  Hint: using Q1 part (b), argue that you we replace each $X_i$ with $Q(U_i)$,
+  where $Q$ denotes the quantile function associated with $F$, and $U_i$, 
+  $i=1,\dots,n$ are i.i.d.\ from $\mathrm{Unif}(0,1)$. Then use the fact that
+  $Q$ is itself nondecreasing.
+
+\item Carry out a simulation to empirically verify
+  \eqref{eq:coverage_beta_split} for split conformal prediction. You may fix
+  $\alpha$, but examine a few different values of the calibration set size
+  $n_2$.   
+  \marginpar{\small [5 pts]}
 \end{enumerate}
 
 \section{X-conditional coverage: impossible!}
@@ -109,7 +178,6 @@ derive beta result do simulations
 \end{enumerate}
 
 
-\section{}
 
 \bibliographystyle{plainnat}
 \bibliography{../../common/ryantibs}
