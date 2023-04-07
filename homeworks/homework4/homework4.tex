@@ -13,7 +13,7 @@ Due Friday April 14 at 5pm}
 \RaggedRight
 \vspace{-50pt}
 
-\section{Basic fact about CDFs and quantiles [18 points]}
+\section{Basic fact about CDFs and quantiles [15 points]}
 
 In this exercise, we'll walk through a number of basic but important facts about 
 quantiles and cumulative distribution functions (CDFs). Let $F$ be a CDF, of the
@@ -67,30 +67,28 @@ F(x) = \lim_{y \to x^+} F(y)
   \[
   \P(F(X) \leq t) \leq t.
   \]
-  with equality $\P(F(X) \leq t) = t$ if and only if $t$ is in the range of
-  $F$. Hint: you may start by replacing $X$ with $Q(U)$, for $U \sim
-  \mathrm{Unif}(0,1)$, as they have the same distribution.  
+  with equality $\P(F(X) \leq t) = t$ if and only if $t$ is in the closure of
+  the range of $F$. Hint: you may start by replacing $X$ with $Q(U)$, for $U
+  \sim \mathrm{Unif}(0,1)$, as they have the same distribution.  
   
 \item Give a concrete worked example to show when equality fails in the result  
   in part (d).
-  \marginpar{\small [2 pts]}
+  \marginpar{\small [1 pt]}
 
-\item Show that we can always achieve equality in part (d) via auxiliary
-  randomization: define 
+\item We can always achieve equality in part (d) via auxiliary randomization.
+  Define
   \[
-  F^*(x; v) =  \lim_{y \to x^-} F(y) + v \cdot \Big( F(x) - \lim_{y \to x^-}
-  F(y) \Big)
+  F^*(x; v) =  \lim_{y \to x^-} F(y) + v \cdot \Big( F(x) - \lim_{y \to x^-},
+  F(y) \Big),
   \]
-  (where $y \to x^-$ means that $y$ approaches $x$ from the left), and prove
-  that for $V \sim \mathrm{Unif}(0,1)$, independent of $X$, and for any $t$,   
-  \marginpar{\small [3 pts]}
+  where $y \to x^-$ means that $y$ approaches $x$ from the left. Show
+  empirically, by revisiting your example in part (e), that for $V \sim
+  \mathrm{Unif}(0,1)$, independent of $X$, and for any $t$,      
+  \marginpar{\small [1 pt]}
   \[
   \P(F^*(X; V) \leq t) = t.
   \]
-  Hint: there are different ways to go about this; one way is to show that, with
-  respect to the randomness in $(X,V)$ jointly, we can think of $F^*$ as a CDF 
-  that is continuous at every point, and hence one for which we always have an
-  equality in part (d). 
+  Bonus: prove it!
 \end{enumerate}
 
 \section{Calibration-conditional beta coverage [18 points]}
