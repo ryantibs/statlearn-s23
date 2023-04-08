@@ -208,8 +208,9 @@ that their joint distribution is unchanged under permutations:
 
 \paragraph{Coverage upper bound when there are no ties.}
 
-If there are almost surely no ties between $Y_1,\dots,Y_{n+1}$ then the
-statement in \eqref{eq:compare_y1} can be sharpened to an equality, 
+If there are almost surely no ties between $Y_1,\dots,Y_{n+1}$ (or we use a
+suitably random tie-breaking rule) then the statement in \eqref{eq:compare_y1}
+can be sharpened to an equality,  
 \begin{equation}
 \label{eq:compare_y3}
 \P\Big( \text{$Y_{n+1} \leq \lceil (1-\alpha)(n+1) \rceil$ smallest of
@@ -568,7 +569,8 @@ unconditional coverage property,
 Going the other direction, we could ask if it has coverage properties after we
 condition on \emph{more} than just the proper training set. If we condition on
 both the proper training set and the calibration set, that is, we condition on
-the \emph{entire training set}, then it turns out that 
+the \emph{entire training set}, then when the conformity scores are almost 
+surely distinct (or we use a suitably random tie-breaking rule): 
 \begin{equation}
 \label{eq:coverage_beta_split}
 \P\Big(Y_{n+1} \in \hC_n(X_{n+1}) \, \Big| \, (X_i,Y_i), \, i=1,\dots,n \Big) 
