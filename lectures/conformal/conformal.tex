@@ -731,11 +731,16 @@ values, which could still be tremendously expensive. Relatively speaking, split
 conformal is computationally trivial: it is typically dominated by the cost of
 fitting the point predictor \smash{$\hf_{n_1}$} once. Due to its extreme
 computational cost, full conformal prediction is rarely used in practice, except
-in small problems, or when we use it in conjunction with special prediction
-algorithms where refitting the point predictor is efficient. This includes (but
-is not limited to) linear and ridge regression, since the Woodbury formula tells
-us how to efficiently move from a fit on a training set of $n$ points to the
-augmented training set of $n+1$ points with $(x,y)$ appended.   
+for small problem sizes, or with special prediction algorithms that have
+something like a ``shortcut'' formula for refitting the point predictor. 
+% This includes (but is not limited to) linear and ridge regression, since the  
+% Woodbury formula tells us how to efficiently move from a fit on a training set
+% of $n$ points to the augmented training set of $n+1$ points with $(x,y)$
+% appended.  
+Also, it is worth mentioning that in between split and full conformal prediction
+are methods that look like cross-validation, and cycle through using different
+parts of the data for training and. See \citet{barber2021predictive} for
+details.   
 
 The second remark is about interpreting the conformal set via p-values. Observe 
 that we can rewrite \eqref{eq:cset_cdf_full} once more as
