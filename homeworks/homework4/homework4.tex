@@ -33,7 +33,7 @@ right-continuous; the latter says, for any $x$,
 F(x) = \lim_{y \to x^+} F(y)
 \]
 (where $y \to x^+$ means that $y$ approaches $x$ from the right).
-% Similarly, $Q$ is always nonincreasing and left-continuous; the latter says, 
+% Similarly, $Q$ is always nondecreasing and left-continuous; the latter says, 
 % for any $t$,  
 % \[
 % Q(t) = \lim_{u \to t^-} Q(u)
@@ -91,7 +91,7 @@ F(x) = \lim_{y \to x^+} F(y)
   Bonus: prove it!
 \end{enumerate}
 
-\section{Calibration-conditional beta coverage [18 points]}
+\section{Calibration-conditional beta coverage [15 points]}
 
 \def\hC{\hat{C}}
 
@@ -149,23 +149,21 @@ in \eqref{eq:coverage_beta_split}.
   conformity score $V(X_i,Y_i)$ is continuous.  
   \marginpar{\small [2 pts]}
 
-\item Show that the result in part (c) still holds when the CDF $F$ is not 
-  necessarily continuous, and therefore the result in
-  \eqref{eq:coverage_beta_split} holds in general, even when each $V(X_i,Y_i)$
-  does not have a continuous distribution (and ties can occur with positive
-  probability).  
-  \marginpar{\small [3 pts]}
-
-  Hint: using Q1 part (b), argue that you we replace each $X_i$ with $Q(U_i)$,
-  where $Q$ denotes the quantile function associated with $F$, and $U_i$, 
-  $i=1,\dots,n$ are i.i.d.\ from $\mathrm{Unif}(0,1)$. Then use the fact that
-  $Q$ is itself nondecreasing.
-
 \item Carry out a simulation to empirically verify
   \eqref{eq:coverage_beta_split} for split conformal prediction. You may fix
   $\alpha$, but examine a few different values of the calibration set size
   $n_2$.   
   \marginpar{\small [5 pts]}
+
+\item As a bonus, show that the result in part (c) still holds when the CDF $F$
+  is not necessarily continuous, and therefore the result in 
+  \eqref{eq:coverage_beta_split} holds in general, even when each $R_i =
+  V(X_i,Y_i)$ does not have a continuous distribution, provided we break ties
+  uniformly at random. 
+
+  Hint: using Q1 part (b), argue that you can replace each $X_i$ with $Q(U_i)$,
+  where $Q$ denotes the quantile function associated with $F$, and $U_i$, 
+  $i=1,\dots,n$ are i.i.d.\ from $\mathrm{Unif}(0,1)$.
 \end{enumerate}
 
 \section{X-conditional coverage: impossible! [18 points]}
