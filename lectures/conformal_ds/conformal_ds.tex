@@ -231,11 +231,12 @@ We follow the same general strategy from the alternate proof of
 $\{Z_1,\dots,Z_{n+1}\}=\{z_1,\dots,z_{n+1}\}$, and let $r_i=V(z_i;
 \{z_1,\dots,z_{n+1}\})$, for $i=1,\dots,n+1$. Let $f$ be the density function
 of the joint sample $Z_1,\dots,Z_{n+1}$. For each $i$, we have
-$$
+\begin{equation}
+\label{eq:general_calc}
 \P(R_{n+1} = r_i \,|\, E_z) = \P(Z_{n+1} = z_i \,|\, E_z)
 = \frac{\sum_{\sigma : \sigma(n+1)=i} f(z_{\sigma(1)},\dots, z_{\sigma(n+1)})} 
 {\sum_\sigma f(z_{\sigma(1)},\dots, z_{\sigma(n+1)})},
-$$
+\end{equation}
 and as $Z_1,\dots,Z_{n+1}$ are weighted exchangeable,
 \begin{align*}
 \frac{\sum_{\sigma : \sigma(n+1)=i} f(z_{\sigma(1)},\dots, z_{\sigma(n+1)})}  
@@ -379,7 +380,7 @@ Formally, these are \smash{$\lceil \beta \rceil_P = \min\{ \tau \in
 \mathrm{RandQuant}(\beta; F) = 
 \begin{cases}
 \displaystyle
-\Quantile(\lceil \beta \rceil_P; P) & 
+\Quantile(\beta; P) & 
 \text{with probability $(\beta - \lfloor \beta \rfloor_P) /
   (\lceil \beta \rceil_P - \lfloor \beta \rfloor_P)$} \\
 \Quantile(\lfloor \beta \rfloor_P; P)& 
@@ -510,6 +511,59 @@ results of using this method to estimate the weights using logistic regression
 (in gray) and random forests (in green). Both classifiers provide reasonably
 good prediction sets in the end (logistic regression is actually well-specified 
 in this experiment, so its favorable performance should not be surprising). 
+
+\subsection{Conformal prediction for structured-X settings}
+
+We saw that a particularly simple and computationally efficient application of
+Theorem \ref{thm:weighted_conf} was the covariate shift problem. Now we go in
+the opposite direction: make it even more general and add the same time, even
+more computationally intractable (at least at face value). The next result
+essentially already follows from what we proved in Lemma
+\ref{lem:weighted_quant} and Theorem \ref{thm:weighted_conf}: we just stop at
+\eqref{eq:general_calc}, without simplifying further. 
+
+\begin{theorem}
+\label{thm:weighted_conf_gen}
+Assume that $Z_i=(X_i,Y_i) \in \cX \times \cY$, $i=1,\dots,n+1$ are distributed
+according to:
+\begin{gather*}
+(X_1,\dots,X_{n+1}) \sim Q, \\
+Y_i|X_i \sim P_{Y|X}, \; \text{independently, for $i=1,\dots,n$}.
+\end{gather*}
+Let $f$ denote the density (or mass function, or more generally, Radom-Nikodym 
+derivative with respect to an arbitrary base measure) of $Q$. Define a weighted
+conformal set (based on the first $n$ samples) at a point $x \in \cX$, with
+nominal error level $\alpha \in (0,1)$, by  
+\begin{equation}
+\label{eq:weighted_conf_gen}
+\hC_n(x) = \bigg\{ y : R_{n+1}^{(x,y)} \leq \Quantile\bigg( 1-\alpha; 
+\, \sum_{i=1}^n p^w_i\big( Z_1,\dots,Z_n,(x,y) \big) \delta_{R_i^{(x,y)}} \,+\, 
+p^w_{n+1}\big( Z_1,\dots,Z_n,(x,y) \big) \delta_\infty \bigg) \bigg\},  
+\end{equation}
+where \smash{$R_i^{(x,y)}$}, $i=1,\ldots,n+1$ are conformity scores as in
+\eqref{eq:scores}, for an arbitrary score function $V$, and
+\begin{equation}
+\label{eq:weighted_prob_gen}
+p^w_i(z_1,\dots,z_{n+1}) = 
+\frac{\sum_{\sigma : \sigma(n+1)=i} f(z_{\sigma(1)},\dots, z_{\sigma(n+1)})}
+{\sum_\sigma f(z_{\sigma(1)},\dots, z_{\sigma(n+1)})}, \quad i=1,\dots,n+1. 
+\end{equation}
+Then \smash{$\hC_n$} satisfies 
+\begin{equation}
+\label{eq:weighted_cov_gen}
+\P\big( Y_{n+1} \in \hC_n(X_{n+1}) \big) \geq 1-\alpha. 
+\end{equation}
+\end{theorem}
+
+Computation of the weights in \eqref{eq:weighted_prob_gen} is now even more
+difficult than \eqref{eq:weighted_prob} in the weighted exchangeable setting
+(even more difficult than a matrix permanent, since $f$ could in principle
+depend in a complicated way on the order of its inputs). That said, the above
+theorem still produces a conformal set \eqref{eq:weighted_conf_gen} with the
+very general guarantee \eqref{eq:weighted_cov_gen}, which is interesting.
+Jokes about intractability aside, this may be useful (and computable) in certain
+structured-X settings, for example, where the sequence $X_1,\dots,X_{n+1}$ has
+some kind of Markov structure. 
 
 \section{Custom-weighted conformal prediction}
 
