@@ -133,24 +133,25 @@ and Pitman in the 1930s). As $Y_{n+1}$ is i.i.d.\ with $Y_1,\dots,Y_n$, then
 This means that 
 \begin{equation}
 \label{eq:compare_y1}
-\P\Big( \text{$Y_{n+1} \leq \lceil (1-\alpha)(n+1) \rceil$ smallest of
-  $Y_1,\dots,Y_{n+1}$} \Big) \geq 1-\alpha,
+\P\Big( \text{$Y_{n+1}$ is among the $\lceil (1-\alpha)(n+1) \rceil$ smallest of
+  $Y_1,\dots,Y_{n+1}$} \Big) \geq 1-\alpha, 
 \end{equation}
 which is in turn equivalent to\footnote{To see this, consider the complement of
   the events (inside the probabilities) in \eqref{eq:compare_y1},
   \eqref{eq:compare_y2}. Abbreviate \smash{$k = \lceil (1-\alpha)(n+1)
-    \rceil$}. Then  $Y_{n+1} > k$ smallest of $Y_1, \dots Y_{n+1}$ is clearly an
-  equivalent statement to $Y_{n+1} > k$ smallest of $Y_1, \dots Y_n$, since
-  $Y_{n+1}$ can never be strictly larger than itself. That said, this argument
-  really only makes sense for $k \leq n$, and for $k = n+1$, which occurs if
-  $\alpha < 1/(n+1)$, then \smash{$\lceil (1-\alpha)(n+1) \rceil = n+1$}, then
-  we have to  interpret the $(n+1)$ smallest of $Y_1, \dots Y_n$ as being
-  $+\infty$ to equate \eqref{eq:compare_y1}, \eqref{eq:compare_y2}. This is the
-  consistent with interpreting the quantile function in \eqref{eq:quantile_y2}
-  to return $+\infty$ when the input level is $\geq 1$.}      
+    \rceil$}. Then $Y_{n+1} >$ the $k$ smallest of $Y_1,\dots,Y_{n+1}$ is
+  clearly an equivalent statement to $Y_{n+1} >$ the $k$ smallest of
+  $Y_1,\dots,Y_n$, since $Y_{n+1}$ can never be strictly larger than
+  itself. That said, this argument really only makes sense for $k \leq n$, and
+  for $k = n+1$, which occurs if $\alpha < 1/(n+1)$, then \smash{$\lceil
+    (1-\alpha)(n+1) \rceil = n+1$}, then we have to interpret the $(n+1)$
+  smallest of $Y_1,\dots,Y_n$ as being $+\infty$ to equate
+  \eqref{eq:compare_y1}, \eqref{eq:compare_y2}. This is the consistent with
+  interpreting the quantile function in \eqref{eq:quantile_y2} to return
+  $+\infty$ when the input level is $\geq 1$.}          
 \begin{equation}
 \label{eq:compare_y2}
-\P\Big( \text{$Y_{n+1} \leq \lceil (1-\alpha)(n+1) \rceil$ smallest of
+\P\Big( \text{$Y_{n+1}$ is among the $\lceil (1-\alpha)(n+1) \rceil$ smallest of 
   $Y_1,\dots,Y_n$} \Big) \geq 1-\alpha.
 \end{equation}
 The last step is critical: note that we have moved from a comparison between 
@@ -213,13 +214,13 @@ suitably random tie-breaking rule) then the statement in \eqref{eq:compare_y1}
 can be sharpened to an equality,  
 \begin{equation}
 \label{eq:compare_y3}
-\P\Big( \text{$Y_{n+1} \leq \lceil (1-\alpha)(n+1) \rceil$ smallest of
+\P\Big( \text{$Y_{n+1}$ is among the $\lceil (1-\alpha)(n+1) \rceil$ smallest of 
   $Y_1,\dots,Y_{n+1}$} \Big) = \frac{\lceil (1-\alpha)(n+1) \rceil}{n+1}.
 \end{equation}
 Simply upper bounding the right-hand side above gives
 \begin{equation}
 \label{eq:compare_y4}
-\P\Big( \text{$Y_{n+1} \leq \lceil (1-\alpha)(n+1) \rceil$ smallest of
+\P\Big( \text{$Y_{n+1}$ is among the $\lceil (1-\alpha)(n+1) \rceil$ smallest of 
   $Y_1,\dots,Y_{n+1}$} \Big) < (1-\alpha) + \frac{1}{n+1}.
 \end{equation}
 Carrying on from by the same logic as before leads to the sharpened conclusion, 
