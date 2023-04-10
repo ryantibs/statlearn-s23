@@ -442,19 +442,17 @@ Y_{n+1} \in \hC_n^*(X_{n+1}) \iff \hat{F}_{n_2+1}^*(R_{n+1}) \leq 1-\alpha,
 \] 
 then we will get coverage with probability exactly $1-\alpha$. Spelling it out
 in more detail, this is the same as defining the randomized conformal set 
-\begin{equation}
-\label{eq:cset_rand_split}
+\[
 \hC_n^*(x) = \bigg\{ y : \frac{1}{n_2+1} \sum_{i \in D_2} 1\{ R_i < V(x,y) \} 
 + \frac{U}{n_2+1} \bigg( \sum_{i \in D_2} 1\{ R_i = V(x,y) \} + 1 \bigg)
 \leq 1-\alpha \bigg\},
-\end{equation}
+\]
 where $U \sim \mathrm{Unif}(0,1)$ is independent of everything else. To record
 its guarantee, this set always satisfies  
-\begin{equation}
-\label{eq:coverage_rand_split}
+\[
 \P\Big( Y_{n+1} \in \hC_n^*(X_{n+1}) \, \Big| \, (X_i,Y_i), \, i \in D_1 \Big) = 
 1-\alpha. 
-\end{equation}
+\]
 
 \subsection{Remarks}
 
@@ -868,7 +866,7 @@ guarantee is just as before, in \eqref{eq:coverage_split}. Figure
 \label{fig:student}
 \end{figure}
 
-\subsection{Quantile-based scores}
+\subsection{Quantile regression}
 
 There are two issues that can make studentized residuals fall short in practice.   
 
@@ -924,7 +922,7 @@ variants thereof) remain in fairly common use because we can use
 
 In this last section, we briefly cover conformal prediction for classification
 problems. The story is much the same, but we need different conformity score
-functions, since residual or quantile-based scores are not generally
+functions, since residual or quantile regression scores are not generally
 appropriate in classification. Below we cover a standard choice, based on
 predicted probabilities. Then we cover a choice that is designed to have better
 local adaptivity, based on cumulative probabilities. Throughout, we take $\cY = 
