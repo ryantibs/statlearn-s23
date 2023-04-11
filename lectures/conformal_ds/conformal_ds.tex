@@ -302,7 +302,7 @@ nominal error level $\alpha \in (0,1)$ as follows. Let
 \label{eq:scores}
 \begin{aligned}
 R_i^{(x,y)} &= V\Big( (X_i,Y_i); \, Z_1,\dots,Z_n,(x,y)\Big), \quad
-  i=1,\dots,n, \\ 
+i=1,\dots,n, \\ 
 R_{n+1}^{(x,y)} &= V\Big( (x,y); \, Z_1,\dots,Z_n,(x,y) \Big), 
 \end{aligned}
 \end{equation}
@@ -795,6 +795,57 @@ case) but we omit the details.
 
 \subsection{Custom weights, nonsymmetric score function}
 
+When the score function is nonsymmetric in its last $n+1$ elements---for
+example, $V(Z_i; Z)$ when denotes a score assigned to $Z_i$ is based off 
+training a model on $Z$ that uses the \emph{order} of the points in $Z$, such as
+an autoregressive model for forecasting in a time series problem---then it is
+still reasonable to ask what guarantees a weighted conformal prediction set
+would have. However, this lies outside of the scope of the previous result given
+in Theorem \ref{thm:weighted_conf_nex}. 
+
+It turns out that we can still accomodate this case, and in fact accomodate a 
+completely arbitrary score function $V$, by injecting a random swap into the
+construction of the conformal prediction set. This is the second main result,
+for custom-weighted conformal prediction.    
+
+\begin{theorem}
+\label{thm:weighted_conf_swap}
+Let $w_i \in [0,1]$, $i=1,\dots,n$ be fixed and arbitrary weights, and define
+\smash{$\tw_i$}, $i=1,\dots,n+1$ as in \eqref{eq:tw}. Define a weighted
+conformal set (based on the first $n$ samples) at a point $x \in \cX$, with
+nominal error level $\alpha \in (0,1)$, by    
+\begin{equation}
+\label{eq:weighted_conf_swap}
+\hC^w_n(x) = \bigg\{ y : R_{n+1}^{(x,y),K} \leq \Quantile\bigg( 1-\alpha;  
+\, \sum_{i=1}^n \tw_i \, \delta_{R_i^{(x,y),K}} + \tw_{n+1} \, \delta_\infty 
+\bigg) \bigg\},   
+\end{equation}
+where \smash{$R_i^{(x,y),K}$}, $i=1,\ldots,n+1$ are conformity scores defined as 
+follows: let \smash{$Z^{(x,y)} = (Z_1,\dots,Z_n,(x,y))$}, let
+\smash{$(Z^{(x,y)})^K$} denote this vector after swapping components $K$ and 
+$n+1$, and let   
+\begin{equation}
+\label{eq:scores_swap}
+\begin{aligned}
+R_i^{(x,y),K} &= V\Big( (X_i,Y_i); \, (Z^{(x,y)})^K \Big), \quad 
+i=1,\dots,n, \\ 
+R_{n+1}^{(x,y),K} &= V\Big( (x,y); \, (Z^{(x,y)})^K \Big), 
+\end{aligned}
+\end{equation}
+where finally we draw 
+\[
+K \sim \sum_{i=1}^{n+1} \tw_i \, \delta_i,
+\]
+independent of everything else. Then with \emph{no} assumptions on $V$ and
+\emph{no} assumptions on the joint distribution of $Z_i=(X_i,Y_i)$,
+$i=1,\dots,n+1$, the set \smash{$\hC^w_n$} satisfies the exact same guarantee as
+in \eqref{eq:weighted_cov_nex}. 
+\end{theorem}
+
+In words, the scores \eqref{eq:scores_swap} used in the construction of the
+conformal set \eqref{eq:weighted_conf_swap} are computed after swapping the 
+order of a random data point with the query test point $(x,y)$. 
+
 \section{Adaptive conformal inference}
 
 Lastly we cover a conformal-like method, for sequential prediction problems, due 
@@ -802,7 +853,7 @@ to \citet{gibbs2021adaptive}. In a way, this is a signifcant departure from the
 methods we've seen thus far, since the base idea isn't specific to conformal
 prediction at all. Its core guarantee is quite simple to prove, yet at the same
 time, quite strong. We'll only cover this material at a high level, and will
-skip a lot of the details.
+skip a lot of the details. 
 
 \bibliographystyle{plainnat}
 \bibliography{../../common/ryantibs}
