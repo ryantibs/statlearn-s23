@@ -17,14 +17,15 @@ Ryan Tibshirani }
 Note: we're following the context, problem setup, notation, etc. from the last
 lecture on conformal prediction.
 
-In this lecture we cover conformal (or conformal-like) methods that apply beyond
-the i.i.d.\ setting. This is a very active and recent topic of research, and
-it's possible (or even likely) that what's considered fundamental in this area  
-will change in the next couple of years. Until then, there will be numerous
-topics from which we can ``pick and choose'' for a lecture like this one. We've
-chosen two such topics---and shamelessly, for each, you'll notice an overlap 
-between the authors list and the author of these lecture notes. There is plenty
-of other interesting work out there that we can't cover in just one lecture. 
+In this lecture we cover conformal methods that apply beyond the i.i.d.\
+setting. This is a very active and recent topic of research, and it's possible
+(or even likely) that what's considered fundamental in this area will change in
+the next few years. Until then, there will be numerous topics from which we can
+``pick and choose'' for a lecture like this one. We've chosen three such
+topics---and shamelessly (shamefully?), for two of these, you'll notice an 
+overlap between the authors list and the author of these lecture notes. We
+should be clear that there is plenty of other interesting work out there that we
+can't cover in just one lecture. 
 
 \section{Likelihood-weighted conformal prediction}
 
@@ -56,7 +57,7 @@ The top row of Figure \ref{fig:airfoil} provides an answer, empirically. This is
 taken from \citet{tibshirani2019conformal}, and shows the results of an
 experiment in which, over 5000 repetitions, two test sets are drawn: one without  
 covariate shift (results in red), and one with covariate shift (in blue). The
-top left panel shows the test coverage of split conformal pediction intervals
+top left panel shows the test coverage of split conformal prediction intervals 
 (drawn as histograms, over the 5000 repetitions). We can see that coverage fails
 quite noticeably in the covariate shift setting.
 
@@ -64,16 +65,16 @@ quite noticeably in the covariate shift setting.
 \hspace{-25pt}
 \includegraphics[width=0.525\textwidth]{airfoil_cov.pdf}
 \includegraphics[width=0.525\textwidth]{airfoil_len.pdf}
-\caption{\it Experiments for conformal prediction under covariate shift. All
-  results are aggregated over 5000 repetitions, each of which randomly forms
-  training and test sets. Top row: the usual conformal prediction with and
-  without covariate shift. Middle row: weighted conformal prediction using the
-  true (and in general unknown) likelihood ratio between test and training
-  covariate feature distributions, compare to the usual conformal prediction
-  without covariate shift but in a problem with a comparable effective sample 
-  size. Bottom row: weighted conformal prediction using an estimated likelihood 
-  ratio by running classification with logistic regression or random forests. 
-  Credit: \citet{tibshirani2019conformal}.}      
+\caption{\it Experiments for split conformal prediction under covariate
+  shift. All results are aggregated over 5000 repetitions, each of which
+  randomly forms training and test sets. Top row: the usual split conformal
+  prediction with and without covariate shift. Middle row: weighted split
+  conformal using the true (and in general unknown) likelihood ratio between
+  test and training covariate feature distributions, compared to ordinary split 
+  conformal without covariate shift but in a problem with a comparable effective 
+  sample size. Bottom row: weighted split conformal using an estimated
+  likelihood ratio from running classification with logistic regression or
+  random forests. Credit: \citet{tibshirani2019conformal}.}       
 \label{fig:airfoil}
 \end{figure}
 
@@ -212,7 +213,7 @@ R_i = V(Z_i; \, Z_1,\dots,Z_{n+1}), \quad i=1,\dots,n+1,
 where $V$ is an arbitrary score function that is symmetric in its last $n+1$
 arguments, and define
 \begin{equation}
-\label{eq:weighted_prob}
+\label{eq:pw}
 p^w_i(z_1,\dots,z_{n+1}) = 
 \frac{\sum_{\sigma : \sigma(n+1)=i} \prod_{j=1}^{n+1} w_j(z_{\sigma(j)})}
 {\sum_\sigma \prod_{j=1}^{n+1} w_j(z_{\sigma(j)})}, \quad i=1,\dots,n+1,   
@@ -279,12 +280,11 @@ $R_{n+1}$ to one at $\infty$, which proves \eqref{eq:weighted_quant} as
 desired. 
 \end{proof}
 
-We remark that computation of the probability weights in
-\eqref{eq:weighted_prob} is very difficult in general, due to the combinatorial  
-form (note that this actually reduces to computing what is known as a
-\emph{matrix permanent}, which is known to be hard). However, for cetain
-weighted exchangeable structures, it can be easy, as we will see a bit later for
-covariate shift. 
+We remark that computation of the probability weights in \eqref{eq:pw} is very
+difficult in general, due to the combinatorial form (note that this actually
+reduces to computing what is known as a \emph{matrix permanent}, which is known
+to be hard). However, for cetain weighted exchangeable structures, it can be
+easy, as we will see a bit later for covariate shift. 
 
 \subsection{Weighted exchangeability: conformal prediction}
 
@@ -315,8 +315,8 @@ arguments, and
 \, \sum_{i=1}^n p^w_i\big( Z_1,\dots,Z_n,(x,y) \big) \delta_{R_i^{(x,y)}} + 
 p^w_{n+1}\big( Z_1,\dots,Z_n,(x,y) \big) \delta_\infty \bigg) \bigg\},  
 \end{equation}
-where \smash{$p^w_i$}, $i=1,\dots,n+1$ are as in \eqref{eq:weighted_prob}.  
-Then \smash{$\hC^w_n$} satisfies    
+where \smash{$p^w_i$}, $i=1,\dots,n+1$ are as in \eqref{eq:pw}. Then
+\smash{$\hC^w_n$} satisfies     
 \begin{equation}
 \label{eq:weighted_cov}
 \P\big( Y_{n+1} \in \hC^w_n(X_{n+1}) \big) \geq 1-\alpha.  
@@ -339,15 +339,15 @@ and applying Lemma \ref{lem:weighted_quant} gives the result.
 The split conformal version of the above result can be viewed as a special case  
 where the score function relies on a point predictor that has been fit on an
 external data set. For example, if we take it to be $V(x,y) = |y-\mu_0(x)|$,
-where $\mu_0$ has been fit on adata set $Z_0$, then \eqref{eq:weighted_conf}
+where $\mu_0$ has been fit on a data set $Z_0$, then \eqref{eq:weighted_conf} 
 simplifies to       
 \[
 \hC^w_n(x) = \mu_0(x) \pm \Quantile\bigg(1-\alpha; \, 
 \sum_{i=1}^n p^w_i\big( Z_1,\ldots,Z_n,(x,y) \big) \delta_{|Y_i - \mu_0(X_i)|}
-+ p^w_{n+1}\big( Z_1,\ldots,Z_n,(x,y) \big) \delta_\infty \bigg).
++ p^w_{n+1}\big( Z_1,\ldots,Z_n,(x,y) \big) \delta_\infty \bigg),
 \]
-By \eqref{eq:weighted_cov}, this has coverage at least $1-\alpha$, conditional
-on $Z_0$.   
+and by \eqref{eq:weighted_cov}, this has coverage at least $1-\alpha$,
+conditional on $Z_0$.   
 
 \paragraph{CDF form.}
 
@@ -357,10 +357,9 @@ is a bit uglier and looks more complicated in the current setting. This is
 because in order to derive it we need to adjust the nominal level of $1-\alpha$
 upwards so that it lies in the range of the CDF of the discrete distribution in
 \eqref{eq:weighted_dist}; but this range depends on the weights in
-\eqref{eq:weighted_prob}, which themselves depend on the data. This is the
-primary reason that we use the quantile form in \eqref{eq:weighted_conf}, since 
-we can always use the unadjusted level $1-\alpha$ and completely avoid these
-complications. 
+\eqref{eq:pw}, which themselves depend on the data. This is the primary reason
+that we use the quantile form in \eqref{eq:weighted_conf}, since we can always
+use the unadjusted level $1-\alpha$ and completely avoid these complications.  
 
 \paragraph{Auxiliary randomization for exact coverage.}
 
@@ -427,7 +426,7 @@ where \smash{$R_i^{(x,y)}$}, $i=1,\ldots,n+1$ are conformity scores as in
 \eqref{eq:scores}, for an arbitrary score function $V$ that is symmetric in its
 last $n+1$ arguments, and
 \begin{equation}
-\label{eq:weighted_prob_cs}
+\label{eq:pw_cs}
 \pi^w_i(x) = \frac{w(X_i)}{\sum_{j=1}^n w(X_j) + w(x)}, \; i=1,\ldots,n, 
 \quad \text{and} \quad 
 \pi^w_{n+1}(x) = \frac{w(x)}{\sum_{j=1}^n w(X_j) + w(x)}. 
@@ -443,16 +442,15 @@ Then \smash{$\hC^w_n$} satisfies
 It is straightforward to see that the independent draws $Z_i = (X_i,Y_i)$,
 $i=1,\ldots,n+1$ are weighted exchangeable \eqref{eq:weighted_exch} with
 $w_i\equiv 1$ for $i=1,\ldots,n$, and $w_{n+1}((x,y))=w(x)$. In this special
-case, the probabilities in \eqref{eq:weighted_prob} simplify to  
+case, the probabilities in \eqref{eq:pw} simplify to  
 \[
 p^w_i(z_1,\ldots,z_{n+1}) = \frac{\sum_{\sigma : \sigma(n+1)=i}
   w(x_i)}{\sum_\sigma w(x_{\sigma(n+1)})} =
 \frac{w(x_i)}{\sum_{j=1}^{n+1}w(x_j)}, \quad i=1,\ldots,n+1,
 \]
 in other words, \smash{$p^w_i(Z_1,\ldots,Z_n,(x,y)) = \pi^w_i(x)$},
-$i=1,\ldots,n+1$, where the latter are as in \eqref{eq:weighted_prob_cs}. Applying 
-Theorem \ref{thm:weighted_conf} gives the result. 
-\end{proof}  
+$i=1,\ldots,n+1$, where the latter are as in \eqref{eq:pw_cs}. Applying Theorem 
+\ref{thm:weighted_conf} gives the result.  \end{proof}  
 
 The same remarks as before apply here: a split conformal version follows as a
 special case (via a particular score function) and exact coverage in
@@ -460,17 +458,18 @@ special case (via a particular score function) and exact coverage in
 \eqref{eq:weighted_conf_cs}.
 
 Looking back at Figure \ref{fig:airfoil}, the middle row provides an example of
-the conformal set in \eqref{eq:weighted_conf_cs}, with oracle knowledge (in
-orange) of the likelihood ratio weight function \smash{$w=d\tP_X/dP_X$}. We can
-see from the middle left panel that its coverage is restored compared to the
-naive application of conformal in the covariate shift problem, from the top
-row. However, we also see that the dispersion in the coverage histogram from
-weighted conformal (over the 5000 repetitions of the experiment) is larger than
-that of usual conformal without covariate shift (in red), from the top row. This
-is because, with non-uniform weights due to covariate shift, we are effectively
-operating at a lower sample size. The middle row thus also displays the results
-(in purple) of usual conformal prediction in a problem without covariate shift
-but at the same effective sample size, defined as
+the (split version of the) conformal set in \eqref{eq:weighted_conf_cs}, with
+oracle knowledge (in orange) of the likelihood ratio weight function
+\smash{$w=d\tP_X/dP_X$}. We can see from the middle left panel that its coverage
+is restored compared to the naive application of conformal in the covariate
+shift problem, from the top row. However, we also see that the dispersion in the
+coverage histogram from weighted conformal (over the 5000 repetitions of the
+experiment) is larger than that of ordinary conformal without covariate shift
+(in red), from the top row. This is because, with non-uniform weights due to
+covariate shift, we are effectively operating at a lower sample size. The middle
+row thus also displays the results (in purple) of usual conformal prediction in
+a problem without covariate shift but at the same effective sample size, defined
+as
 \[
 \hat{n} = \bigg( \frac{\sum_{i=1}^n |w(X_i)|}{\sqrt{\sum_{i=1}^n |w(X_i)|^2}}
 \bigg)^2 = \bigg( \frac{\|w(X_{1:n})\|_1}{\|w(X_{1:n})\|_2} \bigg)^2,
@@ -506,9 +505,9 @@ $i=1,\ldots,n+m$, then we can use
 \hat{w}(x) = \frac{\hat{p}(x)}{1-\hat{p}(x)}
 \end{equation}
 as our estimated weight function for the calculation of probabilities
-\eqref{eq:weighted_prob_cs}, needed for the weighted conformal set
+\eqref{eq:pw_cs}, needed for the weighted conformal set
 \eqref{eq:weighted_conf_cs}. The better calibrated the classifier, the better
-the estimated weighted in \eqref{eq:w_estimate} will be. 
+the estimated weighted in \eqref{eq:w_estimate} will be.  
 
 Looking back once again at Figure \ref{fig:airfoil}, the bottom row shows the
 results of using this method to estimate the weights using logistic regression
@@ -547,7 +546,7 @@ where \smash{$R_i^{(x,y)}$}, $i=1,\ldots,n+1$ are conformity scores as in
 \eqref{eq:scores}, for an arbitrary score function $V$ that is symmetric in its 
 last $n+1$ arguments, and
 \begin{equation}
-\label{eq:weighted_prob_gen}
+\label{eq:pw_gen}
 p^\lambda_i(z_1,\dots,z_{n+1}) = 
 \frac{\sum_{\sigma : \sigma(n+1)=i} \lambda(z_{\sigma(1)},\dots,
   z_{\sigma(n+1)})} {\sum_\sigma \lambda(z_{\sigma(1)},\dots, z_{\sigma(n+1)})},
@@ -560,15 +559,15 @@ Then \smash{$\hC^\lambda_n$} satisfies
 \end{equation}
 \end{theorem}
 
-Computation of the weights in \eqref{eq:weighted_prob_gen} is now even more
-difficult than \eqref{eq:weighted_prob} in the weighted exchangeable setting
-(even more difficult than a matrix permanent, since $\lambda$ could in principle 
-depend in a complicated way on the order of its inputs). That said, the above
-theorem still produces a conformal set \eqref{eq:weighted_conf_gen} with the
-very general guarantee \eqref{eq:weighted_cov_gen}, which is interesting.
-Jokes about intractability aside, this may be useful (and computable) in certain
-structured-X settings, for example, where the sequence $X_1,\dots,X_{n+1}$ has
-some kind of Markov structure. 
+Computation of the weights in \eqref{eq:pw_gen} is now even more difficult than
+\eqref{eq:pw} in the weighted exchangeable setting (even more difficult than a
+matrix permanent, since $\lambda$ could in principle depend in a complicated way
+on the order of its inputs). That said, the above theorem still produces a
+conformal set \eqref{eq:weighted_conf_gen} with the very general guarantee
+\eqref{eq:weighted_cov_gen}, which is interesting.  Jokes about intractability
+aside, this may be useful (and computable) in certain structured-X settings, for
+example, where the sequence $X_1,\dots,X_{n+1}$ has some kind of Markov
+structure.
 
 \section{Custom-weighted conformal prediction}
 
@@ -578,18 +577,55 @@ some kind of Markov structure.
 We next cover a custom-weight conformal prediction method, due to
 \citet{barber2022conformal}. In comparison to the likelihood-weighted method
 in the previous section, the weights considered in the current section will be
-\emph{fixed} (not a function of the data) but \emph{arbitrary}. And the theory,
-as we'll see, is also very different; in a sense, it is much more general in
-scope.  
+\emph{fixed} (not a function of the data) but \emph{arbitrary}. The theory, as
+we'll see next, is also very different; in a sense, it is more general in scope.
+We'll only cover this material at a relatively high level, and won't give proof
+details. 
 
-Let $w_i \in [0,1]$, $i=1,\dots,n$ be fixed and arbitrary weights, and define 
+To state the main theorems, we'll need introduce a few additional pieces of  
+notation. As before, let $Z_i=(X_i,Y_i)$, $i=1,\dots,n+1$ be data points (with
+the last one $Z_{n+1}=(X_{n+1},Y_{n+1})$ serving as the test point), and $V$ 
+a score function. The additional notation is as follows.   
+
+\begin{itemize}
+\item Denote $Z = (Z_1,\dots,Z_{n+1})$ the data vector (an ordered
+  sequence). 
+\item Denote by $Z^i$ the data vector after swapping components $i$ and
+  $n+1$. 
+\item Denote by $R(Z)$ the score vector, with components $R(Z)_j = V(Z_j; Z)$. 
+\item Denote by $R(Z^i)$ the score vector had the data vector been $Z^i$, with
+  components \smash{$R(Z^i)_j = V(Z^i_j; Z^i)$}.     
+\end{itemize}
+
+\subsection{Custom weights, symmetric score function}
+
+Note that in the current notation, symmetry of $V$ in its last $n+1$
+arguments---which is the typical assumption in conformal prediction---implies 
+that we have $V(Z_j; Z) = V(Z_j; Z_\sigma)$, for any permutation $\sigma$, where  
+\smash{$Z_\sigma = (Z_{\sigma(1)}, \dots, Z_{\sigma(n+1)})$}. Thus under this 
+symmetry condition, we have  
 \[
+R(Z^i)_j = 
+\begin{cases}
+R(Z)_j & j \not= i,n+1 \\
+R(Z)_i & j = n+1 \\
+R(Z)_{n+1} & j = i.
+\end{cases}
+\]
+
+Now we can state the first main result, for custom-weighted conformal prediction.
+
+\begin{theorem}
+\label{thm:weighted_conf_nex}
+Let $w_i \in [0,1]$, $i=1,\dots,n$ be fixed and arbitrary weights, and define 
+\begin{equation}
+\label{eq:tw}
 \tw_i = \frac{w_i}{w_1 + \cdots + w_n + 1}, \; i=1,\ldots,n, 
 \quad \text{and} \quad 
 \tw_{n+1} = \frac{1}{w_1 + \cdots + w_n + 1}.
-\]
-Consider a weighted conformal prediction set from training data $(X_i,Y_i)$,
-$i=1,\dots,n$, defined as follows:
+\end{equation}
+Define a weighted conformal set (based on the first $n$ samples) at a point
+$x \in \cX$, with nominal error level $\alpha \in (0,1)$, by   
 \begin{equation}
 \label{eq:weighted_conf_nex}
 \hC^w_n(x) = \bigg\{ y : R_{n+1}^{(x,y)} \leq \Quantile\bigg( 1-\alpha; 
@@ -598,27 +634,128 @@ $i=1,\dots,n$, defined as follows:
 \end{equation}
 where \smash{$R_i^{(x,y)}$}, $i=1,\ldots,n+1$ are conformity scores as in
 \eqref{eq:scores}, for an arbitrary score function $V$ that is symmetric in its
-last $n+1$ arguments. 
-
-\citet{barber2022conformal} prove the following result. For \emph{any} joint
-distribution of $Z_i=(X_i,Y_i)$, $i=1,\dots,n+1$, and any fixed weights $w_i \in
-[0,1]$, $i=1,\dots,n$ the set \smash{$\hC^w_n$} satisfies
+last $n+1$ arguments. Then with \emph{no} assumptions on the joint distribution
+of $Z_i=(X_i,Y_i)$, $i=1,\dots,n+1$, the set \smash{$\hC^w_n$} satisfies
 \begin{equation}
 \label{eq:weighted_cov_nex}
 \P\big( Y_{n+1} \in \hC^w_n(X_{n+1}) \big) \geq 1-\alpha - \sum_{i=1}^n 
 \tw_i \cdot \dtv(R(Z), R(Z^i)),
 \end{equation}
-where $\dtv(A,B)$ denotes the total variation distance between (the
-distributions of) two random variables $A,B$. To understand this result, we
-still need a few more pieces of notation: 
-\begin{itemize}
-\item we denote $Z = (Z_1,\dots,Z_{n+1})$ and denote by $Z^i$ this vector after 
-  swapping components $i$ and $n+1$; 
-\item we denote by $R(Z)$ the vector of scores, that has components $R(Z)_j =
-  V(Z_j; Z)$; and we denote by $R(Z^i)$ the vector of scores had the data
-  sequence been $Z^i$, that has components \smash{$R(Z^i)_j = V(Z^i_j; Z^i)$}.  
-\end{itemize}
-Thus we can interpret the result in \eqref{eq:weighted_cov_nex} as follows. 
+where $\dtv(A,B)$ is the total variation (TV) distance between the distributions
+of random variables $A,B$.  
+\end{theorem}
+
+Observe that the normalization step in \eqref{eq:tw} assigns a unit weight to 
+the test point, and then renormalizes (so that the new weights have unit
+sum). As the initial weights were all between 0 and 1, this means
+\smash{$\tw_{n+1} \geq \tw_i$}, for all $i=1,\dots,n$. The set in
+\eqref{eq:weighted_conf_nex} reduces to the (unweighted) conformal prediction
+method set when $w_1 = \cdots = w_n = 1$.  
+
+We can interpret the result in \eqref{eq:weighted_cov_nex} as follows. If the
+distribution of the test data point $Z_{n+1}$ drifts from that of the training
+data, but we are able identify a priori which training data points will be most
+\emph{representative} of the test distribution, then we can upweight these
+points and downweight the others. This would result in a small coverage gap, 
+where  
+\begin{equation}
+\label{eq:coverage_gap}
+\text{coverage gap} = \sum_{i=1}^n \tw_i \cdot \dtv(R(Z), R(Z^i))
+\end{equation}
+(since we have small weights multiplying large TV distances, and large weights 
+multiplying small TV distances.) Of course, choosing a good weights
+scheme---identifying a priori which training points are representative of the
+test data distribution---is an important problem unto itself. In certain
+structured data settings, such as problems with time series or spatial
+structure, progress towards general methodology for crafting weights seems more
+tangible than others. Figure \ref{fig:electricity} gives an example using an
+exponentially decaying weight scheme in a time series problem, from
+\citet{barber2022conformal}.  
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.925\textwidth]{electricity.pdf}
+\caption{\it Experiments for split conformal prediction under distribution
+  drift. Top row: coverage and width in a time series problem, for the usual
+  conformal prediction (CP), weighted conformal with exponentially decaying
+  weights and least squares as the prediction algorithm (NexCP+LS), and the same
+  method but now with weighted least squares as the prediction algorithm 
+  (NexCP+WLS). Bottom row: the same metrics and methods on a permuted version of 
+  the time series data set. Credit: \citet{barber2022conformal}.}        
+\label{fig:electricity}
+\end{figure}
+
+We now make several further remarks. 
+
+\paragraph{Split version.}
+
+As before, the split conformal version of the above result can be viewed as a
+special case where the score function relies on a point predictor fit on an
+external data set. For example, if we take it to be $V(x,y) = |y-\mu_0(x)|$,
+where $\mu_0$ has been fit on a data set $Z_0$ then \eqref{eq:weighted_conf_nex}
+simplifies to            
+\[
+\hC^w_n(x) = \mu_0(x) \pm \Quantile\bigg(1-\alpha; \, \sum_{i=1}^n \tw_i \,
+\delta_{|Y_i - \mu_0(X_i)|} + \tw_{n+1} \, \delta_\infty \bigg),
+\]
+and \eqref{eq:weighted_cov_nex} becomes
+\[
+\P\big( Y_{n+1} \in \hC^w_n(X_{n+1}) \,\big|\, Z_0 \big) \geq 1-\alpha -
+\sum_{i=1}^n \tw_i \cdot \dtv\big( R(Z), R(Z^i) \,\big|\, Z_0 \big), 
+\]
+where $\dtv(A, B \,|\, C)$ is the TV distance between the conditional
+distributions of $A|C$ and $B|C$. If $Z_0$ is independent of $Z$, then the
+coverage gap is just a before, in \eqref{eq:coverage_gap}.
+
+\paragraph{The i.i.d.\ setting.}
+
+When $Z_i=(X_i,Y_i)$, $i=1,\dots,n+1$ are i.i.d.\ (or more generally,
+exchangeable), we are back to the traditional setting for conformal
+prediction. In this case, there is no slack in \eqref{eq:weighted_cov_nex},
+since exchangeability implies \smash{$R(Z) \overset{d}{=} R(Z^i)$} and thus
+\smash{$\dtv(R(Z), R(Z^i)) = 0$} for each $i$, and hence
+\eqref{eq:weighted_cov_nex} collapses to an exact $1-\alpha$ coverage
+guarantee. This not only reproduces the standard result for ordinary conformal,
+when we take $w_1 = \cdots = w_n = 1$, but also shows us something  
+new: in the i.i.d.\ (or exchangeable) setting, we can use arbitrary weights and
+still get exact coverage with weighted conformal prediction.
+
+\paragraph{Coverage gap bounds.}
+
+It is worth noting a few upper bounds for the coverage gap in
+\eqref{eq:coverage_gap}. First, 
+\[
+\text{coverage gap} \leq \sum_{i=1}^n \tw_i \cdot \dtv(Z, Z^i),
+\]
+since the TV distance between $f(A),f(B)$ is always less than that between
+$A,B$. The bound in the above display is easier to interpret, but can also be
+much larger than that in \eqref{eq:coverage_gap}. (For example, think about the
+case of a high-dimensional feature space, and a score function that ignores all
+but a few relevant features for prediction.) Second, if $Z_i$, $i=1,\dots,n+1$
+are independent (but not identically distributed), then it can be shown that 
+\[
+\text{coverage gap} \leq 2\sum_{i=1}^n \tw_i \cdot \dtv(Z_i, Z_{n+1}).
+\]
+This lends more direct intuition to the idea that we want to assign large
+weights to training points whose distributions are representative of the test 
+distribution. 
+
+\paragraph{CDF form.}
+
+
+
+\paragraph{Auxiliary randomization for exact coverage.}
+
+\subsection{Custom weights, nonsymmetric score function}
+
+\section{Adaptive conformal inference}
+
+Lastly we cover a conformal-like method, for sequential prediction problems, due 
+to \citet{gibbs2021adaptive}. In a way, this is a signifcant departure from the
+methods we've seen thus far, since the base idea isn't specific to conformal
+prediction at all. Its core guarantee is quite simple to prove, yet at the same
+time, quite strong. We'll only cover this material at a high level, and will
+skip a lot of the details.
 
 \bibliographystyle{plainnat}
 \bibliography{../../common/ryantibs}
