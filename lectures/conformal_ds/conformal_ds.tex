@@ -350,6 +350,8 @@ conditional on $Z_0$.
 
 \paragraph{CDF form.}
 
+\def\hF{\hat{F}}
+
 The analogous CDF form of the conformal set in \eqref{eq:weighted_conf} is as
 follows: 
 \begin{equation}
@@ -358,17 +360,18 @@ follows:
 1\Big\{ R_i^{(x,y)} \leq R^{(x,y)}_{n+1} \Big\} \leq \lceil 1-\alpha \rceil_w
 \bigg\},   
 \end{equation}
-where \smash{$\lceil 1-\alpha \rceil_w = \min\{ \tau \in \mathrm{range}(F^w) :
-  \tau \geq 1-\alpha\}$} and we write $F^w$ for the (random) CDF of the
-discrete distribution \smash{$\sum_{i=1}^{n+1} p^w_i( Z_1,\dots,Z_n,(x,y))  
-  \delta_{R^{(x,y)}_i}$}. This is more complicated in the current weighted
-setting (compared to what we saw for ordinary unweighted conformal methods, in 
-the last lecture) because we need to adjust the nominal level of $1-\alpha$
-upwards so that it lies in the range of the CDF of the weighted score
-distribution; but this distribution is random, and so the adjustment is itself
-random. This is the primary reason that we began with the quantile form in 
-\eqref{eq:weighted_conf}, since we can always use the unadjusted level
-$1-\alpha$ and completely any such complications.     
+where \smash{$\lceil 1-\alpha \rceil_w = \min\{ \tau \in \mathrm{range}(\hF^w_n)
+  : \tau \geq 1-\alpha\}$} and we use \smash{$\hF^w_n$} to denote the (random)
+CDF of the discrete distribution \smash{$\sum_{i=1}^n p^w_i(Z_1,\dots,Z_n,(x,y))
+  \delta_{R^{(x,y)}_i} + p^w_{n+1}(Z_1,\ldots,Z_n,(x,y)) \delta_\infty$}. 
+Compared to the CDF form of the ordinary unweighted conformal prediction set,
+from the last lecture, the form in \eqref{eq:weighted_conf} is more
+complicated---we need to adjust the nominal level of $1-\alpha$ upwards so that
+it lies in the range of the CDF of the weighted score distribution, and here
+this distribution is random, so the adjustment is itself random. This is the
+main reason we worked with the quantile form in \eqref{eq:weighted_conf} in the
+first place, since we can always use the unadjusted level $1-\alpha$ and
+completely avoid any such complications.
 
 \paragraph{Auxiliary randomization for exact coverage.}
 
@@ -377,7 +380,7 @@ randomization, either in CDF or quantile form. Applying our previous
 randomization trick (from the last lecture) to the CDF form
 \eqref{eq:weighted_cdf} gives 
 \begin{multline*}
-\hC_n^{w,*}(x) = \bigg\{ y : \sum_{i=1}^{n+1} p^w_i\big( Z_1,\dots,Z_n,(x,y)
+\hC_n^{w,*}(x) = \bigg\{ y : \sum_{i=1}^n p^w_i\big( Z_1,\dots,Z_n,(x,y)
 \big) 1\Big\{ R_i^{(x,y)} < R^{(x,y)}_{n+1} \Big\} +{} \\ U \sum_{i=1}^{n+1} 
 p^w_i\big( Z_1,\dots,Z_n,(x,y) \big) 1\Big\{ R_i^{(x,y)} = R^{(x,y)}_{n+1}
 \Big\} \leq 1-\alpha \bigg\},
@@ -396,19 +399,20 @@ Z_1,\dots,Z_n,(x,y) \big) \delta_\infty \bigg) +{} \\
 p^w_{n+1}\big( Z_1,\dots,Z_n,(x,y) \big) \bigg\},     
 \end{multline*}
 where now \smash{$\lfloor 1-\alpha \rfloor_w = \max\{ \tau \in
-  \mathrm{range}(F^w) : \tau \leq 1-\alpha\}$} with $F^w$ denoting the (random)
-CDF of the discrete distribution \smash{$\sum_{i=1}^{n+1} p^w_i(
-  Z_1,\dots,Z_n,(x,y)) \delta_{R^{(x,y)}_i}$} as before, and 
+  \mathrm{range}(\hF^w_n) : \tau \leq 1-\alpha\}$} with \smash{$\hF^w_n$}
+denoting the (random) CDF of the discrete distribution \smash{$\sum_{i=1}^n
+  p^w_i(Z_1,\dots,Z_n,(x,y))  \delta_{R^{(x,y)}_i} +
+  p^w_{n+1}(Z_1,\ldots,Z_n,(x,y)) \delta_\infty$} as before, and  
 \[
 B^w \sim \mathrm{Bernoulli}\bigg( \frac{1-\alpha - \lfloor 1-\alpha \rfloor_w}
-{\lceil 1-\alpha \rceil_w - \lfloor 1-\alpha \rfloor_w} \bigg).
+{\lceil 1-\alpha \rceil_w - \lfloor 1-\alpha \rfloor_w} \bigg),
 \]
-Interestingly, the randomized conformal set in the second-to-last display is
-actually less intuitive---we must introduce level adjustments that were not
-needed in the unrandomized quantile-based set in \eqref{eq:weighted_conf}. 
-Ultimately, either version of the randomized weighted conformal set
-\smash{$\hC^{w,*}_n$} defined above (it is not clear that the two are
-equivalent) satisfies    
+independent of everything else. Arguably, the randomized conformal set from 
+the second-to-last display is actually less simple and intuitive---we must
+introduce level adjustments that were not needed in
+\eqref{eq:weighted_conf}. Ultimately, either version of the set
+\smash{$\hC^{w,*}_n$} defined above (it is not clear that the two are 
+equivalent) satisfies       
 \[
 \P\big( Y_{n+1} \in \hC^{w,*}_n(X_{n+1}) \big) = 1-\alpha.  
 \]
@@ -579,10 +583,9 @@ Computation of the weights in \eqref{eq:pw_gen} is now even more difficult than
 matrix permanent, since $\lambda$ could in principle depend in a complicated way
 on the order of its inputs). That said, the above theorem still produces a
 conformal set \eqref{eq:weighted_conf_gen} with the very general guarantee
-\eqref{eq:weighted_cov_gen}, which is interesting.  Jokes about intractability
-aside, this may be useful (and computable) in certain structured-X settings, for
-example, where the sequence $X_1,\dots,X_{n+1}$ has some kind of Markov
-structure.
+\eqref{eq:weighted_cov_gen}, which is interesting. This may be useful (and
+computable) in certain structured-X settings, for example, where the sequence
+$X_1,\dots,X_{n+1}$ has some kind of Markov structure.
 
 \section{Custom-weighted conformal prediction}
 
@@ -593,9 +596,8 @@ We next cover a custom-weight conformal prediction method, due to
 \citet{barber2022conformal}. In comparison to the likelihood-weighted method
 in the previous section, the weights considered in the current section will be
 \emph{fixed} (not a function of the data) but \emph{arbitrary}. The theory, as
-we'll see next, is also very different; in a sense, it is more general in scope.
-We'll only cover this material at a relatively high level, and won't give proof
-details. 
+we'll see, is also quite different; in a sense, it is more general in
+scope. We'll only cover this at a relatively high level (no proof details). 
 
 To state the main theorems, we'll need introduce a few additional pieces of  
 notation. As before, let $Z_i=(X_i,Y_i)$, $i=1,\dots,n+1$ be data points (with
@@ -603,7 +605,7 @@ the last one $Z_{n+1}=(X_{n+1},Y_{n+1})$ serving as the test point), and $V$
 a score function. The additional notation is as follows.   
 
 \begin{itemize}
-\item Denote $Z = (Z_1,\dots,Z_{n+1})$ the data vector (an ordered
+\item Denote by $Z = (Z_1,\dots,Z_{n+1})$ the data vector (an ordered
   sequence). 
 \item Denote by $Z^i$ the data vector after swapping components $i$ and
   $n+1$. 
@@ -615,18 +617,19 @@ a score function. The additional notation is as follows.
 \subsection{Custom weights, symmetric score function}
 
 Note that in the current notation, symmetry of $V$ in its last $n+1$
-arguments---which is the typical assumption in conformal prediction---implies 
-that we have $V(Z_j; Z) = V(Z_j; Z_\sigma)$, for any permutation $\sigma$, where  
-\smash{$Z_\sigma = (Z_{\sigma(1)}, \dots, Z_{\sigma(n+1)})$}. Thus under this 
-symmetry condition, we have  
-\[
-R(Z^i)_j = 
-\begin{cases}
-R(Z)_j & j \not= i,n+1 \\
-R(Z)_i & j = n+1 \\
-R(Z)_{n+1} & j = i.
-\end{cases}
-\]
+arguments---which is the typical assumption for the conformity score 
+function---implies that we have $V(Z_j; Z) = V(Z_j; Z_\sigma)$, for any
+permutation $\sigma$, where \smash{$Z_\sigma = (Z_{\sigma(1)}, \dots,
+  Z_{\sigma(n+1)})$}. Thus under this symmetry condition, we may write $R(Z^i) =
+R(Z)^i$.   
+% \[
+% R(Z^i)_j = 
+% \begin{cases}
+% R(Z)_j & j \not= i,n+1 \\
+% R(Z)_i & j = n+1 \\
+% R(Z)_{n+1} & j = i.
+% \end{cases}
+% \]
 
 Now we can state the first main result, for custom-weighted conformal prediction.
 
@@ -760,16 +763,35 @@ distribution.
 The analogous CDF form of the conformal set in \eqref{eq:weighted_conf_nex} is
 as follows: 
 \begin{equation}
-\label{eq:weighted_conf_cdf_nex}
+\label{eq:weighted_cdf_nex}
 \hC^w_n(x) = \bigg\{ y : \sum_{i=1}^{n+1} \tw_i \, 1\Big\{ R_i^{(x,y)} \leq
 R^{(x,y)}_{n+1} \Big\} \leq \lceil 1-\alpha \rceil_w \bigg\},
 \end{equation}
-where \smash{$\lceil \beta \rceil_w = \min\{ \tau \in
-  \mathrm{range}(F^w) : \tau \geq \beta\}$} and $F^w$ is the CDF of
-
-
+where \smash{$\lceil 1-\alpha \rceil_w = \min\{ \tau \in \mathrm{range}(\hF^w_n)
+  : \tau \geq \beta\}$} and \smash{$\hF^w_n$} denotes the (random) CDF of the
+discrete distribution \smash{$\sum_{i=1}^n \tw_i \, \delta_{R^{(x,y)}_i} +
+  \tw_{n+1} \, \delta_\infty$}. We note that, as before (for the
+likelihood-weighted case), the adjustment of the probability level needed here
+is random.  
 
 \paragraph{Auxiliary randomization for exact coverage.}
+
+We can randomize the CDF form in \eqref{eq:weighted_cdf_nex} as follows: 
+\[
+\hC_n^{w,*}(x) = \bigg\{ y : \sum_{i=1}^n \tw_i \, 1\Big\{ R_i^{(x,y)} <
+R^{(x,y)}_{n+1} \Big\} + U \sum_{i=1}^{n+1} \tw_i \, 1\Big\{ R_i^{(x,y)} =
+R^{(x,y)}_{n+1} \Big\} \leq 1-\alpha \bigg\},
+\]
+where $U \sim \mathrm{Unif}(0,1)$, independent of everything else. This is
+fairly simple and intuitive---it is free of any level adjustments needed in the   
+unrandomized CDF-based set in \eqref{eq:weighted_cdf_nex}. The set
+\smash{$\hC^{w,*}_n$} satisfies
+\[
+\P\big( Y_{n+1} \in \hC^{w,*}_n(X_{n+1}) \big) = 1-\alpha.  
+\]
+We can also randomize the quantile form in \eqref{eq:weighted_conf_nex} in order
+to obtain exact coverage (similar to what we did in the likelihood-weighted
+case) but we omit the details. 
 
 \subsection{Custom weights, nonsymmetric score function}
 
