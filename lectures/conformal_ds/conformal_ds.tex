@@ -796,17 +796,17 @@ case) but we omit the details.
 \subsection{Custom weights, nonsymmetric score function}
 
 When the score function is nonsymmetric in its last $n+1$ elements---for
-example, $V(Z_i; Z)$ when denotes a score assigned to $Z_i$ is based off 
-training a model on $Z$ that uses the \emph{order} of the points in $Z$, such as
-an autoregressive model for forecasting in a time series problem---then it is
-still reasonable to ask what guarantees a weighted conformal prediction set
-would have. However, this lies outside of the scope of the previous result given
-in Theorem \ref{thm:weighted_conf_nex}. 
+example, $V(Z_i; Z)$ when denotes a score assigned to $Z_i$ is based on a model
+trained on $Z$ that used the \emph{order} of the points in $Z$, such as an
+autoregressive model for forecasting in a time series problem---then it is still
+reasonable to ask what guarantees a weighted conformal prediction set would
+have. However, this lies outside of the scope of the previous result given in
+Theorem \ref{thm:weighted_conf_nex}.  
 
-It turns out that we can still accomodate this case, and in fact accomodate a 
-completely arbitrary score function $V$, by injecting a random swap into the
+It turns out that we can accommodate a completely arbitrary (possibly
+nonsymmetric) score function $V$, by injecting a random swap into the
 construction of the conformal prediction set. This is the second main result,
-for custom-weighted conformal prediction.    
+for custom-weighted conformal prediction.      
 
 \begin{theorem}
 \label{thm:weighted_conf_swap}
@@ -820,40 +820,227 @@ nominal error level $\alpha \in (0,1)$, by
 \, \sum_{i=1}^n \tw_i \, \delta_{R_i^{(x,y),K}} + \tw_{n+1} \, \delta_\infty 
 \bigg) \bigg\},   
 \end{equation}
-where \smash{$R_i^{(x,y),K}$}, $i=1,\ldots,n+1$ are conformity scores defined as 
-follows: let \smash{$Z^{(x,y)} = (Z_1,\dots,Z_n,(x,y))$}, let
-\smash{$(Z^{(x,y)})^K$} denote this vector after swapping components $K$ and 
-$n+1$, and let   
+where \smash{$R_i^{(x,y),K}$}, $i=1,\ldots,n+1$ are conformity scores defined as
+follows. Let \smash{$Z^{(x,y)} = (Z_1,\dots,Z_n,(x,y))$}, and let
+\smash{$(Z^{(x,y)})^K$} denote this vector after swapping components $K$ and  
+$n+1$, where
+\[
+K \sim \sum_{i=1}^{n+1} \tw_i \, \delta_i,
+\]
+independent of everything else. Then 
 \begin{equation}
 \label{eq:scores_swap}
 \begin{aligned}
 R_i^{(x,y),K} &= V\Big( (X_i,Y_i); \, (Z^{(x,y)})^K \Big), \quad 
 i=1,\dots,n, \\ 
-R_{n+1}^{(x,y),K} &= V\Big( (x,y); \, (Z^{(x,y)})^K \Big), 
+R_{n+1}^{(x,y),K} &= V\Big( (x,y); \, (Z^{(x,y)})^K \Big).
 \end{aligned}
 \end{equation}
-where finally we draw 
-\[
-K \sim \sum_{i=1}^{n+1} \tw_i \, \delta_i,
-\]
-independent of everything else. Then with \emph{no} assumptions on $V$ and
-\emph{no} assumptions on the joint distribution of $Z_i=(X_i,Y_i)$,
-$i=1,\dots,n+1$, the set \smash{$\hC^w_n$} satisfies the exact same guarantee as
-in \eqref{eq:weighted_cov_nex}. 
+With \emph{no} assumptions on $V$ and \emph{no} assumptions on the joint
+distribution of $Z_i=(X_i,Y_i)$, $i=1,\dots,n+1$, the set \smash{$\hC^w_n$}
+satisfies the exact same guarantee as in \eqref{eq:weighted_cov_nex}. 
 \end{theorem}
 
-In words, the scores \eqref{eq:scores_swap} used in the construction of the
-conformal set \eqref{eq:weighted_conf_swap} are computed after swapping the 
-order of a random data point with the query test point $(x,y)$. 
+To reiterate, the key difference here is that the scores \eqref{eq:scores_swap}
+used in the construction of the conformal set \eqref{eq:weighted_conf_swap} are
+computed on a data vector in which we swap components $K$ and $n+1$, where $K$
+follows a multinomial distribution, with probabilities \smash{$\tw_i$},
+$i=1,\dots,n+1$. To be clear, in the case that the scores are the result of
+fitting a particular prediction algorithm to the data vector, this swap will
+alter the fitted model returned by the prediction algorithm. The extent to which
+this matters undoubtedly depends on the prediction algorithm. In many practical
+situations, we would not expect this to have a large effect, and we note
+generally that applying this swap is much gentler than applying a random
+permutation to the data vector before computing the scores (which would
+effectively render $V$ symmetric).
+
+Looking back at Figure \ref{fig:electricity}, we can see this method being
+applied with weighted least squares as the prediction algorithm (results in
+red), where the weights themselves decay into the past. This is a nonsymmetric
+algorithm because the order of the data matters (observation weights get
+assigned accordingly, for  the regression). Compared to unweighted least squares
+(in yellow), we see comparable coverage and generally shorter prediction
+intervals. 
 
 \section{Adaptive conformal inference}
+
+\def\err{\text{err}}
 
 Lastly we cover a conformal-like method, for sequential prediction problems, due 
 to \citet{gibbs2021adaptive}. In a way, this is a signifcant departure from the
 methods we've seen thus far, since the base idea isn't specific to conformal
-prediction at all. Its core guarantee is quite simple to prove, yet at the same
-time, quite strong. We'll only cover this material at a high level, and will
-skip a lot of the details. 
+prediction at all. Its core guarantee is quite simple and at the same time quite
+strong. We'll only cover some of the core properties of this method, skipping
+more advanced ones. 
+
+Assume we are given an infinite sequence of observations $(X_t,Y_t) \in \cX
+\times \cY$, $t=1,2,3,\ldots$, which we can think of as being indexed by
+time. Assume that at each time $t$, we have a method for computing a prediction
+set \smash{$C_t^\beta \subseteq \cY$} for $Y_t$, at any nominal level $\beta \in 
+\R$. The set \smash{$C_t^\beta$} could come from some version of conformal
+prediction run on the past data $(X_s,Y_s)$, $s<t$, or really, any other
+method. All that we require is that the method for producing sets
+\emph{saturates} at any level below 0 or above 1, meaning  
+\begin{equation}
+\label{eq:saturate}
+C_t^\beta = \emptyset \;\, \text{for $\beta \leq 0$}, \quad \text{and} \quad 
+C_t^\beta = \cY \;\, \text{for $\beta \geq 1$}.
+\end{equation}
+Adaptive conformal inference (ACI)\footnote{The method was proposed and named by
+  \citet{gibbs2021adaptive} in the context of using conformal prediction as the
+  method used to compute prediction sets \smash{$C_t^\beta$}, but as noted, any
+  method for prediction sets will work so long as it saturates in the sense of
+  \eqref{eq:saturate}.}  
+is an algorithm for adjusting the working level $1-\alpha_t$ of the prediction 
+sets over time $t=1,2,3,\ldots$ so as to try to maintain a realized coverage as
+close to $1-\alpha$ as possible, where $\alpha \in (0,1)$ is some prespecified
+error tolerance. It is very simple: it initializes $\alpha_0 = \alpha$, and
+performs updates according to    
+\begin{equation}
+\label{eq:aci}
+\alpha_{t+1} = \alpha_t - \eta (\err_t - \alpha), \;\; t=0,1,2,\ldots,
+\end{equation}
+where \smash{$\err_t = 1\{ Y_t \notin C_t^{1-\alpha_t} \}$} and $\eta>0$ is a
+step size. These updates are highly intuitive: if we cover, then we increase the
+working error level by $\eta \alpha$ (make future prediction sets smaller), and
+if we miscover, then we decrease the working error level by $\eta (1-\alpha)$
+(make future prediction sets larger).
+
+\paragraph{Boundedness of ACI iterates.}
+
+The following is a simple but important realization: the ACI iterates in
+\eqref{eq:aci} are always uniformly bounded, because, as the proof of the next
+lemma shows, they have a kind of self-correcting property.  
+
+\begin{lemma}
+\label{lem:aci_bounded}
+The iterates from ACI \eqref{eq:aci} satisfy $\alpha_t \in [-\eta, 1+\eta]$, for
+any $t=1,2,3,\ldots$.  
+\end{lemma}
+
+\begin{proof}
+Denote $\ell = \inf_{t \geq 1} \alpha_t$ and assume $\ell < -\eta$. Fix any
+small $\epsilon>0$ such that $\ell + \epsilon < -\eta$ and $\epsilon <
+\eta\alpha$. Then there exists some $t \geq 2$ such that $\alpha_t  \leq \ell +
+\epsilon < -\eta$. The update \eqref{eq:aci} at $t-1$ tells us that 
+\begin{align*}
+\alpha_t &= \alpha_{t-1} - \eta(\err_{t-1} - \alpha) \\
+&= \begin{cases} 
+\alpha_{t-1} + \eta\alpha & \text{if $\err_{t-1} = 0$} \\ 
+\alpha_{t-1} - \eta(1-\alpha) & \text{if $\err_{t-1} = 1$}. 
+\end{cases}
+\end{align*}
+We will be able to derive a contradiction in each of the above cases. 
+\begin{itemize}
+\item In the first case $\alpha_{t-1}$ must have been smaller than $\alpha_t$,
+  but this is impossible, since it would be less than the infimum:
+  $\alpha_{t-1} \leq \ell + \epsilon - \eta\alpha < \ell = \inf_{t \geq 1}
+  \alpha_t$, which is a contradiction.           
+\item In the second case $\alpha_{t-1}$ must have been larger than $\alpha_t$,
+  but this is impossible, since it would be less than zero, leading to coverage: 
+  $\alpha_{t-1} <  -\eta + \eta(1-\alpha) < 0$, so $\err_{t-1}=0$, which is
+  again a contradiction.        
+\end{itemize}
+This proves that $\inf_{t \geq 1} \alpha_t \geq -\eta$. The proof that $\sup_{t
+  \geq 1} \alpha_t \leq 1+\eta$ is similar.      
+\end{proof}
+
+\paragraph{Asymptotic coverage of ACI.}
+
+This boundedness property leads to a simple-to-prove, yet profound fact about
+ACI: it achieves asymptotic coverage $1-\alpha$, always, meaning, it achieves
+this no matter the sequence $(X_t,Y_t)$, $t=1,2,3,\ldots$ (even if this sequence 
+were chosen adversarially). 
+
+\begin{theorem}
+\label{thm:aci_cov}
+For any $t_0 \geq 0$ and $T \geq 1$, the errors from the ACI iterates
+\eqref{eq:aci} satisfy     
+\begin{equation}
+\label{eq:aci_cov_finite}
+\bigg| \frac{1}{T} \sum_{t=t_0+1}^{t_0+T} \err_t - \alpha \bigg| \leq \frac{1 +
+  2\eta}{T \eta}. 
+\end{equation}
+In particular, this implies
+\begin{equation}
+\label{eq:aci_cov_infinite}
+\lim_{T \to \infty} \, \frac{1}{T} \sum_{t=1}^T \err_t = \alpha. 
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Without a loss of generality we prove the result for $t_0=0$. Let $s_t = \err_t
+- \alpha$, and write the update in \eqref{eq:aci} as $\alpha_t - \eta s_t$. Then  
+\[
+\frac{1}{T} \sum_{t=1}^T s_t = \frac{\alpha_{T+1} - \alpha_1}{T \eta}.  
+\]
+But $\alpha_{T+1} \leq 1+\eta$ and $\alpha_1 \geq -\eta$ by Lemma
+\ref{lem:aci_bounded}, which proves the desired result.
+\end{proof}
+
+To reiterate, Theorem \ref{thm:aci_cov} puts no constraints on the data
+generating distribution (or even assumes that the data is random). It delivers a
+coverage guarantee over any interval $[t_0+1, t_0+T]$ of \smash{$\approx
+  1-\alpha \pm \frac{1}{T}$}, as seen in \eqref{eq:aci_cov_finite}. This of
+translates into coverage exactly $1-\alpha$ over all time, as seen in
+\eqref{eq:aci_cov_infinite}. Figure \ref{fig:stocks} gives an example of ACI on
+financial time series data, from \citet{gibbs2021adaptive}.  
+
+\begin{figure}[htb]
+\hspace{-30pt}
+\includegraphics[width=1.1\textwidth]{stocks.png}
+\caption{\it Experiments for adaptive conformal inference on predicting stock
+  market volatility. The nominal coverage level is 0.9. Shown are the results of
+  local coverage (averaged over a trailing window of 500 days) when using ACI
+  (in blue), versus a fixed level (in red). The coverage fluctuations of ACI are
+  not too dissimilar to the trailing average of i.i.d.\ Bernoulli coin flips (in
+  gray) with success probability 0.9. Credit: \citet{gibbs2021adaptive}.}           
+\label{fig:stocks}
+\end{figure}
+
+\paragraph{ACI as online gradient descent.}
+
+Defining $s_t = \err_t - \alpha$, we can show that $s_t \in \partial
+f_t(\alpha_t)$ for a particular convex loss function $f_t$, which will make 
+\eqref{eq:aci} an instance of online gradient descent,\footnote{Actually, to be
+  specific, this is the online subgradient method; but we'll ignore this
+  distinction in nomenclature.} 
+applied to the convex problem
+\[
+\minimize_a \quad \sum_{t=1}^T f_t(a),
+\]
+for some (arbitrarily large) time horizon $T$. In particular, let
+\[
+\beta_t = \sup \{ \beta : Y_t \in C_t^{1-\beta} \}, 
+\]
+and 
+\begin{align*}
+\nonumber
+f_t(a) &= \phi_{1-\alpha}(1-\beta_t - (1-a)) \\
+&= \phi_{1-\alpha}(a - \beta_t),
+\end{align*}
+where $\phi_\tau$ denotes the tilted $\ell_1$ loss at quantile level $\tau$,
+that is, $\phi_\tau(x) = \tau |x|$ for $x \geq 0$ and $(1-\tau) |x|$ for $x <
+0$. Then a straightforward calculation shows
+\[
+\partial f_t(a) = 
+\begin{cases}
+\{1-\alpha\} & \text{if $a > \beta_t$} \\
+[-\alpha, 1-\alpha] & \text{if $a = \beta_t$} \\
+\{-\alpha\} & \text{if $a < \beta_t$}.
+\end{cases}
+\]
+Furthermore, note that by definition of $\beta_t$, we have $a > \beta_t \iff Y_t
+\notin C_t^{1-a}$. Thus it is clear that
+\[
+s_t = 
+\begin{cases}
+1-\alpha & \text{if $\err_t = 1$} \\
+-\alpha & \text{if $\err_t = 0$}
+\end{cases}
+\; \in \; \partial f_t(\alpha_t).
+\]
+
 
 \bibliographystyle{plainnat}
 \bibliography{../../common/ryantibs}
