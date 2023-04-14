@@ -545,45 +545,45 @@ essentially already follows from what we proved in Lemma
 \eqref{eq:general_calc}, without simplifying further. 
 
 \begin{theorem}
-\label{thm:weighted_conf_gen}
+\label{thm:weighted_conf_str}
 Assume that $Z_i=(X_i,Y_i)$, $i=1,\dots,n+1$ are distributed according to:
 \begin{gather*}
 (X_1,\dots,X_{n+1}) \sim \Lambda, \\
-Y_i|X_i \sim P_{Y|X}, \; \text{independently, for $i=1,\dots,n$}.
+Y_i|X_i \sim P_{Y|X}, \; \text{independently, for $i=1,\dots,n+1$}.
 \end{gather*}
 Let $\lambda$ denote the density (or mass function, or more generally,
 Radom-Nikodym derivative with respect to an arbitrary base measure) of
 $Q$. Define a weighted conformal set (based on the first $n$ samples) at a point
 $x \in \cX$, with nominal error level $\alpha \in (0,1)$, by   
 \begin{equation}
-\label{eq:weighted_conf_gen}
+\label{eq:weighted_conf_str}
 \hC^\lambda_n(x) = \bigg\{ y : R_{n+1}^{(x,y)} \leq \Quantile\bigg( 1-\alpha;  
-\, \sum_{i=1}^n p^\lambda_i\big( Z_1,\dots,Z_n,(x,y) \big) \delta_{R_i^{(x,y)}}
-+ p^\lambda_{n+1}\big( Z_1,\dots,Z_n,(x,y) \big) \delta_\infty \bigg) \bigg\},  
+\, \sum_{i=1}^n p^\lambda_i(X_1,\dots,X_n,x) \delta_{R_i^{(x,y)}} +
+p^\lambda_{n+1}(X_1,\dots,X_n,x) \delta_\infty \bigg) \bigg\},   
 \end{equation}
 where \smash{$R_i^{(x,y)}$}, $i=1,\ldots,n+1$ are conformity scores as in
 \eqref{eq:scores}, for an arbitrary score function $V$ that is symmetric in its 
 last $n+1$ arguments, and
 \begin{equation}
-\label{eq:pw_gen}
-p^\lambda_i(z_1,\dots,z_{n+1}) = 
-\frac{\sum_{\sigma : \sigma(n+1)=i} \lambda(z_{\sigma(1)},\dots,
-  z_{\sigma(n+1)})} {\sum_\sigma \lambda(z_{\sigma(1)},\dots, z_{\sigma(n+1)})},
+\label{eq:pw_str}
+p^\lambda_i(x_1,\dots,x_{n+1}) = 
+\frac{\sum_{\sigma : \sigma(n+1)=i} \lambda(x_{\sigma(1)},\dots,
+  x_{\sigma(n+1)})} {\sum_\sigma \lambda(x_{\sigma(1)},\dots, x_{\sigma(n+1)})},
 \quad i=1,\dots,n+1.  
 \end{equation}
 Then \smash{$\hC^\lambda_n$} satisfies 
 \begin{equation}
-\label{eq:weighted_cov_gen}
+\label{eq:weighted_cov_str}
 \P\big( Y_{n+1} \in \hC^\lambda_n(X_{n+1}) \big) \geq 1-\alpha. 
 \end{equation}
 \end{theorem}
 
-Computation of the weights in \eqref{eq:pw_gen} is now even more difficult than
+Computation of the weights in \eqref{eq:pw_str} is now even more difficult than
 \eqref{eq:pw} in the weighted exchangeable setting (even more difficult than a
 matrix permanent, since $\lambda$ could in principle depend in a complicated way
 on the order of its inputs). That said, the above theorem still produces a
-conformal set \eqref{eq:weighted_conf_gen} with the very general guarantee
-\eqref{eq:weighted_cov_gen}, which is interesting. This may be useful (and
+conformal set \eqref{eq:weighted_conf_str} with the very general guarantee
+\eqref{eq:weighted_cov_str}, which is interesting. This may be useful (and
 computable) in certain structured-X settings, for example, where the sequence
 $X_1,\dots,X_{n+1}$ has some kind of Markov structure.
 
