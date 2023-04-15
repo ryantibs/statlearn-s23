@@ -348,7 +348,7 @@ simplifies to
 and by \eqref{eq:weighted_cov}, this has coverage at least $1-\alpha$,
 conditional on $Z_0$.   
 
-\paragraph{CDF form.}
+\paragraph{CDF form.*}
 
 \def\hF{\hat{F}}
 
@@ -373,12 +373,12 @@ main reason we worked with the quantile form in \eqref{eq:weighted_conf} in the
 first place, since we can always use the unadjusted level $1-\alpha$ and
 completely avoid any such complications.
 
-\paragraph{Auxiliary randomization for exact coverage.}
+\paragraph{Auxiliary randomization for exact coverage.*}
 
-It is also worth noting that we can achieve exact coverage by using auxiliary
+It is worth noting that we can achieve exact coverage by using auxiliary
 randomization, either in CDF or quantile form. Applying our previous
 randomization trick (from the last lecture) to the CDF form
-\eqref{eq:weighted_cdf} gives 
+\eqref{eq:weighted_cdf} gives  
 \begin{multline*}
 \hC_n^{w,*}(x) = \bigg\{ y : \sum_{i=1}^n p^w_i\big( Z_1,\dots,Z_n,(x,y)
 \big) 1\Big\{ R_i^{(x,y)} < R^{(x,y)}_{n+1} \Big\} +{} \\ U \sum_{i=1}^{n+1} 
@@ -758,7 +758,7 @@ This lends more direct intuition to the idea that we want to assign large
 weights to training points whose distributions are representative of the test 
 distribution. 
 
-\paragraph{CDF form.}
+\paragraph{CDF form.*}
 
 The analogous CDF form of the conformal set in \eqref{eq:weighted_conf_nex} is
 as follows: 
@@ -774,7 +774,7 @@ discrete distribution \smash{$\sum_{i=1}^n \tw_i \, \delta_{R^{(x,y)}_i} +
 likelihood-weighted case), the adjustment of the probability level needed here
 is random.  
 
-\paragraph{Auxiliary randomization for exact coverage.}
+\paragraph{Auxiliary randomization for exact coverage.*}
 
 We can randomize the CDF form in \eqref{eq:weighted_cdf_nex} as follows: 
 \[
@@ -1002,10 +1002,8 @@ financial time series data, from \citet{gibbs2021adaptive}.
 
 Defining $s_t = \err_t - \alpha$, we can show that $s_t \in \partial
 f_t(\alpha_t)$ for a particular convex loss function $f_t$, which will make 
-\eqref{eq:aci} an instance of online gradient descent,\footnote{Actually, to be
-  specific, this is the online subgradient method; but we'll ignore this
-  distinction in nomenclature.} 
-applied to the convex problem
+\eqref{eq:aci} an instance of online gradient descent (technically, the online
+subgradient method) applied to the convex problem
 \[
 \minimize_a \quad \sum_{t=1}^T f_t(a),
 \]
