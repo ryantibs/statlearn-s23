@@ -590,7 +590,7 @@ $X_1,\dots,X_{n+1}$ has some kind of Markov structure.
 \section{Custom-weighted conformal prediction}
 
 \def\tw{\tilde{w}}
-\def\dtv{\mathsf{d}_{\mathsf{TV}}}
+\def\TV{\mathrm{TV}}
 
 We next cover a custom-weight conformal prediction method, due to
 \citet{barber2022conformal}. In comparison to the likelihood-weighted method
@@ -657,9 +657,9 @@ of $Z_i=(X_i,Y_i)$, $i=1,\dots,n+1$, the set \smash{$\hC^w_n$} satisfies
 \begin{equation}
 \label{eq:weighted_cov_nex}
 \P\big( Y_{n+1} \in \hC^w_n(X_{n+1}) \big) \geq 1-\alpha - \sum_{i=1}^n 
-\tw_i \cdot \dtv(R(Z), R(Z^i)),
+\tw_i \cdot \TV(R(Z), R(Z^i)),
 \end{equation}
-where $\dtv(A,B)$ is the total variation (TV) distance between the distributions
+where $\TV(A,B)$ is the total variation (TV) distance between the distributions
 of random variables $A,B$.  
 \end{theorem}
 
@@ -678,7 +678,7 @@ points and downweight the others. This would result in a small coverage gap,
 where  
 \begin{equation}
 \label{eq:coverage_gap}
-\text{coverage gap} = \sum_{i=1}^n \tw_i \cdot \dtv(R(Z), R(Z^i))
+\text{coverage gap} = \sum_{i=1}^n \tw_i \cdot \TV(R(Z), R(Z^i))
 \end{equation}
 (since we have small weights multiplying large TV distances, and large weights 
 multiplying small TV distances.) Of course, choosing a good weights
@@ -719,9 +719,9 @@ simplifies to
 and \eqref{eq:weighted_cov_nex} becomes
 \[
 \P\big( Y_{n+1} \in \hC^w_n(X_{n+1}) \,\big|\, Z_0 \big) \geq 1-\alpha -
-\sum_{i=1}^n \tw_i \cdot \dtv\big( R(Z), R(Z^i) \,\big|\, Z_0 \big), 
+\sum_{i=1}^n \tw_i \cdot \TV\big( R(Z), R(Z^i) \,\big|\, Z_0 \big), 
 \]
-where $\dtv(A, B \,|\, C)$ is the TV distance between the conditional
+where $\TV(A, B \,|\, C)$ is the TV distance between the conditional
 distributions of $A|C$ and $B|C$. If $Z_0$ is independent of $Z$, then the
 coverage gap is just a before, in \eqref{eq:coverage_gap}.
 
@@ -731,19 +731,19 @@ When $Z_i=(X_i,Y_i)$, $i=1,\dots,n+1$ are i.i.d.\ (or more generally,
 exchangeable), we are back to the traditional setting for conformal
 prediction. In this case, there is no slack in \eqref{eq:weighted_cov_nex},
 since exchangeability implies \smash{$R(Z) \overset{d}{=} R(Z^i)$} and thus
-\smash{$\dtv(R(Z), R(Z^i)) = 0$} for each $i$, and hence
-\eqref{eq:weighted_cov_nex} collapses to an exact $1-\alpha$ coverage
-guarantee. This not only reproduces the standard result for ordinary conformal,
-when we take $w_1 = \cdots = w_n = 1$, but also shows us something  
-new: in the i.i.d.\ (or exchangeable) setting, we can use arbitrary weights and
-still get exact coverage with weighted conformal prediction.
+$\TV(R(Z), R(Z^i)) = 0$ for each $i$, and hence \eqref{eq:weighted_cov_nex}
+collapses to an exact $1-\alpha$ coverage guarantee. This not only reproduces
+the standard result for ordinary conformal, when we take $w_1 = \cdots = w_n =
+1$, but also shows us something new: in the i.i.d.\ (or exchangeable) setting,
+we can use arbitrary weights and still get exact coverage with weighted
+conformal prediction. 
 
 \paragraph{Coverage gap bounds.}
 
 It is worth noting a few upper bounds for the coverage gap in
 \eqref{eq:coverage_gap}. First, 
 \[
-\text{coverage gap} \leq \sum_{i=1}^n \tw_i \cdot \dtv(Z, Z^i),
+\text{coverage gap} \leq \sum_{i=1}^n \tw_i \cdot \TV(Z, Z^i),
 \]
 since the TV distance between $f(A),f(B)$ is always less than that between
 $A,B$. The bound in the above display is easier to interpret, but can also be
@@ -752,7 +752,7 @@ case of a high-dimensional feature space, and a score function that ignores all
 but a few relevant features for prediction.) Second, if $Z_i$, $i=1,\dots,n+1$
 are independent (but not identically distributed), then it can be shown that 
 \[
-\text{coverage gap} \leq 2\sum_{i=1}^n \tw_i \cdot \dtv(Z_i, Z_{n+1}).
+\text{coverage gap} \leq 2\sum_{i=1}^n \tw_i \cdot \TV(Z_i, Z_{n+1}).
 \]
 This lends more direct intuition to the idea that we want to assign large
 weights to training points whose distributions are representative of the test 
