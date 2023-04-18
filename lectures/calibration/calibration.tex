@@ -60,18 +60,26 @@ notation, but often it will be more convenient to hide it.
 
 It is most common to represent a probabilistic forecast $P$ by its cumulative
 distribution function (CDF) $F$. Of course, instead of representing $P$ by its
-CDF $F$, we can choose to represent it by its quantile function $Q$. 
-\emph{Typically these objects (CDF $F$ or quantile function $Q$) will be
-  discretized in practice, and converting from one to the other will not be
-  possible/practical, particularly in the tails}.Therefore, whether we choose at
-the outset to represent a predicted distribution by a CDF or quantile function 
-can have nontrivial implications on what tools we have at our disposal for
-downstream tasks, like evaluation (via scoring rules) and aggregation.   
+CDF $F$, we can choose to represent it by its quantile function
+$F^{-1}$. To be clear, the quantile function $F^{-1}$ is always well-defined,
+even when $F$ is not continuous, and it is defined precisely as
+\[
+F^{-1}(t) = \inf\{ x : F(x) \geq t\}.
+\]
+When $F$ is not continuous, this shares some but not all properties of the 
+usual inverse; recall the properties you derived on the homework.
+
+An important note: typically these objects, the CDF $F$ or quantile function
+$F^{-1}$, will be discretized in practice, and \emph{converting from one to the
+  other will not always be possible/practical, particularly in the tails}. Thus
+whether we choose at the outset to represent a predicted distribution by a CDF
+or quantile function can have nontrivial implications on what tools we have at
+our disposal for downstream tasks, like evaluation and aggregation.
 
 Later, in Section \ref{sec:prob_vs_quant}, we will discuss the differences
 between aggregating probabilities (CDFs) and aggregating quantiles, in
 detail. Here, we provide some higher-level practical considerations to keep in
-mind when choosing to represent forecasts via probabilities versus quantiles.  
+mind when choosing to represent forecasts via probabilities versus quantiles. 
 
 \begin{itemize}
 \item A quantile representation for forecasts alleviates concerns about choosing
@@ -118,10 +126,10 @@ distribution of $Y$ and the score $S$ is proper: ``the forecaster has no
 incentive to predict any $P \not= Q$ and is encouraged to report his or her true
 belief''.  
 
-Several examples of popular proper scores a given below. Some intuitively
-appealing but improper scores are given as well. Throughout, we will write the 
-scores as functions of densities, CDFs, quantile functions, etc.\ (instead 
-of distributions), as convenient.  
+Several examples of proper scores are given below. (An example of an intuitively
+appealing but improper score will also be given.) Throughout, we will flexibly
+write the scores as taking densities, CDFs, or quantile functions as inputs
+(instead of distributions), as convenient.        
 
 \paragraph{Log score.}
 
@@ -188,7 +196,7 @@ this, we compute:
 S(p, q) - S(q, q) = \|p\|_2^2 - 2 \int p(y) q(y) \, dy + \|q\|_2^2 =
 \|p-q\|_2^2,
 \]
-which is the $L^2$ distance between $p$ and $q$. Thus it is nonnegative, and
+which is the $L^2$ distance between $p$ and $q$. It is nonnegative, and
 positive for $p \not= q$.  
 
 Quadratic score \eqref{eq:quads} is more robust than log score \eqref{eq:logs},
@@ -231,18 +239,18 @@ a point mass at zero, and would be otherwise continuous. The \emph{continuous
 forecast expressed in terms of a predicted CDF $F$. It is defined by 
 \begin{equation}
 \label{eq:crps}
-\mathrm{CRPS}(F, y) = -\int (F(x) - 1\{y \leq x\})^2 \, dx. 
+\mathrm{CRPS}(F, y) = \int (F(x) - 1\{y \leq x\})^2 \, dx. 
 \end{equation}
 This is a strictly proper score. To see this, we compute: 
 \begin{align*}
 \mathrm{CRPS}(F, G) - \mathrm{CRPS}(G ,G) 
-&= \int \Big( G(x)^2 - F(x)^2 + 2(F(x) - G(x)) \E_{Y \sim G}[ 1\{Y \leq x\} ]
+&= \int \Big( F(x)^2 - G(x)^2 - 2(F(x) - G(x)) \E_{Y \sim G}[ 1\{Y \leq x\} ]
   \Big) \, dx \\
-&= \int \Big( G(x)^2 - F(x)^2 + 2(F(x) - G(x)) G(x) \Big) \, dx \\
+&= \int \Big( F(x)^2 - G(x)^2 - 2(F(x) - G(x)) G(x) \Big) \, dx \\
 &= \int (F(x) - G(x))^2 \, dx.
 \end{align*}
-This is known as the Cram{\'e}r-von Mises distance between $F$ and $G$. Thus it
-is nonnegative, and positive for $p \not= q$.  
+This is the Cram{\'e}r-von Mises distance between $F$ and $G$. It is
+nonnegative, and positive for $p \not= q$.   
 
 CRPS \eqref{eq:crps} has become recently quite popular in various applied
 forecasting communities (e.g., in meterological sciences), in part because it is
@@ -251,14 +259,14 @@ broadly applicable, beyond log \eqref{eq:logs} and quadratic \eqref{eq:quads}
 scores. However, unlike the latter two, CRPS is nontrivial to compute. Some
 authors have pursued quadrature-based approximations to the integral defining
 CRPS. A simpler approximation is given by noting its connection to weighted
-interval score/quantile loss, which will be covered shortly.
+interval score/quantile loss, which will be covered just a bit later on.
 
 \paragraph{Interval score.}
 
 For an interval forecast expressed as $[\ell_\alpha, u_\alpha]$, where the lower
-and upper endpoints $\ell_\alpha = Q(\alpha/2)$ and $u_\alpha = Q(1-\alpha/2)$
-are the predicted $\alpha/2$ and $1-\alpha/2$ quantiles of the forecast
-distribution $Q$, \emph{interval score} is defined by
+and upper endpoints $\ell_\alpha = F^{-1}(\alpha/2)$ and $u_\alpha =
+F^{-1}(1-\alpha/2)$ are the predicted $\alpha/2$ and $1-\alpha/2$ quantiles of
+the forecast distribution, \emph{interval score} is defined by 
 \[
 \mathrm{IS}_\alpha( [\ell_\alpha, u_\alpha], y) = 
 (u_\alpha - \ell_\alpha) + \frac{2}{\alpha} \cdot
@@ -282,17 +290,16 @@ Weighted interval score (and thus interval score, as effectively a special case)
 is a proper score for predicting the quantiles at levels $\alpha/2$ and
 $1-\alpha/2$, over $\alpha \in \cA$. To be clear, here we say (by analogy to 
 \eqref{eq:proper}) that a score $S$ defined in terms of a discrete set of
-predicted quantiles \smash{$\{q_\tau\}_{\tau \in \cT}$} is proper if (for $Q$
-denoting the true quantile function of the distribution of $Y$) it holds that   
+predicted quantiles \smash{$\{q_\tau\}_{\tau \in \cT}$} if it holds that   
 \begin{equation}
 \label{eq:proper_q}
-S \big( \{q_\tau\}_{\tau \in \cT}, \, Q \big) \geq S \big( \{Q(\tau)\}_{\tau \in
-  \cT}, \, Q \big), \quad \text{for all $\{q_\tau\}_{\tau \in \cT}$, and all
-  $Q$},   
+S \big( \{q_\tau\}_{\tau \in \cT}, \, F \big) \geq S \big(
+\{F^{-1}(\tau)\}_{\tau \in \cT}, \, F \big), \quad \text{for all
+$\{q_\tau\}_{\tau \in \cT}$, and all $F$},    
 \end{equation}
-where as usual \smash{$S(\{q_\tau\}_{\tau \in \cT}, \, Q) = \E_{Y \sim Q}[
-  S(\{q_\tau\}_{\tau \in \cT}, \, Q)]$}. Propriety of weighted interval score
-can be verified by drawing a connection to quantile loss, covered next. 
+where as usual \smash{$S(\{q_\tau\}_{\tau \in \cT}, \, F) = \E_{Y \sim F}[
+  S(\{q_\tau\}_{\tau \in \cT}, \, Y)]$}. Propriety of weighted interval score  
+can be verified by drawing a connection to quantile loss, covered shortly.  
 
 \paragraph{Quantile score.}
 
@@ -345,9 +352,9 @@ parametrizations (CDF space versus quantile space).
 
 The equivalence in \eqref{eq:crps_qs} appears to have been discovered by
 \citet{laio2007verification}; their argument uses integration by parts, but it
-ignores a few subtleties, and hence below we reproduce the proof from
-\citet{fakoor2021flexible}, which basically just fills in a few missing details.   
-Starting with the right-hand side in \eqref{eq:crps_qs}, we can substitute
+ignores a few subtleties, and so here we reproduce the proof from
+\citet{fakoor2021flexible}, which basically just fills in a few missing details.
+Starting with the right-hand side in \eqref{eq:crps_qs}, we can substitute 
 $y=F^{-1}(\tau)$ to rewrite the integral as   
 \[
 2 \int (1\{y \leq F^{-1}(\tau)\} - \tau) (F^{-1}(\tau)-X) \, d\tau =  
@@ -394,8 +401,7 @@ Here is a quick recap of what we learned on our tour of scores. Log score
 strictly proper, with the former being more aggressive at penalizing
 underconfidence assigned to rare events. CRPS \eqref{eq:crps} is a more modern
 alternative, also strictly proper, which has become popular due to its
-robustness and generality (it applies to any CDF). However, it is nontrivial to
-compute.     
+robustness and generality, but is nontrivial to compute.        
 
 For forecasts specified in terms of quantiles at discrete probability levels,
 WIS \eqref{eq:wis} and QS \eqref{eq:qs} are each proper, simple, and popular
@@ -407,8 +413,8 @@ at any desired set of probability levels and use this to define WIS/QS;
 propriety is always maintained, in the sense of \eqref{eq:proper_q}, for any
 choice of discretization.     
 
-Figures \ref{fig:scores1} and \ref{fig:scores2} visualize the various scores in
-action. 
+Figures \ref{fig:scores1} and \ref{fig:scores2} visualize some of these scores
+in action. 
 
 \begin{figure}[p]
 \centering
@@ -441,7 +447,7 @@ precise sense, characterizes \emph{all} proper scores.
 Before stating the result, we must introduce some terminology and
 concepts. Recall that by convention, we take all scores to be
 negatively-oriented. First, we say a score $S$ is \emph{regular} if $S(P,P)$ is 
-real-valued for all $P$ (i.e., we allow $S(P,Q) = \infty$ for $P \not=
+real-valued for all $P$ (i.e., we allow $S(P, Q) = \infty$ for $P \not=
 Q$). Regularity is essentially needed in order for subderivatives (defined 
 shortly) to make sense but we omit the details. 
 
@@ -501,7 +507,7 @@ For fixed $P$, the function $Q \mapsto -S(P, Q)$ is linear, and hence convex,
 and thus by the above $\phi$ is a pointwise supremum of convex functions and
 hence itself convex. Furthermore, we can see that $D\phi(P, \cdot) = -S(P,
 \cdot)$ is a valid subderivative of $\phi$, since \eqref{eq:subderiv} becomes 
-$-S(Q,Q) \geq -S(P,Q)$ for all $Q \in \cP$, which is satisfied because $S$ is
+$-S(Q, Q) \geq -S(P, Q)$ for all $Q \in \cP$, which is satisfied because $S$ is 
 proper relative to $\cP$. Under the choice $D\phi(P, \cdot) = -S(P, \cdot)$, the 
 score representation \eqref{eq:phi_score} is a tautology, and again, the Bregman
 representation \eqref{eq:phi_div} follows by direct algebra.
@@ -512,8 +518,8 @@ The arguments for strict convexity and strict propriety follow similarly.
 Even though our focus has been (and will continue to be) real-valued forecasts,
 it is worth emphasizing that the previous theorem treats the sample space $\cY$
 as arbitrary. In the case of categorical forecasts, where $\cY = \{1,\dots,k\}$,
-we get the following corollary (which is originally due to 
-\citet{savage1971elicitation}). We denote the standard $k$-dimensional
+we get the following corollary, which is originally due to 
+\citet{savage1971elicitation}. We denote the standard $k$-dimensional 
 probability simplex by \smash{$\Delta^k = \{ p \in \R^k : p \geq 0, \;
   \sum_{i=1}^k p_i = 1\}$}.
 
@@ -533,17 +539,242 @@ strictly convex and strictly proper, respectively.
 
 \section{Modes of calibration}
 
+Next we turn to calibration. There are in fact many modes or ``flavors'' of
+calibration, and they are related but not all equivalent. We walk through three
+such modes, in the following subsections.  
+
 \subsection{Probabilistic calibration}
+
+A forecaster with predicted CDF $F$ is said to be \emph{probabilistically 
+  calibrated} for a target $Y$ if 
+\begin{equation}
+\label{eq:prob_calib}
+U \cdot F(Y) + (1-U) \cdot F(Y^-) \sim \mathrm{Unif}(0,1),
+\end{equation}
+where $U \sim \mathrm{Unif}(0,1)$ is independent of $F,Y$ and \smash{$F(y^-) =
+  \lim_{x \to y^-} F(x)$}. Note that when $F$ is continuous (meaning, it is a
+continuous function) almost surely, then \eqref{eq:prob_calib} reduces to 
+\begin{equation}
+\label{eq:prob_calib_cont}
+F(Y) \sim \mathrm{Unif}(0,1).
+\end{equation}
+This definition is intuitively reasonable because, recall, when we take $F$ to
+be \emph{fixed} and equal to the CDF of $Y$, then the property in
+\eqref{eq:prob_calib} holds, or more simply, the property in
+\eqref{eq:prob_calib_cont} holds for the continuous case. You proved these facts
+on the homework.  But to be clear, in defining probabilistic calibration via
+\eqref{eq:prob_calib}, or \eqref{eq:prob_calib_cont} for the continuous case,
+both $F$ and $Y$ are \emph{random}, and probabilistic calibration is a statement
+about their joint distribution.
+
+\paragraph{Probability integral transform.}
+
+Denote
+\[
+F^*(Y) = U \cdot F(Y) + (1-U) \cdot F(Y^-),
+\]
+where again $U \sim \mathrm{Unif}(0,1)$ is independent of $F$ and $Y$. This is
+often called the \emph{probability integral transform} (PIT) associated with $F$
+and $Y$. When  $F$ is continuous almost surely, this reduces to $F^*(Y) =
+F(Y)$. Another name for the notion of calibration in \eqref{eq:prob_calib}, or
+\eqref{eq:prob_calib_cont} for the continuous case, is \emph{PIT calibration}. 
+
+\paragraph{Quantile reformulation.}
+
+When $F$ is continuous almost surely, then we can reinterpret probabilistic
+calibration \eqref{eq:prob_calib} as follows: $F$ is calibrated for $Y$ if  
+\[
+\P(Y \leq F^{-1}(\tau)) = \tau, \quad \text{for all $\tau \in [0,1]$}. 
+\]
+This is highly intuitive; for example, when we inspect the forecaster's
+predicted quantile at the level 0.9, the target $Y$ should lie below this 90\% 
+of the time, and so on, for all probability levels.   
+
+\paragraph{Dispersion: over and under.}
+
+If $F$ places too much mass in the tails, then the PIT $F^*(Y)$ will be
+U-shaped, and its variance will be large compared to that of a uniform
+distribution. Conversely, if $F$ places insufficient mass in the tails, then the 
+PIT $F^*(Y)$ will be upside-down U-shaped, and its variance will be comparably
+small. Using $U \sim \mathrm{Unif}(0,1)$ to denote a standard uniform random
+variable, this leads to the following definitions, in the context of PIT
+calibration:   
+
+\begin{itemize}
+\item $F$ is said to be \emph{overdispersed} for $Y$ if $\Var[F^*(Y)] < \Var[U]$;
+\item $F$ is said to be \emph{underdispersed} for $Y$ if $\Var[F^*(Y)] >
+  \Var[U]$. 
+\end{itemize}
+
+Figures \ref{fig:pit1} and \ref{fig:pit2} provide examples.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.7\textwidth]{pit1.png}
+\vspace{-15pt}
+\caption{\it Densities of PIT distributions for several simple normal
+  forecasters, when the true target distribution is $N(0,1)$. Credit:
+  \citet{rumack2022recalibrating}.}        
+\label{fig:pit1}   
+
+\bigskip\medskip
+
+\includegraphics[width=0.85\textwidth]{pit2.png}
+\caption{\it Densities of PIT distributions from 27 forecasters submitted to the
+  annual FluSight (seasonal influenza forecasting) challenges held by CDC, over
+  9 seasons (2010-11 to 2018-19). The PIT densities fall mostly into one of two
+  categories: overdispersed with a peak around 0.5, and underdispersed with
+  peaks at 0 and 1. (The outlier with a peak at 0.1 is the PIT density of a
+  simple baseline forecaster.) Credit: \citet{rumack2022recalibrating}.}           
+\label{fig:pit2}
+\end{figure}
 
 \subsection{Marginal calibration}
 
+A forecaster with predicted CDF $F$ is said to be \emph{marginally calibrated}
+for a target $Y$ if  
+\begin{equation}
+\label{eq:marginal_calib}
+\E[F(y)] = \P(Y \leq y), \quad \text{for all $y$}.  
+\end{equation}
+Interestingly, this is \emph{not} the same as probabilistic calibration, and it
+is neither more general nor less general. There are nontrivial forecasters that
+satisfy \eqref{eq:prob_calib} but not \eqref{eq:marginal_calib}, and vice
+versa---discussed shortly. 
+
+\paragraph{Dispersion: over and under.}
+
+Recall from the homework that for fixed $F$, the random variable $F^{-1}(U)$ for 
+$U \sim \mathrm{Unif}(0,1)$ is distributed according to $F$. When $F$ is random
+and $U \sim \mathrm{Unif}(0,1)$ is independent of $F$, we can then interpret
+$F^{-1}(U)$ as first drawing $F$, then drawing a random variable according to
+$F$. This leads to the following definitions, in the context of marginal
+calibration:   
+
+\begin{itemize}
+\item $F$ is said to be \emph{overdispersed} for $Y$ if $\Var[F^{-1}(U)] > \Var[Y]$;
+\item $F$ is said to be \emph{underdispersed} for $Y$ if $\Var[F^{-1}(U)] < \Var[Y]$.
+\end{itemize}
+
+Note the symmetry here to the definitions of over- and underdispersion in the
+PIT sense, defined above. 
+
+\paragraph{PIT versus marginal calibration.}
+
+As we emphasized earlier, PIT calibration is a statement about the joint
+distribution of the forecaster $F$ and target $Y$. Marginal calibration is not;
+it is only a statement, as its name suggests, about the marginal distributions
+of $F$ and $Y$. In the sense, this can be much simpler to understand and reason
+about than PIT calibration.
+
+To give an example, when we think about systematic miscalibration---a forecaster 
+being overdispersed or underdispersed---we might often think about this in terms 
+of the forecast distribution being too spread out or too peaked, respectively.
+But this intuition is really only justified for marginal calibration, and it is an
+incomplete way to think about PIT calibration. This is because the latter is
+about how $F$ and $Y$ behave \emph{jointly}. Recall, overdispersion means that
+the PIT is too peaked, and underdispersion means that the PIT is too spread
+out. This can be entirely due to the dependence between $F$ and $Y$, i.e., it
+can happen even when the forecast distribution $F$ is marginally calibrated---it
+has ``just enough spread''.
+
+\paragraph{Examples.}
+
+Following \citet{gneiting2007probabilistic}, suppose $\mu$ is drawn from $N(0, 
+1)$, and $Y$ is drawn (independently of $\mu$) from $N(\mu, 1)$. Consider (where
+we use $F$ to denote both a distribution and a CDF):
+
+\begin{itemize}
+\item the \emph{ideal} forecaster: $F = N(\mu, 1)$;
+\item the \emph{climatological} forecaster: $F = N(0, 1)$;
+\item the \emph{flipped} forecaster: $F = N(-\mu, 1)$;  
+\item the \emph{unfocused} forecaster: \smash{$F = \frac{1}{2}[ N(\mu, 1) +
+    N(\mu + \tau, 1)]$}, for $\tau = \pm 1$ with equal probability, independent 
+  of $Y,\mu$.
+\end{itemize}
+
+To gain intuition for the setup, you can think of an underlying sequential
+problem, where at time $t$, we draw $\mu_t \sim N(0,1)$, then draw $Y_t \sim
+N(\mu_t, 1)$ independently, and the forecasters are $F_t = N(\mu_t, 1)$ (ideal),
+$F_t = N(0, 1)$ (climatological), and so on.
+
+Direct calculations, as given in Section 2 of \citet{gneiting2007probabilistic}, 
+reveal the following: 
+
+\begin{itemize}
+\item the ideal forecaster is both probabilistically and marginally calibrated;  
+\item the climatological forecaster is both probalistically and marginally
+  calibrated;
+\item the flipped forecaster is marginally but not probabilistically
+  calibrated; 
+\item the unfocused forecaster is probabilistically but not marginally
+  calibrated.
+\end{itemize}
+
 \subsection{Conditional calibration}
 
+When $Y$ is binary, we can think of a forecaster as providing a predicted
+probability $p$ of the event $Y = 1$. In this setting, a forecaster $p$ is said
+to be \emph{conditionally calibrated} if
+\begin{equation}
+\label{eq:cond_calib}
+\E[Y|p] = p, \quad \text{almost surely}.  
+\end{equation}
+This is highly intuitive; for example, when the forecaster outputs a predicted
+probability of 0.2, the event $Y=1$ should materialize 20\% of the time, and so
+on, for all probability levels. 
 
-\section{Aggregation and (mis)calibration}
+Interestingly, and perhaps surprisingly, this is the same as probabilistic
+calibration in the binary seting. This is due to \citet{gneiting2013combining}. 
+
+\begin{theorem}
+Let $Y$ be binary valued, and suppose a forecaster outputs a predicted
+probability $p$ of the event $Y = 1$, with associated predicted CDF 
+\[
+F(y) = (1-p) \cdot 1\{y \geq 0\} +  p \cdot 1\{y \geq 1\}.
+\]
+Then $F$ is probabilistically calibrated in the sense of \eqref{eq:prob_calib}
+if and only if $p$ is conditionally calibrated in the sense of
+\eqref{eq:cond_calib}. 
+\end{theorem}
+
+\begin{proof}
+We prove the ``if'' direction; the ``only if'' direction is less elementary and 
+we refer to the proof of Theorem 2.11 in \citet{gneiting2013combining} for
+details. Supposing $p$ is probabilistically calibrated, we can write, for $U
+\sim \mathrm{Unif}(0,1)$, independent of everything else, 
+\[
+F^*(Y) = U (1-p) \cdot (1-Y) + (1-p + U p) \cdot Y.
+\]
+The conditional calibration property \eqref{eq:cond_calib} tells us that
+$Y\,|\,p \sim \mathrm{Bern}(p)$, and fixing any $t \in [0,1]$, we can compute   
+\begin{align*}
+\P(F^*(Y) \leq t \,|\, p) 
+&= \P\big(U (1-p) (1-Y) + (1-p + U p) Y \leq t \,\big|\, p \big) \\
+&= \underbrace{\P\big(U (1-p) \leq t \,\big|\, p \big)}_{a} \P( Y=0 \,|\, p) +  
+\underbrace{\P\big(U p \leq t-(1-p) \,\big|\, p \big)}_{b} \P( Y=1 \,|\, p).
+\end{align*}
+Well, 
+\[
+a = \frac{t}{1-p} \wedge 1, 
+\quad
+b = \frac{t-(1-p)}{p} \vee 0.
+\]
+Thus when $t \leq 1-p$, we get $\P(F^*(Y) \leq t \,|\, p) = a(1-p) = t$, and
+when $t > 1-p$, we get $\P(F^*(Y) \leq t \,|\, p) = (1-p) + bp =
+t$. Marginalizing over $p$ proves the probabilistic calibration property
+\eqref{eq:prob_calib}.  
+\end{proof}
+
+It is also interesting to remark that this equivalence does \emph{not} extend
+beyond binary outcomes. For three or more distinct levels of a discrete outcome,
+it is no longer true that PIT calibration implies conditional calibration. See 
+Gneiting and Resin (2022).   
 
 \section{Probability versus quantile aggregation}
 \label{sec:prob_vs_quant}
+
+\section{Aggregation and (mis)calibration}
 
 \bibliographystyle{plainnat}
 \bibliography{../../common/ryantibs}
