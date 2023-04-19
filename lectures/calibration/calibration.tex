@@ -429,10 +429,10 @@ in action.
 
 \includegraphics[width=0.975\textwidth]{scores2.png}
 \caption{\it Comparison between log score and WIS for two predicted
-  distributions, $P$ in green and $Q$ in red. We see that $G$ has higher
-  expectation, while $F$ is more dispersed. The event $y$ that materializes is
-  visualized as a dashed vertical line. Log score prefers $F$ to $G$, while WIS
-  prefers $G$ to $F$. Credit: \citet{bracher2021evaluating}.}          
+  distributions: $P$ in green and $Q$ in red. Note that $G$ has a higher
+  expectation, while $F$ is more dispersed. If we consider an event $y$ that is
+  marked as a dashed vertical line, then we see log score prefers $F$ to $G$,
+  while WIS prefers $G$ to $F$. Credit: \citet{bracher2021evaluating}.}           
 \label{fig:scores2}
 \end{figure}
 
@@ -509,10 +509,10 @@ hence itself convex. Furthermore, we can see that $D\phi(P, \cdot) = -S(P,
 \cdot)$ is a valid subderivative of $\phi$, since \eqref{eq:subderiv} becomes 
 $-S(Q, Q) \geq -S(P, Q)$ for all $Q \in \cP$, which is satisfied because $S$ is 
 proper relative to $\cP$. Under the choice $D\phi(P, \cdot) = -S(P, \cdot)$, the 
-score representation \eqref{eq:phi_score} is a tautology, and again, the Bregman
-representation \eqref{eq:phi_div} follows by direct algebra.
-
-The arguments for strict convexity and strict propriety follow similarly.
+score representation \eqref{eq:phi_score} is a tautology. The Bregman
+representation \eqref{eq:phi_div} again follows by simple algebra. This
+completes the proof of the claimed equivalence, and the arguments for the strict
+version of the result follow similarly.
 \end{proof}
 
 Even though our focus has been (and will continue to be) real-valued forecasts,
@@ -541,7 +541,43 @@ strictly convex and strictly proper, respectively.
 
 Next we turn to calibration. There are in fact many modes or ``flavors'' of
 calibration, and they are related but not all equivalent. We walk through three
-such modes, in the following subsections.  
+such definitions, in the following subsections. But first, we recap some
+important preliminary concepts, which will help give motivation for the
+definitions.    
+
+\subsection{Preliminary concepts}
+
+\def\deq{\overset{d}{=}}
+
+For any CDF $F$ (fixed or random) and target random variable $Y$, we define  
+\begin{equation}
+\label{eq:pit}
+F^*(Y) = V \cdot F(Y) + (1-V) \cdot F(Y^-),
+\end{equation}
+where $V \sim \mathrm{Unif}(0,1)$ is independent of $F$ and $Y$, and
+\smash{$F(y^-) = \lim_{x \to y^-} F(x)$}. This is called the \emph{probability
+  integral transform} (PIT) associated with $F$ and $Y$. If $F$ is continuous
+(i.e., if $F$ is a continuous function, and hence invertible) almost surely,
+then the PIT reduces to $F^*(Y) = F(Y)$.    
+
+Recall that if we take $F$ to be \emph{fixed} and equal to the CDF of $Y$, then
+$F^*(Y)$ (or $F(Y)$ in the continuous case) is itself standard uniform. You
+proved this fact on the homework fact. We can write this simply as   
+\[
+F^*(Y) \deq U,
+\]
+where here and throughout the remainder of these lecture notes section, we
+denote $U$ to denote a standard uniform random variable, $U \sim
+\mathrm{Unif}(0,1)$, independent of everything else that is random. Recall also
+that of we take $F^{-1}$ to be \emph{fixed} and equal to the quantile function
+of $Y$, then  
+\[
+F^{-1}(U) \deq Y,
+\]
+which you also proved on the homework. The definitions of probabilistic and
+marginal calibration, covered over the next two subsections, are based on
+requiring the above two properties to hold, respectively, in the case when $F$
+is also random.   
 
 \subsection{Probabilistic calibration}
 
@@ -549,42 +585,25 @@ A forecaster with predicted CDF $F$ is said to be \emph{probabilistically
   calibrated} for a target $Y$ if 
 \begin{equation}
 \label{eq:prob_calib}
-U \cdot F(Y) + (1-U) \cdot F(Y^-) \sim \mathrm{Unif}(0,1),
+F^*(Y) \deq U
 \end{equation}
-where $U \sim \mathrm{Unif}(0,1)$ is independent of $F,Y$ and \smash{$F(y^-) =
-  \lim_{x \to y^-} F(x)$}. Note that when $F$ is continuous (meaning, it is a
-continuous function) almost surely, then \eqref{eq:prob_calib} reduces to 
-\begin{equation}
-\label{eq:prob_calib_cont}
-F(Y) \sim \mathrm{Unif}(0,1).
-\end{equation}
-This definition is intuitively reasonable because, recall, when we take $F$ to
-be \emph{fixed} and equal to the CDF of $Y$, then the property in
-\eqref{eq:prob_calib} holds, or more simply, the property in
-\eqref{eq:prob_calib_cont} holds for the continuous case. You proved these facts
-on the homework.  But to be clear, in defining probabilistic calibration via
-\eqref{eq:prob_calib}, or \eqref{eq:prob_calib_cont} for the continuous case,
-both $F$ and $Y$ are \emph{random}, and probabilistic calibration is a statement
-about their joint distribution.
-
-\paragraph{Probability integral transform.}
-
-Denote
+where recall $F^*(Y)$ is defined as in \eqref{eq:pit}, and $U \sim 
+\mathrm{Unif}(0,1)$. To be explicit, here both $F$ and $Y$ are
+\emph{random}. Another name for probabilistic calibration is \emph{PIT
+  calibration}, and another way of writing \eqref{eq:prob_calib} is  
 \[
-F^*(Y) = U \cdot F(Y) + (1-U) \cdot F(Y^-),
+\P\Big( V \cdot F(Y) + (1-V) \cdot F(Y^-) \leq t \Big), \quad \text{for all $t
+  \in [0,1]$}, 
 \]
-where again $U \sim \mathrm{Unif}(0,1)$ is independent of $F$ and $Y$. This is
-often called the \emph{probability integral transform} (PIT) associated with $F$
-and $Y$. When  $F$ is continuous almost surely, this reduces to $F^*(Y) =
-F(Y)$. Another name for the notion of calibration in \eqref{eq:prob_calib}, or
-\eqref{eq:prob_calib_cont} for the continuous case, is \emph{PIT calibration}. 
+for $V \sim \mathrm{Unif}(0,1)$, independent of $F$ and $Y$, which is typically
+how you will see it defined. 
 
 \paragraph{Quantile reformulation.}
 
 When $F$ is continuous almost surely, then we can reinterpret probabilistic
-calibration \eqref{eq:prob_calib} as follows: $F$ is calibrated for $Y$ if  
+calibration as follows: $F$ is calibrated for $Y$ if   
 \[
-\P(Y \leq F^{-1}(\tau)) = \tau, \quad \text{for all $\tau \in [0,1]$}. 
+\P(Y \leq F^{-1}(t)) = t, \quad \text{for all $t \in [0,1]$}. 
 \]
 This is highly intuitive; for example, when we inspect the forecaster's
 predicted quantile at the level 0.9, the target $Y$ should lie below this 90\% 
@@ -596,7 +615,7 @@ If $F$ places too much mass in the tails, then the PIT $F^*(Y)$ will be
 U-shaped, and its variance will be large compared to that of a uniform
 distribution. Conversely, if $F$ places insufficient mass in the tails, then the 
 PIT $F^*(Y)$ will be upside-down U-shaped, and its variance will be comparably
-small. Using $U \sim \mathrm{Unif}(0,1)$ to denote a standard uniform random
+small. Recalling $U \sim \mathrm{Unif}(0,1)$ denotes a standard uniform random 
 variable, this leads to the following definitions, in the context of PIT
 calibration:   
 
@@ -635,37 +654,40 @@ A forecaster with predicted CDF $F$ is said to be \emph{marginally calibrated}
 for a target $Y$ if  
 \begin{equation}
 \label{eq:marginal_calib}
-\E[F(y)] = \P(Y \leq y), \quad \text{for all $y$}.  
+F^{-1}(U) \deq Y,
 \end{equation}
-Interestingly, this is \emph{not} the same as probabilistic calibration, and it
-is neither more general nor less general. There are nontrivial forecasters that
-satisfy \eqref{eq:prob_calib} but not \eqref{eq:marginal_calib}, and vice
-versa---discussed shortly. 
+where recall $U \sim \mathrm{Unif}(0,1)$. Another way of expressing this is  
+\[
+\E[F(y)] = \P(Y \leq y), \quad \text{for all $y$},
+\]
+which is typically how you will see it defined. This also explains its name. 
+Interestingly, marginal calibration is \emph{not} the same as probabilistic
+calibration, and it is neither more general nor less general. There are
+nontrivial forecasters that satisfy \eqref{eq:prob_calib} but not
+\eqref{eq:marginal_calib}, and vice versa, to be discussed shortly.  
 
 \paragraph{Dispersion: over and under.}
 
-Recall from the homework that for fixed $F$, the random variable $F^{-1}(U)$ for 
-$U \sim \mathrm{Unif}(0,1)$ is distributed according to $F$. When $F$ is random
-and $U \sim \mathrm{Unif}(0,1)$ is independent of $F$, we can then interpret
-$F^{-1}(U)$ as first drawing $F$, then drawing a random variable according to
-$F$. This leads to the following definitions, in the context of marginal
-calibration:   
+When $F$ is random and $U \sim \mathrm{Unif}(0,1)$ is independent of $F$, note
+that we can then interpret $F^{-1}(U)$ as follows: first draw $F$, then draw a
+random variable according to $F$. Thus if $F$ places too much mass on the tails,
+then the variance of $F^{-1}(U)$ will be comparably large, and if $F$ places 
+insufficient mass in the tails, then the variance of $F^{-1}(U)$ will be
+comparably small. This leads to the following definitions, in the context of
+marginal calibration:     
 
 \begin{itemize}
 \item $F$ is said to be \emph{overdispersed} for $Y$ if $\Var[F^{-1}(U)] > \Var[Y]$;
 \item $F$ is said to be \emph{underdispersed} for $Y$ if $\Var[F^{-1}(U)] < \Var[Y]$.
 \end{itemize}
 
-Note the symmetry here to the definitions of over- and underdispersion in the
-PIT sense, defined above. 
-
 \paragraph{PIT versus marginal calibration.}
 
-As we emphasized earlier, PIT calibration is a statement about the joint
-distribution of the forecaster $F$ and target $Y$. Marginal calibration is not;
-it is only a statement, as its name suggests, about the marginal distributions
-of $F$ and $Y$. In the sense, this can be much simpler to understand and reason
-about than PIT calibration.
+PIT calibration is a statement about the \emph{joint} distribution of the
+forecaster $F$ and target $Y$. Marginal calibration is not; it is only a
+statement, as its name suggests, about the \emph{marginal} distributions of $F$
+and $Y$. In a sense, it can hence be much simpler to understand and reason about 
+than PIT calibration.
 
 To give an example, when we think about systematic miscalibration---a forecaster 
 being overdispersed or underdispersed---we might often think about this in terms 
@@ -733,28 +755,28 @@ probability $p$ of the event $Y = 1$, with associated predicted CDF
 \[
 F(y) = (1-p) \cdot 1\{y \geq 0\} +  p \cdot 1\{y \geq 1\}.
 \]
-Then $F$ is probabilistically calibrated in the sense of \eqref{eq:prob_calib}
-if and only if $p$ is conditionally calibrated in the sense of
-\eqref{eq:cond_calib}. 
+Then $F$ is probabilistically calibrated as in \eqref{eq:prob_calib} if and only
+if $p$ is conditionally calibrated as in \eqref{eq:cond_calib}. 
 \end{theorem}
 
 \begin{proof}
 We prove the ``if'' direction; the ``only if'' direction is less elementary and 
 we refer to the proof of Theorem 2.11 in \citet{gneiting2013combining} for
-details. Supposing $p$ is probabilistically calibrated, we can write, for $U
+details. Supposing $p$ is probabilistically calibrated, we can write, for $V
 \sim \mathrm{Unif}(0,1)$, independent of everything else, 
 \[
-F^*(Y) = U (1-p) \cdot (1-Y) + (1-p + U p) \cdot Y.
+F^*(Y) = V (1-p) \cdot (1-Y) + (1-p + V p) \cdot Y.
 \]
-The conditional calibration property \eqref{eq:cond_calib} tells us that
-$Y\,|\,p \sim \mathrm{Bern}(p)$, and fixing any $t \in [0,1]$, we can compute   
+Conditional calibration \eqref{eq:cond_calib} says $Y\,|\,p \sim
+\mathrm{Bern}(p)$, and fixing any $t \in [0,1]$, we can compute    
 \begin{align*}
 \P(F^*(Y) \leq t \,|\, p) 
-&= \P\big(U (1-p) (1-Y) + (1-p + U p) Y \leq t \,\big|\, p \big) \\
-&= \underbrace{\P\big(U (1-p) \leq t \,\big|\, p \big)}_{a} \P( Y=0 \,|\, p) +  
-\underbrace{\P\big(U p \leq t-(1-p) \,\big|\, p \big)}_{b} \P( Y=1 \,|\, p).
+&= \P\big( V (1-p) (1-Y) + (1-p + V p) Y \leq t \,\big|\, p \big) \\
+&= \P\big( V (1-p) \leq t \,\big|\, p \big) \cdot (1-p) + \P\big( V p \leq 
+  t-(1-p) \,\big|\, p \big) \cdot p.
 \end{align*}
-Well, 
+Denoting $a = \P(V (1-p) \leq t \,|\, p)$ and $b = \P(V p \leq t-(1-p) \,|\,
+p)$, observe that 
 \[
 a = \frac{t}{1-p} \wedge 1, 
 \quad
@@ -776,17 +798,19 @@ More broadly, it is worth remarking that the generalization of
 \emph{auto-calibration}, which requires the predicted CDF $F$ to satisfy  
 \begin{equation}  
 \label{eq:auto_calib}
-\cL[Y|F] = F, \quad \text{almost surely}.  
+Y \,|\, F \deq F^{-1}(U) \,|\, F, \quad \text{almost surely}.   
 \end{equation}
-To unpack this, we use $\cL[X]$ to denote the law of a random variable $X$, and 
-for a fixed CDF $F$, and write $\cL[X] = F$ to mean that $X$ has CDF
-$F$. Hence \eqref{eq:auto_calib} says that the conditional distribution of $Y|F$
-should be distributed according to $F$, almost surely (meaning, for almost every
-draw of $F$, which is itself random). This is stronger than all notions of
-calibration we have seen thus far, and it implies both probabilistic and
-marginal calibration. However, in general, it is not really possible to check
-whether auto-calibration holds in practice. See \citet{gneiting2022regression}
-for a discussion of this and related topics. 
+A draw from $F^{-1}(U) \,|\, F$ is simply a random variable distributed
+according to $F$. Thus, in other words, the property \eqref{eq:auto_calib} says
+that almost surely, conditional law of $Y \,|\, F$ should indeed be $F$. You'll 
+sometimes see this written as $\cF[Y|F] = F$, almost surely. 
+
+Auto-calibration \eqref{eq:auto_calib} is stronger than all notions of
+calibration we have seen thus far, and it implies both probabilistic calibration
+\eqref{eq:prob_calib} and marginal calibration
+\eqref{eq:marginal_calib}. However, in general, it is not really possible to
+check whether auto-calibration holds in practice. See
+\citet{gneiting2022regression} for a discussion of this and related topics.
 
 \section{Probability versus quantile aggregation}
 \label{sec:prob_quant}
@@ -923,9 +947,9 @@ of the form \smash{$\bar{Q}(t) = \sum_{j=1}^p w_j(t) Q_j(t)$}.
 
 \subsection{Moments and sharpness}
 
-Next, we study moments of the distributions returned by probability and quantile
-averages, recalling a result due to \citet{lichtendahl2013better}. For a
-distribution $G$, we denote its uncentered moment of order $k \geq 1$ by
+Next, we consider moments of the distributions returned by probability and
+quantile averages, recalling a result due to \citet{lichtendahl2013better}. For
+a distribution $G$, we denote its uncentered moment of order $k \geq 1$ by 
 \smash{$m_k(G) = \E_{X \sim G}[X^k]$}.  
 
 \begin{proposition}
