@@ -373,7 +373,7 @@ main reason we worked with the quantile form in \eqref{eq:weighted_conf} in the
 first place, since we can always use the unadjusted level $1-\alpha$ and
 completely avoid any such complications.
 
-\paragraph{Auxiliary randomization for exact coverage.*}
+\paragraph{Auxiliary randomization.*}
 
 It is worth noting that we can achieve exact coverage by using auxiliary
 randomization, either in CDF or quantile form. Applying our previous
@@ -774,7 +774,7 @@ discrete distribution \smash{$\sum_{i=1}^n \tw_i \, \delta_{R^{(x,y)}_i} +
 likelihood-weighted case), the adjustment of the probability level needed here
 is random.  
 
-\paragraph{Auxiliary randomization for exact coverage.*}
+\paragraph{Auxiliary randomization.*}
 
 We can randomize the CDF form in \eqref{eq:weighted_cdf_nex} as follows: 
 \[
@@ -785,10 +785,11 @@ R^{(x,y)}_{n+1} \Big\} \leq 1-\alpha \bigg\},
 where $U \sim \mathrm{Unif}(0,1)$, independent of everything else. This is
 fairly simple and intuitive---it is free of any level adjustments needed in the   
 unrandomized CDF-based set in \eqref{eq:weighted_cdf_nex}. The set
-\smash{$\hC^{w,*}_n$} satisfies
-\[
-\P\big( Y_{n+1} \in \hC^{w,*}_n(X_{n+1}) \big) = 1-\alpha.  
-\]
+\smash{$\hC^{w,*}_n$} satisfies the same guarantee as in
+\eqref{eq:weighted_cov_nex}. It is not clear whether we can say something
+sharper, but practically, it it gets rid of the discretization error hidden in 
+the inequality \eqref{eq:weighted_cov_nex} by using randomization. 
+
 We can also randomize the quantile form in \eqref{eq:weighted_conf_nex} in order
 to obtain exact coverage (similar to what we did in the likelihood-weighted
 case) but we omit the details. 
