@@ -76,10 +76,10 @@ whether we choose at the outset to represent a predicted distribution by a CDF
 or quantile function can have nontrivial implications on what tools we have at
 our disposal for downstream tasks, like evaluation and aggregation.
 
-Later, in Section \ref{sec:prob_vs_quant}, we will discuss the differences
-between aggregating probabilities (CDFs) and aggregating quantiles, in
-detail. Here, we provide some higher-level practical considerations to keep in
-mind when choosing to represent forecasts via probabilities versus quantiles. 
+Later, in Section \ref{sec:prob_quant}, we will discuss the differences between
+aggregating probabilities (CDFs) and aggregating quantiles, in detail. Here, we
+provide some higher-level practical considerations to keep in mind when choosing
+to represent forecasts via probabilities versus quantiles.  
 
 \begin{itemize}
 \item A quantile representation for forecasts alleviates concerns about choosing
@@ -768,13 +768,222 @@ t$. Marginalizing over $p$ proves the probabilistic calibration property
 
 It is also interesting to remark that this equivalence does \emph{not} extend
 beyond binary outcomes. For three or more distinct levels of a discrete outcome,
-it is no longer true that PIT calibration implies conditional calibration. See 
-\citet{gneiting2022regression}.
+it is no longer true that PIT calibration implies conditional
+calibration. \citet{gneiting2022regression} provide a counterexample.  
+
+More broadly, it is worth remarking that the generalization of
+\eqref{eq:cond_calib} beyond the binary setting is sometimes called
+\emph{auto-calibration}, which requires the predicted CDF $F$ to satisfy  
+\begin{equation}  
+\label{eq:auto_calib}
+\cL[Y|F] = F, \quad \text{almost surely}.  
+\end{equation}
+To unpack this, we use $\cL[X]$ to denote the law of a random variable $X$, and 
+for a fixed CDF $F$, and write $\cL[X] = F$ to mean that $X$ has CDF
+$F$. Hence \eqref{eq:auto_calib} says that the conditional distribution of $Y|F$
+should be distributed according to $F$, almost surely (meaning, for almost every
+draw of $F$, which is itself random). This is stronger than all notions of
+calibration we have seen thus far, and it implies both probabilistic and
+marginal calibration. However, in general, it is not really possible to check
+whether auto-calibration holds in practice. See \citet{gneiting2022regression}
+for a discussion of this and related topics. 
 
 \section{Probability versus quantile aggregation}
-\label{sec:prob_vs_quant}
+\label{sec:prob_quant}
+
+Model aggregation is a rich and important topic in it of itself, and could
+easily be the topic of its own lecture. To give a broader context, model
+aggregation methods---also called ensemble methods---occupy a central place in
+machine learning, both in theory and in practice. Seminal work on this topic
+arose in the 1990s, with the development of Bayesian model averaging, bagging,
+boosting, and stacking. The machine learning literature has mostly focused on
+ensembling point predictions, while ensembling distributions have a had an even 
+longer tradition in probabilistic forecasting, dating back to the 1960s. Over
+the next two sections, we'll focus on a particularly simple class of aggregation 
+methods, linear ones, from the perspective of probabilistic forecasting. The
+current section is adapted from Section 3 of  \citet{fakoor2021flexible}.
+
+For convenience, we'll use the term \emph{average} to refer to a weighted linear
+combination where the weights are nonnegative and sum to 1. For each
+$j=1,\dots,p$, let $F_j$ be a cumulative distribution function (CDF), assumed
+continuous, and let $f_j=F_j'$ be its probability density function; let
+\smash{$Q_j = F^{-1}_j$} denote the corresponding quantile function, also
+assumed continuous, and let $q_j=Q_j'$ the quantile density function. A standard
+fact that relates these 
+objects:    
+\begin{equation}
+\label{eq:prob_quant}
+q_j(t) = \frac{1}{f_j(Q_j(t))} \quad \text{and} \quad 
+f_j(x) = \frac{1}{q_j(F_j(x))}.  
+\end{equation}
+The first fact can be checked by differentiating $Q_j(F_j(x)) = x$, applying the
+chain rule, and reparametrizing via $t=F_j(x)$. The second follows similarly via
+$F_j(Q_j(t)) = t$.
+
+\subsection{Two ways of averaging}
+
+We compare and contrast two ways of averaging distributions. The first way is in
+probability space, where we define for weights $w_j \geq 0$, $j=1,\dots,p$ such
+that \smash{$\sum_{j=1}^p w_j = 1$}, 
+\[
+F = \sum_{j=1}^p w_j F_j.
+\]
+The associated density is simply \smash{$f = \sum_{j=1}^p w_j f_j$} since
+differentiation is a linear operator. The second way to average is in quantile
+space, defining 
+\[ 
+\bar{Q} = \sum_{j=1}^p w_j Q_j,
+\]
+where now $\bar{q} = \sum_{j=1}^p w_j q_j$ is the associated quantile density,
+again by linearity of differentiation. Denote the CDF and probability density
+associated with the quantile average by \smash{$\bar{F} = \bar{Q}^{-1}$}, and
+\smash{$\bar{f} = \bar{F}'$}. Note that from \eqref{eq:prob_quant}, we can
+reason that \smash{$\bar{f}$} is highly \emph{nonlinear} as a function of $f_j$, 
+$j=1,\dots,p$.
+
+A simple example can go a long way to illustrate the differences between the
+distributions resulting from probability and quantile averaging. In Figure
+\ref{fig:prob_quant}, we compare these two ways of averaging on a pair of
+normal distributions with different means and variances.  Here we see that
+probability averaging produces the familiar mixture of normals, which is
+bimodal. The result of quantile averaging is very different: it is always
+unimodal, and instead of interpolating between the tail behaviors of $f_1$ and
+$f_2$ (as $f$ does), it appears that \emph{both} tails of \smash{$\bar{f}$} are 
+generally thinner than those of $f_1$ and $f_2$.
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=0.9\textwidth]{prob_quant.pdf} 
+\caption{\it Densities that result from a probability average (left) or quantile
+  average (right) of two normal distributions $N(1,0.25^2)$ and $N(3, 0.5^2)$,
+  as the weight on the first density varies from 1 (drawn in orange) to 0
+  (drawn in blue). Credit: citet{fakoor2021flexible}.}  
+\label{fig:prob_quant}
+\end{figure}
+
+It seems that quantile averaging is doing something that is both like
+translation and scaling in probability density space. Next we explain this
+phenomenon precisely by recalling a classic result.   
+
+\subsection{Shape preservation}
+
+An aggregation procedure $H$ is said to be \emph{shape-preserving} if, for any
+location-scale family $\cP$ (such as Normal, t, Laplace, or Cauchy) whose
+elements differ only by scale and location parameters, we have     
+\[ 
+F_j \in \cP, \, j=1,\dots,p \implies F = H(F_1,\dots,F_p) \in \cP.  
+\]
+Probability averaging is clearly not shape-preserving, however, interestingly,
+quantile averaging is: if each $F_j$ a member of the same location-scale family
+with a base CDF $L$, then we can write 
+\[
+F_j(x) = L((x-\theta_j)/\sigma_j),
+\]
+thus
+\[
+Q_j(t) = \theta_j + \sigma_j L^{-1}(t),
+\]
+so \smash{$\bar{Q}$} is still of the form $\theta + \sigma L^{-1}$ and
+\smash{$\bar{F}$} is also in the location-scale family. The next proposition
+collects this and related results from the literature, due to
+\citet{thomas1980appropriate, genest1992vincentization}.  
+
+\begin{proposition}
+\label{prop:shape_preservation} \hfill 
+\begin{itemize}
+\item[(i)] Quantile averaging is shape-preserving.        
+\item[(ii)] Location-scale families $\cP$ are the only ones with respect to
+  which quantile averaging is a closed operation (meaning $F_j \in \cP$,
+  $j=1,\dots,p$ implies \smash{$\bar{F} \in \cP$}).     
+\item[(iii)] Quantile averaging is the only aggregation method $H$, of those 
+  satisfying (for $h$ not depending on $t$):  
+  \[
+    H(F_1,\dots,F_p)^{-1}(t) = h(Q_1(t),\dots,Q_p(t)),
+  \]
+  that is shape-preserving.
+\end{itemize}
+\end{proposition}
+
+The parts of Proposition \ref{prop:shape_preservation}, taken together, suggest
+that quantile averaging is somehow ``tailor-made'' for shape preservation in a
+location-scale family---which can be seen as either a pro or a con, depending on
+the application one has in mind. To elaborate, suppose that in a quantile
+regression ensembling application, each base model outputs a normal distribution
+for its predicted distribution at each $x$ (with different means and
+variances). If the normal assumption is warranted (i.e., it actually describes
+the data generating distribution) then we would want our ensemble to retain 
+normality, and quantile averaging would do exactly this. But if the normal
+assumption is used only as a working model, and we are looking to combine base
+predictions as a way to construct some flexible and robust model, then the
+shape-preserving property of quantile averaging would be problematic. In
+general, to model arbitrary distributions without imposing strong assumptions,
+we are therefore driven to use linear combinations of quantiles that allow 
+\emph{different aggregation weights to be used for different quantile levels}, 
+of the form \smash{$\bar{Q}(t) = \sum_{j=1}^p w_j(t) Q_j(t)$}. 
+
+\subsection{Moments and sharpness}
+
+Next, we study moments of the distributions returned by probability and quantile
+averages, recalling a result due to \citet{lichtendahl2013better}. For a
+distribution $G$, we denote its uncentered moment of order $k \geq 1$ by
+\smash{$m_k(G) = \E_{X \sim G}[X^k]$}.  
+
+\begin{proposition}
+\label{prop:moments_sharpness} \hfill
+\begin{itemize}
+\item[(i)] A probability and quantile average always have equal means:
+  \smash{$m_1(F) = m_1(\bar{F})$}.  
+\item[(ii)] A quantile average is always sharper than a probability average:
+  \smash{$m_k(\bar{F}) \leq m_k(F)$} for any even $k \geq 2$.   
+\end{itemize}
+\end{proposition}
+
+Note that sharpness is only a desirable property if it does not come at the
+expense of calibration. With this in mind, the above result cannot be understood
+as a pro or con of quantile averaging without any context on calibration---this
+will be studied in Section \ref{sec:aggr_calib}. That said, the relative
+sharpness of quantile averages to probability averages is an important general
+phenomenon to be aware of.  
+
+\subsection{Tail behavior}
+
+Lastly, we study the action of quantile averaging on the tails of the subsequent
+probability density. Simply starting from \smash{$\bar{q} = \sum_{j=1}^p w_j
+  q_j$}, differentiating, and using \eqref{eq:prob_quant}, we get
+\[
+\frac{1}{\bar{f}(\bar{Q}(t))} = \sum_{j=1}^p \frac{w_j}{f_j(Q_j(t))}. 
+\]
+That is, the probability density \smash{$\bar{f}$} at the level $t$ quantile is
+a (weighted) \emph{harmonic mean} of the densities $f_j$ at their respective
+level $t$ quantiles. Since harmonic means are generally (much) smaller than
+arithmetic means, we would thus expect \smash{$\bar{f}$} to have thinner tails
+than $f$. The next result formalizes this. We use $g(x) = o(h(x))$ to mean
+$g(x)/h(x) \to 0$ as $x \to \infty$, and $g(x) \asymp h(x)$ to mean $g(x)/h(x)
+\to c \in (0, \infty)$ as $x \to \infty$.
+
+\begin{proposition}
+\label{prop:tail_behavior}
+Assume that $p=2$, $f_2(x) = o(f_1(x))$, and the weights $w_1,w_2$ are
+nontrivial (they lie strictly between 0 and 1). Then the density from
+probability averaging satisfies $f(v) \asymp f_1(v)$. Assuming further that
+$f_1$ is log-concave, the density from quantile averaging satisfies
+\smash{$\bar{f}(v) = o(f_1(v))$}.  
+\end{proposition}
+
+This result is due to \citet{fakoor2021flexible}. The assumption that $f_1$ is
+log-concave for the quantile averaging result is stronger than it needs to be
+(as is the restriction to $p=2$), but is used to simplify the proof. 
+
+Proposition \ref{prop:tail_behavior} reiterates the importance of allowing for
+level-dependent weights in a linear combination of quantiles. For applications
+in which there is considerable uncertainty about extreme events (especially ones
+in which there is disagreement in the degree of uncertainty between individual
+base models), we would not want an ensemble to de facto inherit a particular
+tail behavior---whether thin or thick---but want to endow the aggregation
+procedure with the ability to adapt its tail behavior as needed.
 
 \section{Aggregation and (mis)calibration}
+\label{sec:aggr_calib}
 
 \bibliographystyle{plainnat}
 \bibliography{../../common/ryantibs}
