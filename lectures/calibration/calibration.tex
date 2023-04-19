@@ -1009,6 +1009,178 @@ procedure with the ability to adapt its tail behavior as needed.
 \section{Aggregation and (mis)calibration}
 \label{sec:aggr_calib}
 
+In this last section, we cover results on the way linear aggregation rules
+affect calibration. The setup is as follows. We are given forecasters in the
+form of predicted CDFs or predicted quantile functions. We assume that each
+forecaster is calibrated, by some definition. We then take an average of CDFs or
+quantile functions, and ask whether the result is calibrated, or not.
+
+The results are summarized in Table \ref{tab:aggr_calib}. In a sense, they are
+surprising---linear aggregation rules are quite common and popular in practice,
+and so the fact that they can destroy PIT calibration in the case of a probability 
+average, or marginal calibration in the case of a quantile average, is fairly
+disturbing. On the other hand, these results are not too unexpected, at least in
+hindsight, and their proofs are simple, as we will see in the following
+subsections.   
+
+\begin{table}[htb]
+\centering
+\begin{tabular}{c|c|c}
+& PIT calibration & Marginal calibration \\
+\hline
+Probability average & Overdispersed & Calibrated \\
+\hline
+Quantile average & ? & Underdispersed 
+\end{tabular}
+\label{tab:aggr_calib}
+\caption{\it Summary of known results on aggregation and calibration. In the
+  first column, each forecaster is assumed to be PIT calibrated, and in the
+  second column, each is assumed to be marginally calibrated. The result in the
+  bottom left entry, on the general behavior of a quantile average of PIT
+  calibrated forecasters, is currently unknown.} 
+\end{table}
+
+\subsection{PIT calibration, probability average}
+
+We start with the assumption that each forecaster is PIT calibrated, in the
+sense of \eqref{eq:prob_calib}, and inspect their probability average. The next
+result is due to \citet{ranjan2010combining}.  
+
+\begin{theorem}
+\label{thm:prob_prob}
+Let $F_j$, $j=1,\dots,p$ be CDF forecasts for some target random variable $Y$,
+and for fixed weights $w_j \geq 0$, $j=1,\dots,p$, such that
+\smash{$\sum_{j=1}^p w_j = 1$}, consider  
+\[
+F = \sum_{j=1}^p w_j F_j.
+\]
+Assume that for some $i \not= j$, we have $F_i \not= F_j$ with positive 
+probability, and $w_iw_j > 0$. 
+
+\begin{enumerate}[label=\alph*.]
+\item For any convex function $\varphi$, it holds that
+\[
+\E[\varphi(F^*(Y))] \leq \sum_{j=1}^p w_j \E[\varphi(F_j^*(Y))], 
+\]
+with strict inequality when $\varphi$ is strictly convex.
+
+\item As a result, any of moment $F^*(Y)$ is strictly smaller than the maximum
+  corresponding moments of $F_j^*(Y)$, $j=1,\dots,p$. Further, if each
+  $F_j^*(Y)$ has the same mean, then the same is true of the central moments.         
+
+\item In particular, if $F_j$, $j=1,\dots,p$ are each probabilistically
+  calibrated, as in \eqref{eq:prob_calib}, then $F$ is overdispersed, meaning
+  that $\Var(F^*(Y)) < \Var(U)$, where $U \sim \mathrm{Unif}(0,1)$.  
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+A key realization to begin is that
+\[
+F^*(Y) = \sum_{j=1}^p w_j F_j^*(Y),
+\]
+which we can see by noting that $F$ inherits the left-discontinuities of $F_j$,
+$j=1,\dots,p$. For part a, we simply calculate for any convex $\varphi$,  
+\[
+\E\bigg[\varphi\bigg( \sum_{j=1}^p w_j F_j^*(Y) \bigg)\bigg] \leq 
+\sum_{j=1}^p w_j \E[\varphi(F_j^*(Y))],
+\]
+by Jensen's inequality, with strict inequality when $\varphi$ is strictly 
+convex (by our assumption about the existence of a pair $F_i,F_j$ that are 
+not equal with positive probability, and $w_iw_j>0$).
+
+The first statement in part b is simply proved by considering $\varphi(x) = x^k$
+for any positive integer $k$. In the case that $F_j^*(Y)$, $j=1,\dots,p$ all
+have the same mean, note that by taking $\varphi(x) = \pm x$, we learn that
+$F^*(Y)$ must also have the same mean, which proves the second statement in part
+b about central moments.
+
+Lastly, part c is just the special case for the variance, i.e., second central
+moment, when each $F_j^*(Y) \sim \mathrm{Unif}(0,1)$, $j=1,\dots,p$.
+\end{proof}
+
+The fact that any linear combination of probabilistically calibrated forecasters
+must be miscalibrated and systematically overdispersed (part c) is simple but
+striking. In the binary case, where $Y \in \{0,1\}$, the same is true when we
+replace the notion of probabilistic calibration with conditional calibration
+(recalling the equivalence between the two), which reproduces an earlier result
+from \citet{ranjan2010combining}.  
+
+\subsection{Marginal calibration, probability average}
+
+Now we move to the case where each forecaster is PIT calibrated, and still
+consider a probability average. The next result is very simple but 
+noting, and once again emphasizes the differences between marginal and
+probabilistic calibration. 
+
+\begin{theorem}
+\label{thm:marginal_prob}
+Let $F_j$, $j=1,\dots,p$ be CDF forecasts for some target random variable $Y$,
+and for fixed weights $w_j \geq 0$, $j=1,\dots,p$, such that
+\smash{$\sum_{j=1}^p w_j = 1$}, consider  
+\[
+F = \sum_{j=1}^p w_j F_j.
+\]
+If $F_j$, $j=1,\dots,p$ are each marginally calibrated, as in
+\eqref{eq:marginal_calib}, then $F$ is also marginally calibrated.  
+\end{theorem}
+
+\begin{proof}
+We simply compute 
+\[
+\E\bigg[ \sum_{j=1}^p w_j F_j(y) \bigg] = \sum_{j=1}^p w_j \P\{Y \leq y\} =
+\P\{Y \leq y\}. 
+\]
+\end{proof}
+
+\subsection{Marginal calibration quantile average}
+
+Keeping marginal calibration in mind, but moving to a quantile average (hence
+moving clockwise through the results in Table \ref{tab:aggr_calib}), we have the
+following result. 
+
+\begin{theorem}
+\label{thm:marginal_quant}
+Let $F_j^{-1}$, $j=1,\dots,p$ be quantile forecasts for some target random
+variable $Y$, and for fixed weights $w_j \geq 0$, $j=1,\dots,p$, such that
+\smash{$\sum_{j=1}^p w_j = 1$}, consider   
+\[
+F^{-1} = \sum_{j=1}^p w_j F_j^{-1}.
+\]
+Assume that for some $i \not= j$, we have $F_i^{-1} \not= F_j^{-1}$ with
+positive probability, and $w_iw_j > 0$. 
+
+\begin{enumerate}[label=\alph*.]
+\item For any convex function $\varphi$, and $U \sim \mathrm{Unif}(0,1)$ it
+  holds that 
+\[
+\E[\varphi(F^{-1}(U))] \leq \sum_{j=1}^p w_j \E[\varphi(F_j^{-1}(U))], 
+\]
+with strict inequality when $\varphi$ is strictly convex.
+
+\item As a result, any of moment $F^{-1}(U)$ is strictly smaller than the
+  maximum corresponding moments of $F_j^{-1}(U)$, $j=1,\dots,p$. Further, if each 
+  $F_j^*(Y)$ has the same mean, then the same is true of the central moments.         
+
+\item In particular, if $F_j$, $j=1,\dots,p$ are each marginally calibrated, as
+  in \eqref{eq:prob_calib}, then $F$ is underdispersed, meaning 
+  that $\Var(F^*(Y)) < \Var(U)$, where $U \sim \mathrm{Unif}(0,1)$.  
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The proof is similar to that of Theorem \ref{thm:prob_prob}. For part a, we
+calculate for any convex $\varphi$,   
+\[
+\E[\varphi(F^{-1}(U))] \leq \sum_{j=1}^p \E[\varphi(F_j^{-1}(U))],
+\]
+by Jensen's inequality, with strict inequality when $\varphi$ is strictly 
+convex (again by our assumption about the existence of a pair
+$F_i^{-1},F_j^{-1}$ that are not equal with positive probability, and
+$w_iw_j>0$). The rest of the proof is identical to that of Theorem
+\ref{thm:prob_prob}.  
+\end{proof}
+
 \bibliographystyle{plainnat}
 \bibliography{../../common/ryantibs}
 
