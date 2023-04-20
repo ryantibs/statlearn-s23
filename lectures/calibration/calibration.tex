@@ -1019,9 +1019,9 @@ The results are summarized in Table \ref{tab:aggr_calib}. In a sense, they are
 surprising---linear aggregation rules are quite common and popular in practice,
 and so the fact that they can destroy PIT calibration in the case of a probability 
 average, or marginal calibration in the case of a quantile average, is fairly
-disturbing. On the other hand, these results are not too unexpected, at least in
-hindsight, and their proofs are simple, as we will see in the following
-subsections.   
+disturbing. On the other hand, their proofs are very simple, as we will see in
+the following subsections, and arguably these results are not too unexpected, at
+least in hindsight. 
 
 \begin{table}[htb]
 \centering
@@ -1044,7 +1044,7 @@ Quantile average & ? & Underdispersed
 
 We start with the assumption that each forecaster is PIT calibrated, in the
 sense of \eqref{eq:prob_calib}, and inspect their probability average. The next
-result is due to \citet{ranjan2010combining}.  
+result is essentially due to \citet{ranjan2010combining}.  
 
 \begin{theorem}
 \label{thm:prob_prob}
@@ -1099,12 +1099,12 @@ Lastly, part c is just the special case for the variance, i.e., second central
 moment, when each $F_j^*(Y) \sim \mathrm{Unif}(0,1)$, $j=1,\dots,p$.
 \end{proof}
 
-The fact that any linear combination of probabilistically calibrated forecasters
-must be miscalibrated and systematically overdispersed (part c) is simple but
-striking. In the binary case, where $Y \in \{0,1\}$, the same is true when we
-replace the notion of probabilistic calibration with conditional calibration
-(recalling the equivalence between the two), which reproduces an earlier result
-from \citet{ranjan2010combining}.  
+The fact that any linear combination of probabilistically calibrated CDF
+forecasters must be miscalibrated and systematically overdispersed (part c) is
+simple but striking. In the binary case, where $Y \in \{0,1\}$, the same is true
+when we replace the notion of probabilistic calibration with conditional
+calibration (recalling the equivalence between the two), which reproduces an
+earlier result from \citet{ranjan2010combining}.  
 
 \subsection{Marginal calibration, probability average}
 
@@ -1128,12 +1128,12 @@ If $F_j$, $j=1,\dots,p$ are each marginally calibrated, as in
 \begin{proof}
 We simply compute 
 \[
-\E\bigg[ \sum_{j=1}^p w_j F_j(y) \bigg] = \sum_{j=1}^p w_j \P\{Y \leq y\} =
-\P\{Y \leq y\}. 
+\E\bigg[ \sum_{j=1}^p w_j F_j(y) \bigg] = \sum_{j=1}^p w_j \P(Y \leq y) =  
+\P(Y \leq y). 
 \]
 \end{proof}
 
-\subsection{Marginal calibration quantile average}
+\subsection{Marginal calibration, quantile average}
 
 Keeping marginal calibration in mind, but moving to a quantile average (hence
 moving clockwise through the results in Table \ref{tab:aggr_calib}), we have the
@@ -1160,11 +1160,11 @@ with strict inequality when $\varphi$ is strictly convex.
 
 \item As a result, any of moment $F^{-1}(U)$ is strictly smaller than the
   maximum corresponding moments of $F_j^{-1}(U)$, $j=1,\dots,p$. Further, if each 
-  $F_j^*(Y)$ has the same mean, then the same is true of the central moments.         
+  $F_j^{-1}(U)$ has the same mean, then the same is true of the central moments.      
 
 \item In particular, if $F_j$, $j=1,\dots,p$ are each marginally calibrated, as
-  in \eqref{eq:prob_calib}, then $F$ is underdispersed, meaning 
-  that $\Var(F^*(Y)) < \Var(U)$, where $U \sim \mathrm{Unif}(0,1)$.  
+  in \eqref{eq:marginal_calib}, then $F$ is underdispersed, meaning 
+  that $\Var(F^{-1}(U)) < \Var(Y)$.
 \end{enumerate}
 \end{theorem}
 
@@ -1180,6 +1180,25 @@ $F_i^{-1},F_j^{-1}$ that are not equal with positive probability, and
 $w_iw_j>0$). The rest of the proof is identical to that of Theorem
 \ref{thm:prob_prob}.  
 \end{proof}
+
+Again, the fact that any linear combination of marginally calibrated quantile
+forecasters must be miscalibrated and systematically underdispersed (part c) is
+simple but striking.
+
+\subsection{PIT calibration, quantile average}
+
+This case seems to elude simple analysis (at least for now). If the world was
+just, then one might hope (by symmetry in Table \ref{tab:aggr_calib}) that a
+quantile average of PIT calibrated forecasters would itself be calibrated.
+However, this is not the case, because---sadly---we know of at least one case
+where it can be shown analytically that the quantile average here is
+overdispersed.   
+
+Given what we know about the relationship between probability and quantile
+averages though (recall, e.g., Proposition \ref{prop:moments_sharpness}), one 
+might still hope that a quantile average is \emph{less} overdispersed than the
+corresponding probability average, when the constituent forecasters are all PIT 
+calibrated. 
 
 \bibliographystyle{plainnat}
 \bibliography{../../common/ryantibs}
