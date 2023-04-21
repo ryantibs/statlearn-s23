@@ -44,17 +44,17 @@ collaborators, such as \citet{gneiting2007strictly, gneiting2007probabilistic,
 Our setup in this lecture will be that of \emph{probabilistic} (as opposed to
 \emph{point}) forecasting. In this setting, a forecaster outputs a predicted
 distribution $P$ of a given target $Y$ of interest. We will generally focus on
-the case in which $Y$ is real-valued.
-
-In probabilistic forecasting, both $P$ and $Y$ are random variables. To help
-give context, we can think of an underlying sequential problem indexed by time
-$t=1,2,3,\dots$, where:
+the case in which $Y$ is real-valued. In probabilistic forecasting, both $P$ and
+$Y$ are random variables. To help give context, we can think of an underlying
+sequential problem indexed by time $t=1,2,3,\dots$, where:
 \[
 \text{a forecaster predicts $P_t$ for the distribution of $Y_t$, based on
   information available at times $s<t$}.
 \]
-Sometimes it will be more convenient to make the time dependence explicit in the
-notation, but often it will be more convenient to hide it. 
+This sequential problem will be ``lurking in the background'' throughout, but
+often we will hide the time dependence because it will be more convenient (and
+just as general) to talk about a single random forecaster $P$ and random target
+$Y$. 
 
 \subsection{Probabilities or quantiles?}
 
@@ -64,7 +64,7 @@ CDF $F$, we can choose to represent it by its quantile function
 $F^{-1}$. To be clear, the quantile function $F^{-1}$ is always well-defined,
 even when $F$ is not continuous, and it is defined precisely as
 \[
-F^{-1}(t) = \inf\{ x : F(x) \geq t\}.
+F^{-1}(\tau) = \inf\{ x : F(x) \geq \tau\}.
 \]
 When $F$ is not continuous, this shares some but not all properties of the 
 usual inverse; recall the properties you derived on the homework.
@@ -106,9 +106,16 @@ a predicted distribution $P$ and target value $y$ to a real or infinite number
 \smash{$S(P, y) \in \widebar\R$} (where \smash{$\widebar\R = \R \cup \{\pm 
   \infty\}$} denotes the extended reals). We will, by convention, always take
 the score to be negatively-oriented: a lower value means a better forecast.    
+Thus to be clear, in practice (in the sequential setting): we would compare two 
+forecasters \smash{$P_t, \tilde{P}_t$} over times $t=1,2,3,\dots$ by comparing    
+\[
+\frac{1}{T} \sum_{t=1}^T S(P_t, Y_t) \quad \text{and} \quad
+\frac{1}{T} \sum_{t=1}^T S(\tilde{P}_t, Y_t),
+\]
+with a lower average score suggesting a better forecaster.
 
-We use the notation $S(P, Q)$ to denote the expectation of the score over draws
-$Y \sim Q$,  
+In general, we use the notation $S(P, Q)$ to denote the expectation of the score
+over draws $Y \sim Q$,  
 \[
 S(P, Q) = \E_{Y \sim Q} [S(P, Q)] = \int S(P, y) \, dQ(y).
 \]
@@ -188,7 +195,7 @@ For a forecast that has density or probability mass function $p$,
 \emph{quadratic} or \emph{Brier score} is defined by   
 \begin{equation}
 \label{eq:quads}
-\mathrm{QuadS}(p, y) = 2p(y) - \|p\|_2^2,
+\mathrm{QuadS}(p, y) = -2p(y) + \|p\|_2^2,
 \end{equation}
 where $\|p\|_2^2 = \int p(y)^2 \, dy$. This is a strictly proper score. To see
 this, we compute:  
@@ -226,9 +233,12 @@ later. Then
 \end{align*}
 The last display will be negative for small enough $\epsilon > 0$: in 
 particular, for \smash{$\epsilon < \sqrt{\log 2}$}, the integrand in the above
-satisfies \smash{$e^{-y^2/2} > 1/\sqrt{2}$}, so the integral satisfies
-\smash{$\frac{1}{2\epsilon}  \int_{-\epsilon}^\epsilon e^{-y^2/2} \, dy > 
-  1/\sqrt{2}$}.
+satisfies \smash{$e^{-y^2/2} > 1/\sqrt{2}$}, so 
+\[
+\mathrm{LinS}(p, q) - \mathrm{LinS}(q, q) < 
+ \frac{1}{\sqrt{2\pi}} \bigg( 1/\sqrt{2} - \frac{1}{2\epsilon} 
+\int_{-\epsilon}^\epsilon 1/\sqrt{2} \, dy \bigg) < 0.
+\]
 
 \paragraph{Continuous ranked probability score.}
 
@@ -495,11 +505,15 @@ replaced by strictly convex and strictly proper, respectively.
 
 \begin{proof}
 If $\phi$ is convex and we define $S$ according to \eqref{eq:phi_score}, then
-\eqref{eq:phi_div} follows by direct algebra. Meanwhile, $d_\phi(Q, P) \geq 0$
-for any $P,Q \in \cP$ by definition of the subderivative \eqref{eq:subderiv},
-which proves that $S$ is proper relative to $\cP$. For the other direction, if
-$S$ is regular and proper relative to $\cP$, then letting $\phi(Q) = -S(Q, Q)$
-is equivalent to letting  
+direct calculation leads to $S(P,Q) - S(Q,Q) = -\phi(P) - \int D\phi(P, y) \,
+dQ(y) + \int D\phi(P, y) \, dP(y) + \phi(Q) + \int D\phi(Q, y) \, dQ(y) - \int
+D\phi(Q, y) \, dQ(y)$ and the last two terms cancel, which establishes 
+\eqref{eq:phi_div}. Meanwhile, $d_\phi(Q, P) \geq 0$ for any $P,Q \in \cP$ by
+definition of the subderivative \eqref{eq:subderiv}, which proves that $S$ is
+proper relative to $\cP$.  
+
+For the other direction, if $S$ is regular and proper relative to $\cP$, then
+letting $\phi(Q) = -S(Q, Q)$ is equivalent to letting  
 \[
 \phi(Q) = -\inf_{P \in \cP} \, S(P, Q) = \sup_{P \in \cP} \, -S(P, Q).
 \]
@@ -510,9 +524,10 @@ hence itself convex. Furthermore, we can see that $D\phi(P, \cdot) = -S(P,
 $-S(Q, Q) \geq -S(P, Q)$ for all $Q \in \cP$, which is satisfied because $S$ is 
 proper relative to $\cP$. Under the choice $D\phi(P, \cdot) = -S(P, \cdot)$, the 
 score representation \eqref{eq:phi_score} is a tautology. The Bregman
-representation \eqref{eq:phi_div} again follows by simple algebra. This
-completes the proof of the claimed equivalence, and the arguments for the strict
-version of the result follow similarly.
+representation \eqref{eq:phi_div} again follows by simple algebra. 
+
+This completes the proof of the claimed equivalence, and the arguments for the
+strict version of the result follow similarly.
 \end{proof}
 
 Even though our focus has been (and will continue to be) real-valued forecasts,
@@ -540,10 +555,12 @@ strictly convex and strictly proper, respectively.
 \section{Modes of calibration}
 
 Next we turn to calibration. There are in fact many modes or ``flavors'' of
-calibration, and they are related but not all equivalent. We walk through three
-such definitions, in the following subsections. But first, we recap some
-important preliminary concepts, which will help give motivation for the
-definitions.    
+calibration, and they are related but not all equivalent. We will walk through
+three such definitions, but first, we review some important preliminary
+concepts, which will help motivate the definitions. (Side note: translating
+calibration precisely to the sequential setting is a bit more tricky than it was
+for scoring rules, since it requires more than just writing expectations as 
+averages; see \citet{gneiting2007probabilistic}.)        
 
 \subsection{Preliminary concepts}
 
@@ -592,8 +609,8 @@ where recall $F^*(Y)$ is defined as in \eqref{eq:pit}, and $U \sim
 \emph{random}. Another name for probabilistic calibration is \emph{PIT
   calibration}, and another way of writing \eqref{eq:prob_calib} is  
 \[
-\P\Big( V \cdot F(Y) + (1-V) \cdot F(Y^-) \leq t \Big), \quad \text{for all $t
-  \in [0,1]$}, 
+\P\Big( V \cdot F(Y) + (1-V) \cdot F(Y^-) \leq \tau \Big), \quad \text{for all
+  $\tau \in [0,1]$}, 
 \]
 for $V \sim \mathrm{Unif}(0,1)$, independent of $F$ and $Y$, which is typically
 how you will see it defined. 
@@ -603,7 +620,7 @@ how you will see it defined.
 When $F$ is continuous almost surely, then we can reinterpret probabilistic
 calibration as follows: $F$ is calibrated for $Y$ if   
 \[
-\P(Y \leq F^{-1}(t)) = t, \quad \text{for all $t \in [0,1]$}. 
+\P(Y \leq F^{-1}(\tau)) = \tau, \quad \text{for all $\tau \in [0,1]$}.  
 \]
 This is highly intuitive; for example, when we inspect the forecaster's
 predicted quantile at the level 0.9, the target $Y$ should lie below this 90\% 
@@ -615,9 +632,11 @@ If $F$ places too much mass in the tails, then the PIT $F^*(Y)$ will be
 U-shaped, and its variance will be large compared to that of a uniform
 distribution. Conversely, if $F$ places insufficient mass in the tails, then the 
 PIT $F^*(Y)$ will be upside-down U-shaped, and its variance will be comparably
-small. Recalling $U \sim \mathrm{Unif}(0,1)$ denotes a standard uniform random 
-variable, this leads to the following definitions, in the context of PIT
-calibration:   
+small. 
+
+Recalling that we use $U \sim \mathrm{Unif}(0,1)$ to denote a standard uniform
+random variable, this leads us to the following definitions, in the context of
+PIT calibration:    
 
 \begin{itemize}
 \item $F$ is said to be \emph{overdispersed} for $Y$ if $\Var[F^*(Y)] < \Var[U]$;
@@ -673,8 +692,9 @@ that we can then interpret $F^{-1}(U)$ as follows: first draw $F$, then draw a
 random variable according to $F$. Thus if $F$ places too much mass on the tails,
 then the variance of $F^{-1}(U)$ will be comparably large, and if $F$ places 
 insufficient mass in the tails, then the variance of $F^{-1}(U)$ will be
-comparably small. This leads to the following definitions, in the context of
-marginal calibration:     
+comparably small. 
+
+This leads to the following definitions, in the context of marginal calibration:      
 
 \begin{itemize}
 \item $F$ is said to be \emph{overdispersed} for $Y$ if $\Var[F^{-1}(U)] > \Var[Y]$;
@@ -711,7 +731,7 @@ we use $F$ to denote both a distribution and a CDF):
 \item the \emph{climatological} forecaster: $F = N(0, 1)$;
 \item the \emph{flipped} forecaster: $F = N(-\mu, 1)$;  
 \item the \emph{unfocused} forecaster: \smash{$F = \frac{1}{2}[ N(\mu, 1) +
-    N(\mu + \tau, 1)]$}, for $\tau = \pm 1$ with equal probability, independent 
+    N(\mu + \xi, 1)]$}, for $\xi = \pm 1$ with equal probability, independent 
   of $Y,\mu$.
 \end{itemize}
 
@@ -755,37 +775,39 @@ probability $p$ of the event $Y = 1$, with associated predicted CDF
 \[
 F(y) = (1-p) \cdot 1\{y \geq 0\} +  p \cdot 1\{y \geq 1\}.
 \]
-Then $F$ is probabilistically calibrated as in \eqref{eq:prob_calib} if and only
+Then $F$ is probabilistically calibrated as in \eqref{eq:prob_calib} if and only 
 if $p$ is conditionally calibrated as in \eqref{eq:cond_calib}. 
 \end{theorem}
 
 \begin{proof}
-We prove the ``if'' direction; the ``only if'' direction is less elementary and 
-we refer to the proof of Theorem 2.11 in \citet{gneiting2013combining} for
-details. Supposing $p$ is probabilistically calibrated, we can write, for $V
-\sim \mathrm{Unif}(0,1)$, independent of everything else, 
+Supposing $p$ is probabilistically calibrated, we can write, for $V \sim
+\mathrm{Unif}(0,1)$, independent of everything else,  
 \[
 F^*(Y) = V (1-p) \cdot (1-Y) + (1-p + V p) \cdot Y.
 \]
 Conditional calibration \eqref{eq:cond_calib} says $Y\,|\,p \sim
-\mathrm{Bern}(p)$, and fixing any $t \in [0,1]$, we can compute    
+\mathrm{Bern}(p)$, and fixing any $\tau \in [0,1]$, we can compute
 \begin{align*}
-\P(F^*(Y) \leq t \,|\, p) 
-&= \P\big( V (1-p) (1-Y) + (1-p + V p) Y \leq t \,\big|\, p \big) \\
-&= \P\big( V (1-p) \leq t \,\big|\, p \big) \cdot (1-p) + \P\big( V p \leq 
-  t-(1-p) \,\big|\, p \big) \cdot p.
+\P(F^*(Y) \leq \tau \,|\, p) 
+&= \P\big( V (1-p) (1-Y) + (1-p + V p) Y \leq \tau \,\big|\, p \big) \\ 
+&= \P\big( V (1-p) \leq \tau \,\big|\, p \big) \cdot (1-p) + \P\big( V p \leq   
+  \tau-(1-p) \,\big|\, p \big) \cdot p. 
 \end{align*}
-Denoting $a = \P(V (1-p) \leq t \,|\, p)$ and $b = \P(V p \leq t-(1-p) \,|\,
-p)$, observe that 
+Denoting $a = \P(V (1-p) \leq \tau \,|\, p)$ and $b = \P(V p \leq \tau-(1-p)
+\,|\, p)$, observe that
 \[
-a = \frac{t}{1-p} \wedge 1, 
+a = \frac{\tau}{1-p} \wedge 1, 
 \quad
-b = \frac{t-(1-p)}{p} \vee 0.
+b = \frac{\tau-(1-p)}{p} \vee 0.
 \]
-Thus when $t \leq 1-p$, we get $\P(F^*(Y) \leq t \,|\, p) = a(1-p) = t$, and
-when $t > 1-p$, we get $\P(F^*(Y) \leq t \,|\, p) = (1-p) + bp =
-t$. Marginalizing over $p$ proves the probabilistic calibration property
-\eqref{eq:prob_calib}.  
+Thus when $\tau \leq 1-p$, we get $\P(F^*(Y) \leq \tau \,|\, p) = a(1-p) =
+\tau$, and when $\tau > 1-p$, we get $\P(F^*(Y) \leq \tau \,|\, p) = (1-p) + bp
+= \tau$. Marginalizing over $p$ proves the probabilistic calibration property
+\eqref{eq:prob_calib}.
+
+The other direction, that probabilistic calibration implies conditional
+calibration, is less elementary and we refer to the proof of Theorem 2.11 in
+\citet{gneiting2013combining} for details. 
 \end{proof}
 
 It is also interesting to remark that this equivalence does \emph{not} extend
@@ -820,12 +842,14 @@ easily be the topic of its own lecture. To give a broader context, model
 aggregation methods---also called ensemble methods---occupy a central place in
 machine learning, both in theory and in practice. Seminal work on this topic
 arose in the 1990s, with the development of Bayesian model averaging, bagging,
-boosting, and stacking. The machine learning literature has mostly focused on
-ensembling point predictions, while ensembling distributions have a had an even 
-longer tradition in probabilistic forecasting, dating back to the 1960s. Over
-the next two sections, we'll focus on a particularly simple class of aggregation 
-methods, linear ones, from the perspective of probabilistic forecasting. The
-current section is adapted from Section 3 of  \citet{fakoor2021flexible}.
+boosting, and stacking. 
+
+The machine learning literature has mostly focused on ensembling point
+predictions, while ensembling distributions has an even longer tradition
+in probabilistic forecasting, dating back to the 1960s. Over the next two
+sections, we'll focus on a simple class of aggregation methods, linear ones,
+from the perspective of probabilistic forecasting. The current section is
+adapted from Section 3 of \citet{fakoor2021flexible}.  
 
 For convenience, we'll use the term \emph{average} to refer to a weighted linear
 combination where the weights are nonnegative and sum to 1. For each
@@ -881,7 +905,7 @@ generally thinner than those of $f_1$ and $f_2$.
 \caption{\it Densities that result from a probability average (left) or quantile
   average (right) of two normal distributions $N(1,0.25^2)$ and $N(3, 0.5^2)$,
   as the weight on the first density varies from 1 (drawn in orange) to 0
-  (drawn in blue). Credit: citet{fakoor2021flexible}.}  
+  (drawn in blue). Credit: \citet{fakoor2021flexible}.}  
 \label{fig:prob_quant}
 \end{figure}
 
@@ -899,18 +923,12 @@ F_j \in \cP, \, j=1,\dots,p \implies F = H(F_1,\dots,F_p) \in \cP.
 \]
 Probability averaging is clearly not shape-preserving, however, interestingly,
 quantile averaging is: if each $F_j$ a member of the same location-scale family
-with a base CDF $L$, then we can write 
-\[
-F_j(x) = L((x-\theta_j)/\sigma_j),
-\]
-thus
-\[
-Q_j(t) = \theta_j + \sigma_j L^{-1}(t),
-\]
-so \smash{$\bar{Q}$} is still of the form $\theta + \sigma L^{-1}$ and
-\smash{$\bar{F}$} is also in the location-scale family. The next proposition
-collects this and related results from the literature, due to
-\citet{thomas1980appropriate, genest1992vincentization}.  
+with a base CDF $L$, then we can write $F_j(x) = L((x-\theta_j)/\sigma_j)$, and  
+thus $Q_j(t) = \theta_j + \sigma_j L^{-1}(t)$, so \smash{$\bar{Q}$} is still of
+the form $\theta + \sigma L^{-1}$ and \smash{$\bar{F}$} is also in the
+location-scale family. The next proposition collects this and related results
+from the literature, due to \citet{thomas1980appropriate,
+  genest1992vincentization}.   
 
 \begin{proposition}
 \label{prop:shape_preservation} \hfill 
@@ -981,9 +999,11 @@ That is, the probability density \smash{$\bar{f}$} at the level $t$ quantile is
 a (weighted) \emph{harmonic mean} of the densities $f_j$ at their respective
 level $t$ quantiles. Since harmonic means are generally (much) smaller than
 arithmetic means, we would thus expect \smash{$\bar{f}$} to have thinner tails
-than $f$. The next result formalizes this. We use $g(x) = o(h(x))$ to mean
-$g(x)/h(x) \to 0$ as $x \to \infty$, and $g(x) \asymp h(x)$ to mean $g(x)/h(x)
-\to c \in (0, \infty)$ as $x \to \infty$.
+than $f$. 
+
+The next result formalizes this. We use $g(x) = o(h(x))$ to mean $g(x)/h(x) \to
+0$ as $x \to \infty$, and $g(x) \asymp h(x)$ to mean $g(x)/h(x) \to c \in (0,
+\infty)$ as $x \to \infty$. 
 
 \begin{proposition}
 \label{prop:tail_behavior}
@@ -1018,7 +1038,7 @@ quantile functions, and ask whether the result is calibrated, or not.
 The results are summarized in Table \ref{tab:aggr_calib}. In a sense, they are
 surprising---linear aggregation rules are quite common and popular in practice,
 and so the fact that they can destroy PIT calibration in the case of a probability 
-average, or marginal calibration in the case of a quantile average, is fairly
+average, or marginal calibratidon in the case of a quantile average, is fairly
 disturbing. On the other hand, their proofs are very simple, as we will see in
 the following subsections, and arguably these results are not too unexpected, at
 least in hindsight. 
@@ -1064,9 +1084,9 @@ probability, and $w_iw_j > 0$.
 \]
 with strict inequality when $\varphi$ is strictly convex.
 
-\item As a result, any of moment $F^*(Y)$ is strictly smaller than the maximum
-  corresponding moments of $F_j^*(Y)$, $j=1,\dots,p$. Further, if each
-  $F_j^*(Y)$ has the same mean, then the same is true of the central moments.         
+\item For any $k \geq 1$, the $k\th$ moment of $F^*(Y)$ is thus strictly smaller 
+  than the maximum of $k\th$ moments of $F_j^*(Y)$, $j=1,\dots,p$. This also
+  holds for the central moments if each $F_j^*(Y)$ has the same mean.
 
 \item In particular, if $F_j$, $j=1,\dots,p$ are each probabilistically
   calibrated, as in \eqref{eq:prob_calib}, then $F$ is overdispersed, meaning
@@ -1103,8 +1123,8 @@ The fact that any linear combination of probabilistically calibrated CDF
 forecasters must be miscalibrated and systematically overdispersed (part c) is
 simple but striking. In the binary case, where $Y \in \{0,1\}$, the same is true
 when we replace the notion of probabilistic calibration with conditional
-calibration (recalling the equivalence between the two), which reproduces an
-earlier result from \citet{ranjan2010combining}.  
+calibration (recalling the equivalence between the two). This reproduces an
+earlier result from \citet{ranjan2010combining}.   
 
 \subsection{Marginal calibration, probability average}
 
@@ -1126,11 +1146,8 @@ If $F_j$, $j=1,\dots,p$ are each marginally calibrated, as in
 \end{theorem}
 
 \begin{proof}
-We simply compute 
-\[
-\E\bigg[ \sum_{j=1}^p w_j F_j(y) \bigg] = \sum_{j=1}^p w_j \P(Y \leq y) =  
-\P(Y \leq y). 
-\]
+We simply compute \smash{$\E[ \sum_{j=1}^p w_j F_j(y) ] = \sum_{j=1}^p w_j \P(Y
+  \leq y) = \P(Y \leq y)$}.
 \end{proof}
 
 \subsection{Marginal calibration, quantile average}
@@ -1158,9 +1175,10 @@ positive probability, and $w_iw_j > 0$.
 \]
 with strict inequality when $\varphi$ is strictly convex.
 
-\item As a result, any of moment $F^{-1}(U)$ is strictly smaller than the
-  maximum corresponding moments of $F_j^{-1}(U)$, $j=1,\dots,p$. Further, if each 
-  $F_j^{-1}(U)$ has the same mean, then the same is true of the central moments.      
+\item For any $k \geq 1$, the $k\th$ moment of $F^{-1}(U)$ is thus strictly
+  smaller than the maximum of $k\th$ moments of $F_j^{-1}(U)$,
+  $j=1,\dots,p$. This also holds for the central moments if each $F_j^{-1}(U)$
+  has the same mean. 
 
 \item In particular, if $F_j$, $j=1,\dots,p$ are each marginally calibrated, as
   in \eqref{eq:marginal_calib}, then $F$ is underdispersed, meaning 
