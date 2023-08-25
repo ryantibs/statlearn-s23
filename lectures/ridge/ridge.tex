@@ -105,7 +105,7 @@ a posteriori (MAP) estimator:
 \E[\beta | Y] &= \argmax_\beta \; p(Y | \beta) \, p(\beta) \\
 &= \argmin_\beta \; -\log p(Y | \beta) - \log p(\beta) \\
 \label{eq:ridge_bayes}
-&= \argmin_\beta \; \frac{1}{2} \|Y - X\beta\|_2^2 + \frac{1}{2\lambda}
+&= \argmin_\beta \; \frac{1}{2} \|Y - X\beta\|_2^2 + \frac{\lambda}{2}
   \|\beta\|_2^2,
 \end{align}
 that is, the Bayes estimator in this model is simply the ridge estimator. 
@@ -128,7 +128,7 @@ identity:
 for $a,U,V$ such that the products are well-defined and the inverses exist. We
 can obtain this from
 \[
-U (aI + UV) = (aI + UV) U,
+U (aI + VU) = (aI + UV) U,
 \]
 followed by multiplication by $(aI + UV)^{-1}$ on the left and the right. 
 Applying the identity \eqref{eq:push_through} to \eqref{eq:ridge_sol} with
@@ -302,7 +302,7 @@ produces a function $m_F$, defined by
 \begin{equation}
 \label{eq:stieltjes}
 m_F(z) = \int \frac{1}{s - z} \, dF(s), \quad \text{for $z \in \C \setminus
-  \supp(F)$}.  
+  \supp(dF)$}.  
 \end{equation}
 The Stieltjes transform has many nice properties. For example, there is a
 one-to-one correspondence function between Sieltjes functions and probability
@@ -328,7 +328,7 @@ Given this connection, it should not be surprising that the Stieltjes
 transform is also connected to weak convergence. That is, if \smash{$m_n =
   m_{G_n}$} is the Stieltjes transform of $G_n$, for $n=1,2,3,\dots$, then  
 \[
-m_n \to m_G \; \text{as $\to \infty$} \implies G_n \dto G \; \text{as $\to
+m_n \to m_G \; \text{as $n \to \infty$} \implies G_n \dto G \; \text{as $\to
   \infty$}.  
 \]
 In other words, convergence in Stieltjes transform implies convergence in 
@@ -397,7 +397,7 @@ case $\Sigma = I$, whose spectral distribution $F_\Sigma = \delta_1$ is a point
 mass at 1, we have of course $H = \delta_1$. In this case, equation
 \eqref{eq:silverstein} is explicitly solveable, and the limiting distribution
 $F$ in Theorem \ref{thm:mp} admits an explicit form as well, which we call the
-\emph{Marchenko-Pastur law}, or MP law. For $\gamma \geq 1$, this law is 
+\emph{Marchenko-Pastur law}, or MP law. For $\gamma \leq 1$, this law is 
 supported on an interval $[a,b]$, where \smash{$a = (1-\sqrt\gamma)^2$} and
 \smash{$b = (1+\sqrt\gamma)^2$}, and it can be defined by its density     
 \begin{equation}
@@ -517,7 +517,7 @@ $z=0$.
 
 In this section, we will analyze the out-of-sample risk of least squares
 regression in a proportional asympotics model, both as a warm-up for ridge
-regression (the focus of the following sections), but also because it is an
+regression (the focus of the following sections), but also because it is a
 certainly important result in its own right---as we alluded to in previous
 lectures more than once. 
 
