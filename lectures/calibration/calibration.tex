@@ -365,7 +365,7 @@ The equivalence in \eqref{eq:crps_qs} appears to have been discovered by
 ignores a few subtleties, and so here we reproduce the proof from
 \citet{fakoor2021flexible}, which basically just fills in a few missing details.
 Starting with the right-hand side in \eqref{eq:crps_qs}, we can substitute 
-$y=F^{-1}(\tau)$ to rewrite the integral as   
+$x=F^{-1}(\tau)$ to rewrite the integral as   
 \[
 2 \int (1\{y \leq F^{-1}(\tau)\} - \tau) (F^{-1}(\tau)-X) \, d\tau =  
 2 \int (1\{y \leq x\} - F(x)) (x-y) f(x) \, dx.
@@ -398,9 +398,9 @@ $x \mapsto 1\{y \leq x\}$ is indeed the delta function $\delta_y$. Thus we have
 The second subtlety is to show that the first term above is indeed zero.  
 This is really a question of how fast the tails of $F$ decay. As $F$ yields an
 expectation, note that we must have $1-F(x) \lesssim x^{-p}$ for $p>1$ (since
-$1/x$ is not integrable on any one-sided interval $[q,\infty)$ for $q>0$). Hence   
+$1/x$ is not integrable on any one-sided interval $[a,\infty)$ for $a>0$). Hence   
 \[
-(1-F(x)) x \lesssim x^{-p+1} \to 1 \quad \text{as $x \to \infty$},
+(1-F(x))^2 x \lesssim x^{-2p+1} \to 0 \quad \text{as $x \to \infty$},
 \]
 and the other limit, as $x \to -\infty$, is similar.
 
