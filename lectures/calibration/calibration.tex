@@ -62,7 +62,7 @@ It is most common to represent a probabilistic forecast $P$ by its cumulative
 distribution function (CDF) $F$. Of course, instead of representing $P$ by its
 CDF $F$, we can choose to represent it by its quantile function
 $F^{-1}$. To be clear, the quantile function $F^{-1}$ is always well-defined,
-even when $F$ is not continuous, and it is defined precisely as
+even when $F$ is not continuous, or injective, and it is defined precisely as
 \[
 F^{-1}(\tau) = \inf\{ x : F(x) \geq \tau\}.
 \]
@@ -162,7 +162,7 @@ Log score \eqref{eq:logs} very sharply penalizes forecasts that place
 insufficiently low probability on events that materialize: for small $p(y)$, the
 score $-\log p(y)$ is very large (and asymptotes at $p(y) = 0$).  
 
-\paragraph{Interlude: connection to Bergman divergence.}
+\paragraph{Interlude: connection to Bregman divergence.}
 
 KL divergence is a special instance of a \emph{Bregman divergence}, which is of
 the form (note carefully the order of arguments)
@@ -294,13 +294,13 @@ $[\ell_\alpha, u_\alpha]$, $\alpha \in \cA$, \emph{weighted interval score}
   u_\alpha], y) \\
 \label{eq:wis}
 &=\sum_{\alpha \in \cA} \Big(\alpha (u_\alpha - \ell_\alpha) + 2 \cdot
-  \mathrm{dist}(Y, [\ell_\alpha, u_\alpha]) \Big).
+  \mathrm{dist}(y, [\ell_\alpha, u_\alpha]) \Big).
 \end{align}
 Weighted interval score (and thus interval score, as effectively a special case)
 is a proper score for predicting the quantiles at levels $\alpha/2$ and
 $1-\alpha/2$, over $\alpha \in \cA$. To be clear, here we say (by analogy to 
 \eqref{eq:proper}) that a score $S$ defined in terms of a discrete set of
-predicted quantiles \smash{$\{q_\tau\}_{\tau \in \cT}$} if it holds that   
+predicted quantiles \smash{$\{q_\tau\}_{\tau \in \cT}$} is proper if it holds that   
 \begin{equation}
 \label{eq:proper_q}
 S \big( \{q_\tau\}_{\tau \in \cT}, \, F \big) \geq S \big(
@@ -367,7 +367,7 @@ ignores a few subtleties, and so here we reproduce the proof from
 Starting with the right-hand side in \eqref{eq:crps_qs}, we can substitute 
 $x=F^{-1}(\tau)$ to rewrite the integral as   
 \[
-2 \int (1\{y \leq F^{-1}(\tau)\} - \tau) (F^{-1}(\tau)-X) \, d\tau =  
+2 \int (1\{y \leq F^{-1}(\tau)\} - \tau) (F^{-1}(\tau)-y) \, d\tau =  
 2 \int (1\{y \leq x\} - F(x)) (x-y) f(x) \, dx.
 \]
 Let $u'(x)=2(1\{y \leq x\} - F(x)) f(x)$ and $v(x)=x-y$. The idea is now to use 
@@ -397,10 +397,9 @@ $x \mapsto 1\{y \leq x\}$ is indeed the delta function $\delta_y$. Thus we have
 \end{align*}
 The second subtlety is to show that the first term above is indeed zero.  
 This is really a question of how fast the tails of $F$ decay. As $F$ yields an
-expectation, note that we must have $1-F(x) \lesssim x^{-p}$ for $p>1$ (since
-$1/x$ is not integrable on any one-sided interval $[a,\infty)$ for $a>0$). Hence   
+expectation, note that we must have $1-F(x) \lesssim x^{-1}$ (by Markov's inequality). Hence   
 \[
-(1-F(x))^2 x \lesssim x^{-2p+1} \to 0 \quad \text{as $x \to \infty$},
+(1-F(x))^2 x \lesssim x^{-1} \to 0 \quad \text{as $x \to \infty$},
 \]
 and the other limit, as $x \to -\infty$, is similar.
 
