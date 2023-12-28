@@ -585,7 +585,7 @@ F^*(Y) \deq U,
 where here and throughout the remainder of these lecture notes section, we
 denote $U$ to denote a standard uniform random variable, $U \sim
 \mathrm{Unif}(0,1)$, independent of everything else that is random. Recall also
-that of we take $F^{-1}$ to be \emph{fixed} and equal to the quantile function
+that if we take $F^{-1}$ to be \emph{fixed} and equal to the quantile function
 of $Y$, then  
 \[
 F^{-1}(U) \deq Y,
@@ -608,7 +608,7 @@ where recall $F^*(Y)$ is defined as in \eqref{eq:pit}, and $U \sim
 \emph{random}. Another name for probabilistic calibration is \emph{PIT
   calibration}, and another way of writing \eqref{eq:prob_calib} is  
 \[
-\P\Big( V \cdot F(Y) + (1-V) \cdot F(Y^-) \leq \tau \Big), \quad \text{for all
+\P\Big( V \cdot F(Y) + (1-V) \cdot F(Y^-) \leq \tau \Big) = \tau, \quad \text{for all
   $\tau \in [0,1]$}, 
 \]
 for $V \sim \mathrm{Unif}(0,1)$, independent of $F$ and $Y$, which is typically
@@ -727,7 +727,7 @@ we use $F$ to denote both a distribution and a CDF):
 
 \begin{itemize}
 \item the \emph{ideal} forecaster: $F = N(\mu, 1)$;
-\item the \emph{climatological} forecaster: $F = N(0, 1)$;
+\item the \emph{climatological} forecaster: $F = N(0, 2)$;
 \item the \emph{flipped} forecaster: $F = N(-\mu, 1)$;  
 \item the \emph{unfocused} forecaster: \smash{$F = \frac{1}{2}[ N(\mu, 1) +
     N(\mu + \xi, 1)]$}, for $\xi = \pm 1$ with equal probability, independent 
@@ -737,7 +737,7 @@ we use $F$ to denote both a distribution and a CDF):
 To gain intuition for the setup, you can think of an underlying sequential
 problem, where at time $t$, we draw $\mu_t \sim N(0,1)$, then draw $Y_t \sim
 N(\mu_t, 1)$ independently, and the forecasters are $F_t = N(\mu_t, 1)$ (ideal),
-$F_t = N(0, 1)$ (climatological), and so on.
+$F_t = N(0, 2)$ (climatological), and so on.
 
 Direct calculations, as given in Section 2 of \citet{gneiting2007probabilistic}, 
 reveal the following: 
