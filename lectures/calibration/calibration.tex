@@ -989,8 +989,8 @@ phenomenon to be aware of.
 \subsection{Tail behavior}
 
 Lastly, we study the action of quantile averaging on the tails of the subsequent
-probability density. Simply starting from \smash{$\bar{q} = \sum_{j=1}^p w_j
-  q_j$}, differentiating, and using \eqref{eq:prob_quant}, we get
+probability density. Simply starting from \smash{$\bar{Q} = \sum_{j=1}^p w_j
+  Q_j$}, differentiating, and using \eqref{eq:prob_quant}, we get
 \[
 \frac{1}{\bar{f}(\bar{Q}(t))} = \sum_{j=1}^p \frac{w_j}{f_j(Q_j(t))}. 
 \]
@@ -1037,7 +1037,7 @@ quantile functions, and ask whether the result is calibrated, or not.
 The results are summarized in Table \ref{tab:aggr_calib}. In a sense, they are
 surprising---linear aggregation rules are quite common and popular in practice,
 and so the fact that they can destroy PIT calibration in the case of a probability 
-average, or marginal calibratidon in the case of a quantile average, is fairly
+average, or marginal calibration in the case of a quantile average, is fairly
 disturbing. On the other hand, their proofs are very simple, as we will see in
 the following subsections, and arguably these results are not too unexpected, at
 least in hindsight. 
@@ -1127,7 +1127,7 @@ earlier result from \citet{ranjan2010combining}.
 
 \subsection{Marginal calibration, probability average}
 
-Now we move to the case where each forecaster is PIT calibrated, and still
+Now we move to the case where each forecaster is marginally calibrated, and still
 consider a probability average. The next result is very simple but 
 noting, and once again emphasizes the differences between marginal and
 probabilistic calibration. 
