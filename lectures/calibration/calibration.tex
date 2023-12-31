@@ -438,7 +438,7 @@ in action.
 
 \includegraphics[width=0.975\textwidth]{scores2.png}
 \caption{\it Comparison between log score and WIS for two predicted
-  distributions: $P$ in green and $Q$ in red. Note that $G$ has a higher
+  distributions: $F$ in green and $G$ in red. Note that $G$ has a higher
   expectation, while $F$ is more dispersed. If we consider an event $y$ that is
   marked as a dashed vertical line, then we see log score prefers $F$ to $G$,
   while WIS prefers $G$ to $F$. Credit: \citet{bracher2021evaluating}.}           
@@ -477,11 +477,11 @@ each $P \in \cP$ having a sample space $\cY$, we say that $D\phi(P, \cdot)$ is a
 We are now ready to state the result. 
 
 \begin{theorem}
-Let $\phi$ be convex function acting over a set of distributions $\cP$. Define
+Let $\phi$ be a convex function acting over a set of distributions $\cP$. Define
 for $P \in \cP$ and $y \in \cY$ the regular score  
 \begin{equation}
 \label{eq:phi_score}
-S(P, y) = -\phi(P) - D\phi(P, y) + \int D\phi(P, y) \, dP(y),
+S(P, y) = -\phi(P) - D\phi(P, y) + \int D\phi(P, z) \, dP(z),
 \end{equation}
 where $D\phi(P, \cdot)$ is a subderivative of $\phi$ at $P$. Then for any $P,Q
 \in \cP$, 
