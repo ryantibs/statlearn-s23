@@ -357,8 +357,8 @@ follows:
 \begin{equation}
 \label{eq:weighted_cdf}
 \hC^w_n(x) = \bigg\{ y : \sum_{i=1}^{n+1} p^w_i\big( Z_1,\dots,Z_n,(x,y) \big) 
-1\Big\{ R_i^{(x,y)} \leq R^{(x,y)}_{n+1} \Big\} \leq \lceil 1-\alpha \rceil_w
-\bigg\},   
+1\Big\{ R_i^{(x,y)} < R^{(x,y)}_{n+1} \Big\} \leq \lceil 1-\alpha \rceil_w
+\bigg\},     
 \end{equation}
 where \smash{$\lceil 1-\alpha \rceil_w = \min\{ \tau \in \mathrm{range}(\hF^w_n)
   : \tau \geq 1-\alpha\}$} and we use \smash{$\hF^w_n$} to denote the (random)
@@ -386,7 +386,7 @@ p^w_i\big( Z_1,\dots,Z_n,(x,y) \big) 1\Big\{ R_i^{(x,y)} = R^{(x,y)}_{n+1}
 \Big\} \leq 1-\alpha \bigg\},
 \end{multline*}
 where $U \sim \mathrm{Unif}(0,1)$, independent of everything else. This is
-fairly simple and intuitive---it is free of any level adjustments needed in the   
+fairly simple and intuitive: it is free of any level adjustments needed in the   
 unrandomized CDF-based set in \eqref{eq:weighted_cdf}. Meanwhile, we can also 
 randomize the quantile form \eqref{eq:weighted_conf}, as in  
 \begin{multline*}
@@ -408,7 +408,7 @@ B^w \sim \mathrm{Bernoulli}\bigg( \frac{1-\alpha - \lfloor 1-\alpha \rfloor_w}
 {\lceil 1-\alpha \rceil_w - \lfloor 1-\alpha \rfloor_w} \bigg),
 \]
 independent of everything else. Arguably, the randomized conformal set from 
-the second-to-last display is actually less simple and intuitive---we must
+the second-to-last display is actually less simple and intuitive, as we must
 introduce level adjustments that were not needed in
 \eqref{eq:weighted_conf}. Ultimately, either version of the set
 \smash{$\hC^{w,*}_n$} defined above (it is not clear that the two are 
@@ -764,7 +764,7 @@ The analogous CDF form of the conformal set in \eqref{eq:weighted_conf_nex} is
 as follows: 
 \begin{equation}
 \label{eq:weighted_cdf_nex}
-\hC^w_n(x) = \bigg\{ y : \sum_{i=1}^{n+1} \tw_i \, 1\Big\{ R_i^{(x,y)} \leq
+\hC^w_n(x) = \bigg\{ y : \sum_{i=1}^{n+1} \tw_i \, 1\Big\{ R_i^{(x,y)} <
 R^{(x,y)}_{n+1} \Big\} \leq \lceil 1-\alpha \rceil_w \bigg\},
 \end{equation}
 where \smash{$\lceil 1-\alpha \rceil_w = \min\{ \tau \in \mathrm{range}(\hF^w_n)

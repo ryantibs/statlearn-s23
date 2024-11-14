@@ -383,7 +383,7 @@ prediction set:
 &= \bigg\{ y : V(x,y) \leq \Quantile\bigg( \frac{\lceil (1-\alpha)(n_2+1)
   \rceil}{n_2}; \, \frac{1}{n_2} \sum_{i \in D_2} \delta_{R_i} \bigg) \bigg\} \\
 \label{eq:cset_cdf_split}
-&= \bigg\{ y : \frac{1}{n_2} \sum_{i \in D_2} 1\{ R_i \leq V(x,y) \} \leq
+&= \bigg\{ y : \frac{1}{n_2} \sum_{i \in D_2} 1\{ R_i < V(x,y) \} \leq
   \frac{\lceil (1-\alpha)(n_2+1) \rceil}{n_2} \bigg\}.   
 \end{align}
 The original formulation in \eqref{eq:cset_orig_split} is (we think) the most
@@ -394,12 +394,14 @@ score $\leq$ adjusted quantile''. This form will be useful for generalizing
 conformal prediction to use weights, which we will cover in the next lecture,
 when we consider certain settings where the scores are no longer exchangeable. 
 
-The third formulation \eqref{eq:cset_cdf_split} is expressed in terms of the
-empirical cumulative distribution function (CDF) of $R_i$, $i \in D_2$. It is of 
-the form ``CDF evaluated at test score $\leq$ adjusted level''. This is a useful
-form when considering auxiliary randomization schemes, covered next. 
+The third formulation \eqref{eq:cset_cdf_split} is expressed in terms the
+empirical cumulative distribution function (CDF) of $R_i$, $i \in D_2$,
+precisely, its left-continuous version. It is of the form ``CDF evaluated at
+test score $\leq$ adjusted level''. This is a useful form when considering
+auxiliary randomization schemes, covered next.      
 
 \paragraph{Auxiliary randomization to get exact coverage.*}  
+
 
 It is worth noting that we can always use auxiliary randomization to get exact
 coverage in our prediction sets, that is, to achieve $1-\alpha$ coverage in
@@ -407,31 +409,31 @@ coverage in our prediction sets, that is, to achieve $1-\alpha$ coverage in
 understanding the ideas in the rest of this lecture, hence the asterisk. First,
 rewrite the conformal set in its CDF form \eqref{eq:cset_cdf_split} as   
 \[
-\hC_n(x) = \bigg\{ y : \frac{1}{n_2+1} \sum_{i \in D_2} 1\{ R_i \leq V(x,y) \}
-+ \frac{1}{n_2+1} \leq \frac{\lceil (1-\alpha)(n_2+1) \rceil}{n_2+1} \bigg\}.    
+\hC_n(x) = \bigg\{ y : \frac{1}{n_2+1} \sum_{i \in D_2} 1\{ R_i < V(x,y) \}
++ \frac{1}{n_2+1} \cdot 1\{ V(x,y) < V(x,y) \} \leq \frac{\lceil
+  (1-\alpha)(n_2+1) \rceil}{n_2+1} \bigg\}.     
 \]
-This now compares the empirical CDF on the $n_2+1$ points: $R_i$, $i \in D_2$
-and $V(x,y)$, to an adjusted level. To explain the auxiliary randomization 
-mechanism, it helps to look at what happens at the (unknown) test point 
-$(X_{n+1},Y_{n+1})$: let $R_{n+1} = V(X_{n+1},Y_{n+1})$ denote its score, and
-let \smash{$\hat{F}_{n_2+1}$} denote the CDF of $R_i$, $i \in D_2$ and
-$R_{n+1}$. Then   
+This now compares the left-continuous empirical CDF of the $n_2+1$ points
+$R_i$, $i \in D_2$ and $V(x,y)$, evaluated at the test score $V(x,y)$, to an
+adjusted level. To explain the auxiliary randomization mechanism, it helps to
+look at what happens at the (unknown) test point  $(X_{n+1},Y_{n+1})$: let
+$R_{n+1} = V(X_{n+1},Y_{n+1})$ denote its score, and let
+\smash{$\hat{F}^-_{n_2+1}$} denote the left-continuous CDF of $R_i$, $i \in D_2$ 
+and $R_{n+1}$. Then     
 \[
-Y_{n+1} \in \hC_n(X_{n+1}) \iff \hat{F}_{n_2+1}(R_{n+1}) \leq \frac{\lceil 
+Y_{n+1} \in \hC_n(X_{n+1}) \iff \hat{F}^-_{n_2+1}(R_{n+1}) \leq \frac{\lceil  
   (1-\alpha)(n_2+1) \rceil}{n_2+1}, 
 \]
-which we know occurs with probability at least $1-\alpha$.
+which we know occurs with probability at least $1-\alpha$. 
 
-In general, if $Z$ has CDF $F$, then $F(Z)$ is always sub-uniform, meaning 
-$\P( F(Z) \leq t) \leq t$ for any $t \in [0,1]$. This is another way of seeing
-the coverage result stated above. Meanwhile, if $F$ is continuous, then $F(Z)$
-will be precisely uniform, $\P( F(Z) \leq t) \leq t$ for any $t \in
-[0,1]$. Furthermore, we can always take any CDF and make it continuous by
-injecting auxiliary randomness, defining for $U \sim \mathrm{Unif}(0,1)$,
+In general, for any random variable $Z$ whose CDF is $F(x) = \P(Z \leq z)$ and
+whose left-continuous CDF is \smash{$F^-(z) = \P(Z < z) = \lim_{y \to z^-}
+  F(y)$}, we can construct a randomized version by defining, for $U \sim
+\mathrm{Unif}(0,1)$,  
 \[
-F^*(z) = \lim_{y \to z^-} F(y) + U \cdot \Big( F(z) - \lim_{y \to z^-} F(y)
-\Big).
+F^*(z) = F^-(z) + U \cdot \big( F(z) - F^-(z) \big).
 \]
+This has the property that $\P(F^*(Z) \leq t) = t$, for any $t$.
 
 Returning to our conformal setting, we see that if we define a randomized
 conformal prediction set based on auxiliary randomization of the empirical CDF, 
@@ -700,7 +702,7 @@ summarize these below.
 &= \bigg\{ y : R^{(x,y)}_{n+1} \leq \Quantile\bigg( \frac{\lceil (1-\alpha)(n+1) 
   \rceil}{n}; \, \frac{1}{n} \sum_{i=1}^n \delta_{R_i^{(x,y)}} \bigg) \bigg\} \\ 
 \label{eq:cset_cdf_full}
-&= \bigg\{ y : \frac{1}{n} \sum_{i=1}^n 1\Big\{ R_i^{(x,y)} \leq R^{(x,y)}_{n+1}
+&= \bigg\{ y : \frac{1}{n} \sum_{i=1}^n 1\Big\{ R_i^{(x,y)} < R^{(x,y)}_{n+1}
   \Big\} \leq \frac{\lceil (1-\alpha)(n+1) \rceil}{n} \bigg\}.   
 \end{align}
 
@@ -746,7 +748,7 @@ The second remark is about interpreting the conformal set via p-values. Observe
 that we can rewrite \eqref{eq:cset_cdf_full} once more as
 \[
 \hC_n(x) = \bigg\{ y : \underbrace{\frac{1}{n} \sum_{i=1}^n 1\Big\{ R_i^{(x,y)} 
-  > R^{(x,y)}_{n+1} \Big\}}_{p(y)} \geq \frac{\lfloor \alpha (n+1) \rfloor}{n} 
+  \geq R^{(x,y)}_{n+1} \Big\}}_{p(y)} \geq \frac{\lfloor \alpha (n+1) \rfloor}{n} 
 \bigg\}.  
 \]
 Informally, we can interpret the fraction of residuals larger than the test
