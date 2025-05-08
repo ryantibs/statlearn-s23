@@ -784,8 +784,8 @@ Plugging in \smash{$\lambda = 4 \sigma \sqrt{2n (\log(2d) + u)}$}, we have
 shown that 
 \begin{equation}
 \label{eq:risk_lasso_fast1}
-\frac{1}{n} \|X\hbeta-X\beta_0\|_2^2 \leq \frac{144 \sigma^2 s_0 \sqrt{2
-    (\log(2d) + u)}}{\phi_0^2 n},   
+\frac{1}{n} \|X\hbeta-X\beta_0\|_2^2 \leq \frac{288 \sigma^2 s_0 (\log(2d) +
+  u)}{\phi_0^2 n},    
 \end{equation}
 with probability at least $1-e^{-u}$. As desired, we have achieved a ``fast''
 rate for the lasso estimator: the in-sample prediction risk scales as $s_0(\log
@@ -811,7 +811,7 @@ Plugging in \smash{$\lambda = 4 \sigma \sqrt{2n (\log(2d) + u)}$}, we have
 shown that 
 \begin{equation}
 \label{eq:risk_lasso_fast2}
-\|\hbeta - \beta_0\|_1 \leq \frac{24 \sigma s_0}{\phi_0^2}
+\|\hbeta - \beta_0\|_1 \leq \frac{48 \sigma s_0}{\phi_0^2}
 \sqrt{\frac{2 (\log(2d) + u)}{n}},
 \end{equation}
 with probability at least $1-e^{-u}$. We see that the coefficient risk in the
