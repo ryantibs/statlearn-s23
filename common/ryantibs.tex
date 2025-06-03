@@ -25,6 +25,11 @@
 
 \ifdefined\ParSkip 
 \usepackage{parskip} % use par skip
+\makeatletter
+\def\thm@space@setup{%
+  \thm@preskip=\parskip \thm@postskip=0pt
+}
+\makeatother
 \fi
 
 % Theorems and such

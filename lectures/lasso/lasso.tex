@@ -436,15 +436,16 @@ vector $\beta \in \R^d$,
 \frac{1}{2} \|Y - X\hbeta\|_2^2 + \lambda\|\hbeta\|_1 
 \leq \frac{1}{2} \|Y - X\beta\|_2^2 + \lambda\|\beta\|_1.
 \]
-Rearranging, 
+Simply rearranging, 
 \[
 \frac{1}{2} \|Y - X\hbeta\|_2^2 - \frac{1}{2} \|Y - X\beta\|_2^2 \leq \lambda
-(\|\beta\|_1 - \|\hbeta\|_1).  
+(\|\beta\|_1 - \|\hbeta\|_1), 
 \]
-Adding and subtracting $X\beta$ in the leftmost term, and expanding, we get  
+then adding and subtracting $X\beta$ in the leftmost term, and expanding the
+square, we get
 \[
-\|X\hbeta - X\beta\|_2^2 \leq 2 \langle Y-X\beta, X\hbeta - X\beta \rangle + 
-\lambda (\|\beta\|_1 - \|\hbeta\|_1).
+\frac{1}{2} \|X\hbeta - X\beta\|_2^2 \leq \langle Y-X\beta, X\hbeta - X\beta
+\rangle + \lambda (\|\beta\|_1 - \|\hbeta\|_1).
 \]
 where we have moved the inner product term to the right-hand side. This is true
 for any vector $\beta$. Taking $\beta = \beta_0$ in particular, the true
@@ -453,8 +454,8 @@ coefficient vector from \eqref{eq:model}, and recognizing $Y - X\beta_0 =
   inequality} for \smash{$\hbeta$}, 
 \begin{equation}
 \label{eq:basic_ineq_penalized1}
-\|X\hbeta - X\beta_0\|_2^2  \leq 2 \langle \epsilon, X\hbeta - X\beta_0 \rangle
-+ \lambda (\|\beta_0\|_1 - \|\hbeta\|_1). 
+\frac{1}{2} \|X\hbeta - X\beta_0\|_2^2 \leq \langle \epsilon, X\hbeta - X\beta_0
+\rangle + \lambda (\|\beta_0\|_1 - \|\hbeta\|_1). 
 \end{equation}
 
 A result on the in-sample prediction risk for the lasso is only a few lines
@@ -468,19 +469,19 @@ by H{\"o}lder's inequality. Thus from \eqref{eq:basic_ineq_penalized1}, we learn
 that 
 \begin{equation}
 \label{eq:basic_ineq_penalized2}
-\|X\hbeta - X\beta_0\|_2^2 \leq 2 \|X^\T \epsilon\|_\infty \|\hbeta -
-\beta_0\|_1 + \lambda (\|\beta_0\|_1 - \|\hbeta\|_1), 
+\frac{1}{2} \|X\hbeta - X\beta_0\|_2^2 \leq \|X^\T \epsilon\|_\infty \|\hbeta -
+\beta_0\|_1 + \lambda (\|\beta_0\|_1 - \|\hbeta\|_1),  
 \end{equation}
 and using the triangle inequality, 
 \begin{align}
 \nonumber
-\|X\hbeta - X\beta_0\|_2^2 
-&\leq 2 \|X^\T \epsilon\|_\infty (\|\hbeta\|_1 + \|\beta_0\|_1) +
+\frac{1}{2} \|X\hbeta - X\beta_0\|_2^2 
+&\leq \|X^\T \epsilon\|_\infty (\|\hbeta\|_1 + \|\beta_0\|_1) +
   \lambda (\|\beta_0\|_1 - \|\hbeta\|_1) \\
 \label{eq:basic_ineq_penalized3}
 &\leq 2 \lambda \|\beta_0\|_1.
 \end{align}
-where the second line holds if we take $\lambda \geq 2\|X^\T \epsilon\|_\infty$.    
+where the second line holds if we take $\lambda \geq \|X^\T \epsilon\|_\infty$.    
 So far this has all been deterministic. Next comes the probabilistic 
 argument. Note that $X^\T \epsilon$ has sub-Gaussian entries with mean zero and
 variance proxy \smash{$\max_{j=1,\dots,d} \|X_j\|_2^2 \sigma^2 \leq n
@@ -491,7 +492,7 @@ variance proxy \smash{$\max_{j=1,\dots,d} \|X_j\|_2^2 \sigma^2 \leq n
 e^{-u}, 
 \]
 for any $u>0$. Therefore, from \eqref{eq:basic_ineq_penalized3}, taking
-\smash{$\lambda = 2\sigma \sqrt{2n (\log(2d) + u)}$}, we get 
+\smash{$\lambda = \sigma \sqrt{2n (\log(2d) + u)}$}, we get 
 \begin{equation}
 \label{eq:lasso_risk_penalized}
 \frac{1}{n} \|X\hbeta - X\beta_0\|_2^2 \leq 4 \sigma \|\beta_0\|_1 
@@ -728,16 +729,16 @@ before we used the triangle inequality, i.e., the line above
 \eqref{eq:basic_ineq_penalized3}. Applying the result on the maximum of    
 sub-Gaussians, we get 
 \[
-\|X\hbeta - X\beta_0\|_2^2 \leq 2 \sigma \sqrt{2n (\log(2d) + u)} 
+\frac{1}{2} \|X\hbeta - X\beta_0\|_2^2 \leq \sigma \sqrt{2n (\log(2d) + u)}  
 \|\hbeta - \beta_0\|_1 + \lambda (\|\beta_0\|_1 - \|\hbeta\|_1),
 \]
 on an event $\Omega$ of probability at least $1-e^{-u}$. The remainder of the
 analysis will be performed on $\Omega$, implicitly. Choosing \smash{$\lambda
-  \geq 4 \sigma \sqrt{2n (\log(2d) + u)}$} (note this is a factor of 2 larger
+  \geq 2 \sigma \sqrt{2n (\log(2d) + u)}$} (note this is a factor of 2 larger
 than before) we have  
 \begin{align}
 \nonumber
-\|X\hbeta - X\beta_0\|_2^2 
+\frac{1}{2} \|X\hbeta - X\beta_0\|_2^2 
 &\leq \frac{\lambda}{2} \|\hbeta - \beta_0\|_1 + 
   \lambda( \|\beta_0\|_1 - \|\hbeta\|_1) \\ 
 \nonumber
